@@ -1,0 +1,33 @@
+.btn01 {
+  font: {
+    size: 16px;
+    weight: bold;
+  }
+
+  line-height: 1.5;
+  letter-spacing: .1em;
+  text-decoration: none;
+  color: #000;
+  text-align: center;
+  min-height: 40px;
+  max-width: 350px;
+  width: 100%;
+  border-radius: 999px;
+  border: 1px solid #000;
+  transition: .3s;
+  cursor: pointer;
+
+  &:hover {
+    background: #000;
+    color: #fff;
+  }
+
+  &:disabled {
+    opacity: .4;
+    pointer-events: none;
+  }
+}
+
+.btn02 {
+  @extend .btn01;
+}
