@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './MathTable.scss';
 
 const array = [{
   id: 1,
   name: "plus01",
-  value: "×",  // 演算子（+、-、×、÷）
-  x: [2, 8, 5, 1, 7, 3, 6, 9, 0, 4],
-  y: [4, 5, 1, 8, 3, 9, 0, 2, 7, 6]
+  value: "+",  // 演算子（+、-、×、÷）
+  x: [2, 8, 5, 1, 7],
+  y: [4, 5, 1, 8, 3]
 }];
 
 function MathTable() {
@@ -42,44 +42,13 @@ function MathTable() {
 
   const handleChange = (rowValue, colValue, e) => {
     const { value } = e.target;
-
-    // 入力された値が空文字の場合、そのまま処理をしない
-    if (value === "") {
-      setUserAnswers(prevAnswers => {
-        const newAnswers = {
-          ...prevAnswers,
-          [`${rowValue}${array[0].value}${colValue}`]: value
-        };
-
-        // フォームが全て埋まっているかどうかを判定
-        const allFilled = array[0].y.every((rowValue) =>
-          array[0].x.every((colValue) => newAnswers[`${rowValue}${array[0].value}${colValue}`] !== "")
-        );
-
-        setIsFormValid(allFilled);
-
-        return newAnswers;
-      });
-    } else {
-      setUserAnswers(prevAnswers => {
-        const newAnswers = {
-          ...prevAnswers,
-          [`${rowValue}${array[0].value}${colValue}`]: value
-        };
-
-        // フォームが全て埋まっているかどうかを判定
-        const allFilled = array[0].y.every((rowValue) =>
-          array[0].x.every((colValue) => newAnswers[`${rowValue}${array[0].value}${colValue}`] !== null)
-        );
-
-        setIsFormValid(allFilled);
-
-        return newAnswers;
-      });
-    }
+  
+    setUserAnswers((prevAnswers) => ({
+      ...prevAnswers,
+      [`${rowValue}${array[0].value}${colValue}`]: value, // 入力値をそのまま保存
+    }));
   };
-
-
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -155,7 +124,13 @@ function MathTable() {
                 ))}
               </tbody>
             </table>
-            <button className='btn02' type='submit' disabled={!isFormValid}>Submit</button>
+
+            {/* 送信ボタン */}
+            <button 
+              className='btn02' 
+              type='submit' 
+              >Submit
+            </button>
           </>
         )}
 
