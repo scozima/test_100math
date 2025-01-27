@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import './MathTable.scss';
 
 const array = [{
@@ -10,14 +10,17 @@ const array = [{
 }];
 
 function MathTable() {
-  const [start, setStart] = useState(false); // 回答をスタートする
-  const [userAnswers, setUserAnswers] = useState({}); // ユーザ回答
-  const [score, setScore] = useState(null);  // 得点
-  const [time, setTime] = useState(null);    // 経過時間
-  const [startTime, setStartTime] = useState(null);  // 開始時間
-  const [isFormValid, setIsFormValid] = useState(false);  // フォームが有効かどうか
+  const [start, setStart] = useState(false);
+  const [userAnswers, setUserAnswers] = useState({});
+  const [score, setScore] = useState(null);
+  const [time, setTime] = useState(null);
+  const [startTime, setStartTime] = useState(null);
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [answerStates, setAnswerStates] = useState({});
+  const [btnHide, setBtnHide] = useState(false);
 
-  // 演算子に応じて計算する関数
+  const firstInputRef = useRef(null); // 最初の input を参照する
+
   const calculateAnswer = (rowValue, colValue, operator) => {
     switch (operator) {
       case "+":
@@ -29,112 +32,127 @@ function MathTable() {
       case "÷":
         return rowValue / colValue;
       default:
-        return 0;  // デフォルトで0（不正な演算子用）
+        return 0;
     }
   };
 
-  // 回答をチェックする関数
-  const checkAnswer = (rowValue, colValue, userAnswer, operator) => {
-    const correctAnswer = calculateAnswer(rowValue, colValue, operator);
-    return correctAnswer === parseFloat(userAnswer);
-  };
-
-
   const handleChange = (rowValue, colValue, e) => {
     const { value } = e.target;
-  
-    setUserAnswers((prevAnswers) => ({
-      ...prevAnswers,
-      [`${rowValue}${array[0].value}${colValue}`]: value, // 入力値をそのまま保存
-    }));
+
+    const updatedAnswers = {
+      ...userAnswers,
+      [`${rowValue}${array[0].value}${colValue}`]: value,
+    };
+
+    setUserAnswers(updatedAnswers);
+
+    // 入力チェックの実行
+    validateForm(updatedAnswers);
   };
-  
+
+  const validateForm = (answers) => {
+    const allKeys = array[0].y.flatMap(rowValue =>
+      array[0].x.map(colValue => `${rowValue}${array[0].value}${colValue}`)
+    );
+
+    const allFilled = allKeys.every(key => answers[key] && answers[key].trim() !== "");
+    setIsFormValid(allFilled);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log("回答: ", userAnswers);
+    setBtnHide(true);
 
     let correctAnswers = 0;
+    const newAnswerStates = {};
+
     array[0].y.forEach((rowValue) => {
       array[0].x.forEach((colValue) => {
-        const userAnswer = userAnswers[`${rowValue}${array[0].value}${colValue}`];
-        if (checkAnswer(rowValue, colValue, userAnswer, array[0].value)) {
-          correctAnswers++;
-        }
+        const key = `${rowValue}${array[0].value}${colValue}`;
+        const userAnswer = userAnswers[key];
+        const correct = calculateAnswer(rowValue, colValue, array[0].value) === parseFloat(userAnswer);
+
+        newAnswerStates[key] = correct ? 'correct' : 'incorrect';
+        if (correct) correctAnswers++;
       });
     });
 
-    setScore(correctAnswers);  // 得点を設定
+    setAnswerStates(newAnswerStates); // クラス更新
+    setScore(correctAnswers);
 
     const endTime = Date.now();
-    const elapsedTime = Math.round((endTime - startTime) / 1000);  // 秒単位
-    setTime(elapsedTime);  // 経過時間を設定
+    const elapsedTime = Math.round((endTime - startTime) / 1000);
+    setTime(elapsedTime);
   };
 
   const startFlag = () => {
-    setStart(prevStart => !prevStart)
+    setStart(true);
     setStartTime(Date.now());
+  };
 
-    console.log(startTime);
-  }
+  useEffect(() => {
+    if (start && firstInputRef.current) {
+      firstInputRef.current.focus(); // 最初の input にフォーカス
+    }
+  }, [start]);
 
   return (
-
     <form onSubmit={handleSubmit}>
-
-      {start === false ?
-        (
-          <button className='btn01' onClick={startFlag}>
-            Start
-          </button>
-        ) :
-        (
-          <>
-            <table className='table01'>
-              <thead>
-                <tr>
-                  <th>{array[0].value}</th>
-                  {array[0].x.map((item, index) => (
-                    <th key={index}>{item}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {array[0].y.map((rowValue, rowIndex) => (
-                  <tr key={rowIndex}>
-                    <th>{rowValue}</th>
-                    {array[0].x.map((colValue, colIndex) => {
-                      const answer = calculateAnswer(rowValue, colValue, array[0].value);
-                      const userAnswer = userAnswers[`${rowValue}${array[0].value}${colValue}`];
-
-                      return (
-                        <td key={colIndex}>
-                          <span className="answer">{answer}</span>
-                          <input
-                            type="text"
-                            className={`user-answer ${checkAnswer(rowValue, colValue, userAnswer, array[0].value) ? 'correct' : 'incorrect'}`}
-                            value={userAnswer || ''}
-                            onChange={(e) => handleChange(rowValue, colValue, e)}
-                          />
-                        </td>
-                      );
-                    })}
-                  </tr>
+      {!start ? (
+        <button className='btn01' onClick={startFlag}>
+          Start
+        </button>
+      ) : (
+        <>
+          <table className='table01'>
+            <thead>
+              <tr>
+                <th>{array[0].value}</th>
+                {array[0].x.map((item, index) => (
+                  <th key={index}>{item}</th>
                 ))}
-              </tbody>
-            </table>
+              </tr>
+            </thead>
+            <tbody>
+              {array[0].y.map((rowValue, rowIndex) => (
+                <tr key={rowIndex}>
+                  <th>{rowValue}</th>
+                  {array[0].x.map((colValue, colIndex) => {
+                    const key = `${rowValue}${array[0].value}${colValue}`;
+                    const userAnswer = userAnswers[key] || "";
+                    const answerState = answerStates[key]; // 正解/不正解の状態
 
-            {/* 送信ボタン */}
-            <button 
-              className='btn02' 
-              type='submit' 
-              >Submit
+                    return (
+                      <td key={colIndex}>
+                        <input
+                          type="text"
+                          className={`user-answer ${answerState || ''}`} // クラスを動的に設定
+                          value={userAnswer}
+                          onChange={(e) => handleChange(rowValue, colValue, e)}
+                          ref={rowIndex === 0 && colIndex === 0 ? firstInputRef : null} // 最初の input に ref を割り当て
+                        />
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {btnHide === false && (
+            <button
+              className='btn02'
+              type='submit'
+              disabled={!isFormValid}
+            >
+              Submit
             </button>
-          </>
-        )}
+          )}
 
-      {/* 結果表示 */}
+        </>
+      )}
+
       {score !== null && (
         <div className="result">
           <p>Score: {score} / {array[0].x.length * array[0].y.length}</p>
