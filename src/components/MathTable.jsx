@@ -1,13 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
+import { doc, getDoc } from "firebase/firestore";
 import './MathTable.scss';
-
-const array = [{
-  id: 1,
-  name: "plus01",
-  value: "+",  // 演算子（+、-、×、÷）
-  x: [2, 8, 5, 1, 7],
-  y: [4, 5, 1, 8, 3]
-}];
+import db from '../firebase';
 
 function MathTable() {
   const [start, setStart] = useState(false);
@@ -18,39 +12,59 @@ function MathTable() {
   const [isFormValid, setIsFormValid] = useState(false);
   const [answerStates, setAnswerStates] = useState({});
   const [btnHide, setBtnHide] = useState(false);
+  const [array, setArray] = useState([]); // Firebaseデータを格納するためのステート
 
-  const firstInputRef = useRef(null); // 最初の input を参照する
+  const firstInputRef = useRef(null);
+
+  useEffect(() => {
+    // Firestore からデータを取得
+    const fetchData = async () => {
+      try {
+        const docRef = doc(db, "basic_db", "minus01"); // コレクション名、ドキュメント名
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setArray([{
+            id: 1,
+            value: data.value,  
+            x: data.x, 
+            y: data.y
+          }]);
+        } else {
+          console.error("No such document!");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const calculateAnswer = (rowValue, colValue, operator) => {
     switch (operator) {
-      case "+":
-        return rowValue + colValue;
-      case "-":
-        return rowValue - colValue;
-      case "×":
-        return rowValue * colValue;
-      case "÷":
-        return rowValue / colValue;
-      default:
-        return 0;
+      case "+": return rowValue + colValue;
+      case "-": return rowValue - colValue;
+      case "×": return rowValue * colValue;
+      case "÷": return rowValue / colValue;
+      default: return 0;
     }
   };
 
   const handleChange = (rowValue, colValue, e) => {
     const { value } = e.target;
-
     const updatedAnswers = {
       ...userAnswers,
       [`${rowValue}${array[0].value}${colValue}`]: value,
     };
 
     setUserAnswers(updatedAnswers);
-
-    // 入力チェックの実行
     validateForm(updatedAnswers);
   };
 
   const validateForm = (answers) => {
+    if (array.length === 0) return;
     const allKeys = array[0].y.flatMap(rowValue =>
       array[0].x.map(colValue => `${rowValue}${array[0].value}${colValue}`)
     );
@@ -61,7 +75,6 @@ function MathTable() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     setBtnHide(true);
 
     let correctAnswers = 0;
@@ -78,12 +91,11 @@ function MathTable() {
       });
     });
 
-    setAnswerStates(newAnswerStates); // クラス更新
+    setAnswerStates(newAnswerStates);
     setScore(correctAnswers);
 
     const endTime = Date.now();
-    const elapsedTime = Math.round((endTime - startTime) / 1000);
-    setTime(elapsedTime);
+    setTime(Math.round((endTime - startTime) / 1000));
   };
 
   const startFlag = () => {
@@ -93,9 +105,13 @@ function MathTable() {
 
   useEffect(() => {
     if (start && firstInputRef.current) {
-      firstInputRef.current.focus(); // 最初の input にフォーカス
+      firstInputRef.current.focus();
     }
   }, [start]);
+
+  if (array.length === 0) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <form onSubmit={handleSubmit}>
@@ -121,16 +137,16 @@ function MathTable() {
                   {array[0].x.map((colValue, colIndex) => {
                     const key = `${rowValue}${array[0].value}${colValue}`;
                     const userAnswer = userAnswers[key] || "";
-                    const answerState = answerStates[key]; // 正解/不正解の状態
+                    const answerState = answerStates[key];
 
                     return (
                       <td key={colIndex}>
                         <input
                           type="text"
-                          className={`user-answer ${answerState || ''}`} // クラスを動的に設定
+                          className={`user-answer ${answerState || ''}`}
                           value={userAnswer}
                           onChange={(e) => handleChange(rowValue, colValue, e)}
-                          ref={rowIndex === 0 && colIndex === 0 ? firstInputRef : null} // 最初の input に ref を割り当て
+                          ref={rowIndex === 0 && colIndex === 0 ? firstInputRef : null}
                         />
                       </td>
                     );
@@ -141,15 +157,10 @@ function MathTable() {
           </table>
 
           {btnHide === false && (
-            <button
-              className='btn02'
-              type='submit'
-              disabled={!isFormValid}
-            >
+            <button className='btn02' type='submit' disabled={!isFormValid}>
               Submit
             </button>
           )}
-
         </>
       )}
 
