@@ -5,7 +5,7 @@
   }
 
   line-height: 1.5;
-  letter-spacing: .1em;
+  letter-spacing: 0.1em;
   text-decoration: none;
   color: #000;
   text-align: center;
@@ -14,7 +14,7 @@
   width: 100%;
   border-radius: 999px;
   border: 1px solid #000;
-  transition: .3s;
+  transition: 0.3s;
   cursor: pointer;
 
   &:hover {
@@ -23,11 +23,37 @@
   }
 
   &:disabled {
-    opacity: .4;
+    opacity: 0.4;
     pointer-events: none;
   }
 }
 
 .btn02 {
   @extend .btn01;
+}
+
+input,
+select {
+  width: 100%;
+  border: 1px solid #999;
+  border-radius: 0;
+  padding: 5px 10px;
+}
+
+@for $i from 10 through 200 {
+  @if $i % 5 == 0 {
+    .owl#{$i} {
+      > * + * {
+        margin-top: #{$i}px;
+      }
+    }
+  }
+}
+
+@for $i from 10 through 200 {
+  @if $i % 5 == 0 {
+    .mb#{$i} {
+      margin-bottom: #{$i}px;
+    }
+  }
 }

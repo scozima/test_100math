@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect } from 'react';
-import { doc, getDoc } from "firebase/firestore";
-import './MathTable.scss';
-import db from '../firebase';
+import { useState, useRef, useEffect } from "react";
+import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+import "./MathTable.scss";
+import db from "../firebase";
 
 function MathTable() {
   const [start, setStart] = useState(false);
@@ -12,64 +12,114 @@ function MathTable() {
   const [isFormValid, setIsFormValid] = useState(false);
   const [answerStates, setAnswerStates] = useState({});
   const [btnHide, setBtnHide] = useState(false);
-  const [array, setArray] = useState([]); // Firebaseデータを格納するためのステート
+  const [array, setArray] = useState([]);
+  const [problems, setProblems] = useState({ basic_question_db: [], custom_question_db: [] });
+  const [selectedProblem, setSelectedProblem] = useState("");
+  const [selectedCollection, setSelectedCollection] =
+    useState("basic_question_db");
 
   const firstInputRef = useRef(null);
 
+  // Firestore から `basic_question_db` と `custom_question_db` の問題リストを取得
   useEffect(() => {
-    // Firestore からデータを取得
-    const fetchData = async () => {
+    const fetchProblems = async () => {
       try {
-        const docRef = doc(db, "basic_db", "minus01"); // コレクション名、ドキュメント名
+        const basicSnapshot = await getDocs(
+          collection(db, "basic_question_db")
+        );
+        const basicList = basicSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          name: doc.data().name,
+          collection: "basic_question_db",
+        }));
+
+        const dataSnapshot = await getDocs(collection(db, "custom_question_db"));
+        const customList = dataSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          name: doc.data().name,
+          collection: "custom_question_db",
+        }));
+
+        setProblems({ basic_question_db: basicList, custom_question_db: customList });
+
+        if (basicList.length > 0) {
+          setSelectedProblem(basicList[0].id);
+          setSelectedCollection("basic_question_db");
+        } else if (customList.length > 0) {
+          setSelectedProblem(customList[0].id);
+          setSelectedCollection("custom_question_db");
+        }
+      } catch (error) {
+        console.error("Error fetching problems:", error);
+      }
+    };
+
+    fetchProblems();
+  }, []);
+
+  // Firestore から選択された問題のデータを取得
+  useEffect(() => {
+    if (!selectedProblem || !selectedCollection) return;
+
+    const fetchProblemData = async () => {
+      try {
+        const docRef = doc(db, selectedCollection, selectedProblem);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
           const data = docSnap.data();
-          setArray([{
-            id: 1,
-            value: data.value,  
-            x: data.x, 
-            y: data.y
-          }]);
+          setArray([{ id: 1, operator: data.operator, x: data.x, y: data.y }]);
         } else {
           console.error("No such document!");
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching problem data:", error);
       }
     };
 
-    fetchData();
-  }, []);
+    fetchProblemData();
+  }, [selectedProblem, selectedCollection]);
 
   const calculateAnswer = (rowValue, colValue, operator) => {
     switch (operator) {
-      case "+": return rowValue + colValue;
-      case "-": return rowValue - colValue;
-      case "×": return rowValue * colValue;
-      case "÷": return rowValue / colValue;
-      default: return 0;
+      case "+":
+        return rowValue + colValue;
+      case "-":
+        return rowValue - colValue;
+      case "✕":
+        return rowValue * colValue;
+      case "÷":
+        return rowValue / colValue;
+      default:
+        return 0;
     }
   };
 
-  const handleChange = (rowValue, colValue, e) => {
-    const { value } = e.target;
-    const updatedAnswers = {
-      ...userAnswers,
-      [`${rowValue}${array[0].value}${colValue}`]: value,
-    };
+  const generateKey = (rowIndex, colIndex, rowValue, colValue) => {
+    return `${rowIndex}-${colIndex}_${rowValue}${array[0].operator}${colValue}`;
+  };
 
+  const handleChange = (rowIndex, colIndex, rowValue, colValue, e) => {
+    const { value } = e.target;
+    const key = generateKey(rowIndex, colIndex, rowValue, colValue);
+
+    const updatedAnswers = { ...userAnswers, [key]: value };
     setUserAnswers(updatedAnswers);
     validateForm(updatedAnswers);
   };
 
   const validateForm = (answers) => {
     if (array.length === 0) return;
-    const allKeys = array[0].y.flatMap(rowValue =>
-      array[0].x.map(colValue => `${rowValue}${array[0].value}${colValue}`)
+
+    const allKeys = array[0].y.flatMap((rowValue, rowIndex) =>
+      array[0].x.map((colValue, colIndex) =>
+        generateKey(rowIndex, colIndex, rowValue, colValue)
+      )
     );
 
-    const allFilled = allKeys.every(key => answers[key] && answers[key].trim() !== "");
+    const allFilled = allKeys.every(
+      (key) => answers[key] && answers[key].trim() !== ""
+    );
     setIsFormValid(allFilled);
   };
 
@@ -80,22 +130,22 @@ function MathTable() {
     let correctAnswers = 0;
     const newAnswerStates = {};
 
-    array[0].y.forEach((rowValue) => {
-      array[0].x.forEach((colValue) => {
-        const key = `${rowValue}${array[0].value}${colValue}`;
+    array[0].y.forEach((rowValue, rowIndex) => {
+      array[0].x.forEach((colValue, colIndex) => {
+        const key = generateKey(rowIndex, colIndex, rowValue, colValue);
         const userAnswer = userAnswers[key];
-        const correct = calculateAnswer(rowValue, colValue, array[0].value) === parseFloat(userAnswer);
+        const correct =
+          calculateAnswer(rowValue, colValue, array[0].operator) ===
+          parseFloat(userAnswer);
 
-        newAnswerStates[key] = correct ? 'correct' : 'incorrect';
+        newAnswerStates[key] = correct ? "correct" : "incorrect";
         if (correct) correctAnswers++;
       });
     });
 
     setAnswerStates(newAnswerStates);
     setScore(correctAnswers);
-
-    const endTime = Date.now();
-    setTime(Math.round((endTime - startTime) / 1000));
+    setTime(Math.round((Date.now() - startTime) / 1000));
   };
 
   const startFlag = () => {
@@ -115,16 +165,41 @@ function MathTable() {
 
   return (
     <form onSubmit={handleSubmit}>
+      {/* 問題の選択 */}
+      <select
+        onChange={(e) => {
+          const [collectionName, problemName] = e.target.value.split("/");
+          setSelectedCollection(collectionName);
+          setSelectedProblem(problemName);
+        }}
+        value={`${selectedCollection}/${selectedProblem}`}
+      >
+        <optgroup label="basic_question_db">
+          {problems.basic_question_db.map((problem) => (
+            <option key={problem.id} value={`basic_question_db/${problem.id}`}>
+              {problem.name}
+            </option>
+          ))}
+        </optgroup>
+        <optgroup label="custom_question_db">
+          {problems.custom_question_db.map((problem) => (
+            <option key={problem.id} value={`custom_question_db/${problem.id}`}>
+              {problem.name}
+            </option>
+          ))}
+        </optgroup>
+      </select>
+
       {!start ? (
-        <button className='btn01' onClick={startFlag}>
+        <button className="btn01" onClick={startFlag}>
           Start
         </button>
       ) : (
         <>
-          <table className='table01'>
+          <table className="table01 mb15">
             <thead>
               <tr>
-                <th>{array[0].value}</th>
+                <th>{array[0].operator}</th>
                 {array[0].x.map((item, index) => (
                   <th key={index}>{item}</th>
                 ))}
@@ -135,18 +210,33 @@ function MathTable() {
                 <tr key={rowIndex}>
                   <th>{rowValue}</th>
                   {array[0].x.map((colValue, colIndex) => {
-                    const key = `${rowValue}${array[0].value}${colValue}`;
+                    const key = generateKey(
+                      rowIndex,
+                      colIndex,
+                      rowValue,
+                      colValue
+                    );
                     const userAnswer = userAnswers[key] || "";
-                    const answerState = answerStates[key];
-
                     return (
                       <td key={colIndex}>
                         <input
                           type="text"
-                          className={`user-answer ${answerState || ''}`}
+                          className={`user-answer ${answerStates[key] || ""}`}
                           value={userAnswer}
-                          onChange={(e) => handleChange(rowValue, colValue, e)}
-                          ref={rowIndex === 0 && colIndex === 0 ? firstInputRef : null}
+                          onChange={(e) =>
+                            handleChange(
+                              rowIndex,
+                              colIndex,
+                              rowValue,
+                              colValue,
+                              e
+                            )
+                          }
+                          ref={
+                            rowIndex === 0 && colIndex === 0
+                              ? firstInputRef
+                              : null
+                          }
                         />
                       </td>
                     );
@@ -156,19 +246,21 @@ function MathTable() {
             </tbody>
           </table>
 
-          {btnHide === false && (
-            <button className='btn02' type='submit' disabled={!isFormValid}>
+          {!btnHide && (
+            <button className="btn02" type="submit" disabled={!isFormValid}>
               Submit
             </button>
           )}
-        </>
-      )}
 
-      {score !== null && (
-        <div className="result">
-          <p>Score: {score} / {array[0].x.length * array[0].y.length}</p>
-          <p>Time: {time} seconds</p>
-        </div>
+          {score !== null && (
+            <div className="result">
+              <p>
+                Score: {score} / {array[0].x.length * array[0].y.length}
+              </p>
+              <p>Time: {time} seconds</p>
+            </div>
+          )}
+        </>
       )}
     </form>
   );
