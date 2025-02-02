@@ -29,21 +29,35 @@
       width: 100%;
       height: 100%;
 
-
       &:focus-visible {
         outline: unset;
-        background: rgba(#ddd, .5);
+        background: rgba(#ddd, 0.5);
       }
 
       &.correct {
         color: blue;
-
       }
 
       &.incorrect {
         color: red;
       }
     }
+  }
+}
 
+.table02 {
+  border-collapse: collapse;
+  tr {
+    &:not(:last-of-type) {
+      border-bottom: 1px solid #999;
+    }
+  }
+  th {
+    background: rgba(#ddd, 0.5);
+  }
+  th,
+  td {
+    text-align: left;
+    padding: 5px 10px;
   }
 }
