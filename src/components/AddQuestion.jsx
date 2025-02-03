@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
+import { collection, addDoc, getDocs, query, where, serverTimestamp } from "firebase/firestore";
 import db from "../firebase";
 
 const AddQuestion = () => {
@@ -37,6 +37,8 @@ const AddQuestion = () => {
         operator,
         x: xArray,
         y: yArray,
+        createdAt: serverTimestamp(),  // 作成日時をサーバータイムスタンプで追加
+        updatedAt: serverTimestamp(),  // 更新日時も初期化
       });
 
       alert("登録成功！");

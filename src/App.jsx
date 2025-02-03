@@ -1,32 +1,31 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.scss'
-import './Common.scss'
-import MathTable from './components/MathTable'
-import AddQuestion from './components/AddQuestion'
+import { useState } from "react";
+import "./App.scss";
+import "./Common.scss";
+import MathTable from "./components/MathTable";
+import AddQuestion from "./components/AddQuestion";
+
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Lesson from "./pages/Lesson";
+import Nomatch from "./pages/Nomatch";
+import AppLayout from "./pages/layout/AppLayout";
+import Problem from "./pages/Problem";
+import Home from "./pages/Home";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-
-      <article className='owl30'>
-        <AddQuestion />
-        <MathTable />
-      </article>
-    </>
-  )
+    <Router>
+      <Routes>
+        <Route path="/" element={<AppLayout />}>
+          <Route index element={<Home />} />
+          <Route path="/lesson" element={<Lesson />} />
+          <Route path="/problem" element={<Problem />} />
+          <Route path="*" element={<Nomatch />} />
+        </Route>
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
