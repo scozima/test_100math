@@ -1,40 +1,58 @@
 import { useState, useEffect } from "react";
-import { collection, onSnapshot } from "firebase/firestore"; // onSnapshot をインポート
-import db from "../firebase"; // Firebase 設定のインポート
+import { collection, onSnapshot, doc, deleteDoc } from "firebase/firestore";
+import db from "../firebase";
+import "./AllProblemTable.scss";
+import AddQuestion from "./AddQuestion";
 
 function AllProblemTable() {
   const [problems, setProblems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editTarget, setEditTarget] = useState(null);
 
-  // Firestore からデータをリアルタイムで取得する useEffect
   useEffect(() => {
     const unsubscribe = onSnapshot(
       collection(db, "custom_question_db"),
       (snapshot) => {
-        // ドキュメントを取得し、リストにまとめる
         const customList = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
-
-        // 取得したデータを状態に格納
         setProblems(customList);
-        setLoading(false); // データ取得完了
+        setLoading(false);
       },
       (error) => {
         console.error("Error fetching data: ", error);
-        setLoading(false); // エラーが発生した場合も終了
+        setLoading(false);
       }
     );
-
-    // クリーンアップ（コンポーネントがアンマウントされたときにリスナーを解除）
     return () => unsubscribe();
   }, []);
 
-  // ローディング中は "Loading..." を表示
   if (loading) {
     return <p>Loading...</p>;
   }
+
+  const openModal = (problem) => {
+    setEditTarget(problem); // 編集するデータをセット
+  };
+
+  const closeModal = () => {
+    setEditTarget(null); // モーダルを閉じる
+  };
+
+  const deleteProblem = async (id) => {
+    const confirmDelete = window.confirm("本当に削除しますか？");
+    if (!confirmDelete) return;
+
+    try {
+      await deleteDoc(doc(db, "custom_question_db", id));
+      // alert("削除しました");
+      closeModal(); // モーダルを閉じる
+    } catch (error) {
+      console.error("削除エラー:", error);
+      alert("削除に失敗しました");
+    }
+  };
 
   return (
     <>
@@ -53,23 +71,34 @@ function AllProblemTable() {
             </tr>
           </thead>
           <tbody>
-            {/* Firestore から取得した問題データを表示 */}
             {problems.map((problem) => (
               <tr key={problem.id}>
                 <td>{problem.id}</td>
-                <td>{problem.createdAt ? problem.createdAt.toDate().toLocaleString() : "N/A"}</td> {/* 作成日 */}
-                <td>{problem.updatedAt ? problem.updatedAt.toDate().toLocaleString() : "N/A"}</td> {/* 更新日 */}
+                <td>{problem.createdAt ? problem.createdAt.toDate().toLocaleString() : "N/A"}</td>
+                <td>{problem.updatedAt ? problem.updatedAt.toDate().toLocaleString() : "N/A"}</td>
                 <td>{problem.name}</td>
                 <td>{problem.operator}</td>
                 <td>{problem.x ? problem.x.join(", ") : "N/A"}</td>
                 <td>{problem.y ? problem.y.join(", ") : "N/A"}</td>
-                <td><button>...</button></td>
+                <td>
+                  <button className="edit-btn" onClick={() => openModal(problem)}>...</button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       ) : (
-        <p>カスタム問題の登録がありません。</p>
+        <p>問題の登録がありません。問題を登録してください。</p>
+      )}
+
+      {editTarget && (
+        <div className="modal-wrapper">
+          <div className="modal-content owl10">
+            <span className="close-btn" onClick={closeModal}>×</span>
+            <AddQuestion title="編集する" btnTitle="編集完了" problem={editTarget} closeModal={closeModal} />
+            <button className="btn01 -delete" onClick={() => deleteProblem(editTarget.id)}>削除する</button>
+          </div>
+        </div>
       )}
     </>
   );

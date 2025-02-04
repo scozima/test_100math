@@ -26,6 +26,16 @@
     opacity: 0.4;
     pointer-events: none;
   }
+  &.-delete {
+    background: #999;
+    border-color: #999;
+    color: #fff ;
+    &:hover {
+      background: #fff;
+      color: #000;
+      border-color: #000
+    }
+  }
 }
 
 .btn02 {

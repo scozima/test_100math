@@ -7,8 +7,8 @@ function Problem() {
     <>
       <h2>Problem</h2>
       <div className="owl60">
-        <AddQuestion />
-        <AllProblemTable />
+        <AddQuestion title="問題を作成する" btnTitle="登録する" />
+        <AllProblemTable title="編集する" btnTitle="登録する" />
       </div>
     </>
   );

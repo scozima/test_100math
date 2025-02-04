@@ -1,51 +1,66 @@
-import React, { useState } from "react";
-import { collection, addDoc, getDocs, query, where, serverTimestamp } from "firebase/firestore";
+import React, { useState, useEffect } from "react";
+import { doc, updateDoc, collection, addDoc, getDocs, query, where, serverTimestamp } from "firebase/firestore";
 import db from "../firebase";
 
-const AddQuestion = () => {
-  const [name, setName] = useState("");
-  const [operator, setOperator] = useState("");
-  const [x, setX] = useState("");
-  const [y, setY] = useState("");
+const AddQuestion = ({ title, btnTitle, problem, closeModal }) => {
+  const [name, setName] = useState(problem?.name || "");
+  const [operator, setOperator] = useState(problem?.operator || "");
+  const [x, setX] = useState(problem?.x ? problem.x.join(", ") : "");
+  const [y, setY] = useState(problem?.y ? problem.y.join(", ") : "");
+
+  useEffect(() => {
+    if (problem) {
+      setName(problem.name || "");
+      setOperator(problem.operator || "");
+      setX(problem.x ? problem.x.join(", ") : "");
+      setY(problem.y ? problem.y.join(", ") : "");
+    }
+  }, [problem]);
 
   const handleSubmit = async () => {
-    // 必須項目が空かどうかをチェック
     if (!name || !operator || !x || !y) {
       alert("すべての項目を入力してください！");
       return;
     }
 
-    try {
-      // 同じ名前のドキュメントが存在するかチェック
-      const q = query(
-        collection(db, "custom_question_db"),
-        where("name", "==", name)
-      );
-      const querySnapshot = await getDocs(q);
+    const xArray = x.split(",").map(Number);
+    const yArray = y.split(",").map(Number);
 
-      if (!querySnapshot.empty) {
-        alert("同じ問題名が既に存在します。別の名前を使用してください。");
-        return;
+    try {
+      if (problem) {
+        // 既存の問題を更新
+        const problemRef = doc(db, "custom_question_db", problem.id);
+        await updateDoc(problemRef, {
+          name,
+          operator,
+          x: xArray,
+          y: yArray,
+          updatedAt: serverTimestamp(),  // 更新日時を記録
+        });
+        alert("更新成功！");
+      } else {
+        // 新規登録
+        const q = query(collection(db, "custom_question_db"), where("name", "==", name));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          alert("同じ問題名が既に存在します。別の名前を使用してください。");
+          return;
+        }
+
+        await addDoc(collection(db, "custom_question_db"), {
+          name,
+          operator,
+          x: xArray,
+          y: yArray,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        });
+
+        alert("登録成功！");
       }
 
-      const xArray = x.split(",").map(Number);
-      const yArray = y.split(",").map(Number);
-
-      // コレクションにドキュメントを追加（IDは自動生成）
-      await addDoc(collection(db, "custom_question_db"), {
-        name,
-        operator,
-        x: xArray,
-        y: yArray,
-        createdAt: serverTimestamp(),  // 作成日時をサーバータイムスタンプで追加
-        updatedAt: serverTimestamp(),  // 更新日時も初期化
-      });
-
-      alert("登録成功！");
-      setName("");
-      setOperator("");
-      setX("");
-      setY("");
+      closeModal(); // モーダルを閉じる
     } catch (error) {
       console.error("エラー:", error);
       alert("エラーが発生しました：" + error.message);
@@ -54,19 +69,14 @@ const AddQuestion = () => {
 
   return (
     <div className="container owl10">
-      <h2>Firestore 登録フォーム</h2>
+      <h2>{title}</h2>
 
       <table className="table02">
         <tbody>
           <tr className="form-group">
-            <th style={{ width: "100px" }}>問題名</th>
+            <th>問題名</th>
             <td>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
+              <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
             </td>
           </tr>
           <tr className="form-group">
@@ -83,29 +93,19 @@ const AddQuestion = () => {
           <tr className="form-group">
             <th>Xの値</th>
             <td>
-              <input
-                type="text"
-                value={x}
-                onChange={(e) => setX(e.target.value)}
-                required
-              />
+              <input type="text" value={x} onChange={(e) => setX(e.target.value)} required />
             </td>
           </tr>
           <tr className="form-group">
             <th>Yの値</th>
             <td>
-              <input
-                type="text"
-                value={y}
-                onChange={(e) => setY(e.target.value)}
-                required
-              />
+              <input type="text" value={y} onChange={(e) => setY(e.target.value)} required />
             </td>
           </tr>
         </tbody>
       </table>
 
-      <button className="btn01" onClick={handleSubmit}>Firestoreに登録</button>
+      <button className="btn01" onClick={handleSubmit}>{btnTitle}</button>
     </div>
   );
 };
