@@ -1,4 +1,4 @@
-name: Deploy to Firebase
+name: Deploy to XServer
 
 on:
   push:
@@ -8,14 +8,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
-    env:
-      FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
-      FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
-      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-      FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
-      FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
-      FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
 
     steps:
     - name: Checkout repository
@@ -30,7 +22,13 @@ jobs:
       run: npm install
 
     - name: Build project
-      run: npm run build  # 必要に応じてビルドコマンドを変更
+      run: npm run build  # `dist`フォルダが生成される（必要なら変更）
 
-    - name: Deploy to Firebase
-      run: firebase deploy --token ${{ secrets.FIREBASE_DEPLOY_TOKEN }}  # Firebaseにデプロイする際のトークンを使用
+    - name: Deploy via FTP
+      uses: SamKirkland/FTP-Deploy-Action@v4
+      with:
+        server: ${{ secrets.FTP_HOST }}
+        username: ${{ secrets.FTP_USER }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: ./dist/  # ビルド後のフォルダ（環境によって変更）
+        server-dir: /sinpe-pgm.com/public_html/pj/100math
