@@ -33,12 +33,14 @@ jobs:
       run: npm install -g firebase-tools
 
     - name: Set up Firebase credentials
-      run: echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > $HOME/firebase-key.json  # JSON形式のサービスアカウントをファイルに保存
+      run: echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > $HOME/firebase-key.json  # サービスアカウントJSONファイルとして保存
       env:
         FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
 
-    - name: Authenticate with Firebase
-      run: firebase login:ci --token ${{ secrets.FIREBASE_DEPLOY_TOKEN }}
+    - name: Authenticate with Firebase using service account
+      run: firebase use --add --project ${{ secrets.FIREBASE_PROJECT_ID }} --token ${{ secrets.FIREBASE_DEPLOY_TOKEN }}
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: $HOME/firebase-key.json  # サービスアカウントのパスを指定
 
     - name: Build project
       run: npm run build
