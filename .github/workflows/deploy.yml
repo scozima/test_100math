@@ -28,7 +28,7 @@ jobs:
         node-version: '20'
 
     - name: Install dependencies
-      run: npm ci  # npm installの代わりにnpm ciを使用
+      run: npm ci  && npm run build# npm installの代わりにnpm ciを使用
 
     - name: Build project
       run: npm run build
