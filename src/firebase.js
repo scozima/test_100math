@@ -5,12 +5,12 @@ import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
 // Firebaseの設定情報
 const firebaseConfig = {
-  apiKey: "AIzaSyAnVrfyfnYQ3T7c6usMDFyXWzktf3stTwM",
-  authDomain: "mathapp-5fc91.firebaseapp.com",
-  projectId: "mathapp-5fc91",
-  storageBucket: "mathapp-5fc91.appspot.com", // 修正: storageBucket の末尾
-  messagingSenderId: "199556206031",
-  appId: "1:199556206031:web:dd4d3f530c3eaaf2e8d6ba"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 // Firebaseの初期化

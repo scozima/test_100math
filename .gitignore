@@ -7,10 +7,21 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# node_modules
 node_modules
+
+# ビルドフォルダ（distやバンドル出力）
 dist
 dist-ssr
+
+# ローカルファイル
 *.local
+
+# .envファイル（環境変数）
+.env
+
+# Firebaseの設定ファイル（例えばfirebaseConfig.jsがある場合）
+firebase-config.js  # 必要に応じて
 
 # Editor directories and files
 .vscode/*
@@ -22,3 +33,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# OSやエディタ固有の不要なファイル
+*.env  # 環境変数ファイルをGitにアップロードしないように
