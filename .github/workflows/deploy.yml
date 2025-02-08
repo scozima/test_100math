@@ -29,6 +29,9 @@ jobs:
     - name: Install dependencies
       run: npm install
 
+    - name: Install Firebase CLI
+      run: npm install -g firebase-tools  # Firebase CLIをグローバルにインストール
+
     - name: Build project
       run: npm run build  # `dist`フォルダが生成される（環境に応じて変更）
 
