@@ -22,12 +22,12 @@ jobs:
     # 環境変数のデバッグ用ステップ
     - name: Debug environment variables
       run: |
-        echo "Firebase API Key is set to: ${FIREBASE_API_KEY}"
-        echo "Firebase Auth Domain is set to: ${FIREBASE_AUTH_DOMAIN}"
-        echo "Firebase Project ID is set to: ${FIREBASE_PROJECT_ID}"
-        echo "Firebase Storage Bucket is set to: ${FIREBASE_STORAGE_BUCKET}"
-        echo "Firebase Messaging Sender ID is set to: ${FIREBASE_MESSAGING_SENDER_ID}"
-        echo "Firebase App ID is set to: ${FIREBASE_APP_ID}"
+        echo "Firebase API Key is set to: ${VITE_FIREBASE_API_KEY}"
+        echo "Firebase Auth Domain is set to: ${VITE_FIREBASE_AUTH_DOMAIN}"
+        echo "Firebase Project ID is set to: ${VITE_FIREBASE_PROJECT_ID}"
+        echo "Firebase Storage Bucket is set to: ${VITE_FIREBASE_STORAGE_BUCKET}"
+        echo "Firebase Messaging Sender ID is set to: ${VITE_FIREBASE_MESSAGING_SENDER_ID}"
+        echo "Firebase App ID is set to: ${VITE_FIREBASE_APP_ID}"
 
     - name: Set up Node.js
       uses: actions/setup-node@v3
