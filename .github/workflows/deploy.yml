@@ -48,4 +48,4 @@ jobs:
         username: ${{ secrets.FTP_USER }}
         password: ${{ secrets.FTP_PASSWORD }}
         local-dir: ./dist/
-        server-dir: /sinpe-pgm.com/public_html/pj/100math/
+        server-dir: /113110.net/public_html/pj/100math/
