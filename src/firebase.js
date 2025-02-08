@@ -13,6 +13,9 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID || "mock_app",
 };
 
+// 環境変数の値をログに出力（デバッグ用）
+console.log("Auth Domain:", import.meta.env.VITE_FIREBASE_AUTH_DOMAIN);
+
 // Firebaseの初期化
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);  // Firestoreの初期化
