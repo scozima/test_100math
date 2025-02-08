@@ -3,7 +3,7 @@ name: Deploy to Firebase and XServer
 on:
   push:
     branches:
-      - main  # `main`ブランチにプッシュされたら実行
+      - main
 
 jobs:
   deploy:
@@ -27,34 +27,26 @@ jobs:
         node-version: '20'
 
     - name: Install dependencies
-      run: npm install
-
-    - name: Install Firebase CLI
-      run: npm install -g firebase-tools
-
-    - name: Set up Firebase credentials
-      run: echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > $HOME/firebase-key.json  # サービスアカウントJSONファイルとして保存
-      env:
-        FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-
-    - name: Authenticate with Firebase using service account
-      run: firebase use --add --project ${{ secrets.FIREBASE_PROJECT_ID }}
-      env:
-        GOOGLE_APPLICATION_CREDENTIALS: $HOME/firebase-key.json  # サービスアカウントのパスを指定
+      run: npm ci  # npm installの代わりにnpm ciを使用
 
     - name: Build project
       run: npm run build
 
-    # Firebase デプロイ
+    # Firebaseデプロイ（推奨される方法）
     - name: Deploy to Firebase
-      run: firebase deploy --token ${{ secrets.FIREBASE_DEPLOY_TOKEN }}
+      uses: FirebaseExtended/action-hosting-deploy@v0
+      with:
+        repoToken: '${{ secrets.GITHUB_TOKEN }}'
+        firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_MATHAPP_5FC91 }}'
+        channelId: live
+        projectId: ${{ secrets.FIREBASE_PROJECT_ID }}
 
-    # エックスサーバー デプロイ
+    # エックスサーバーデプロイ
     - name: Deploy to XServer via FTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
         server: ${{ secrets.FTP_HOST }}
         username: ${{ secrets.FTP_USER }}
         password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: ./dist/  # ビルド後のフォルダ（環境によって変更）
-        server-dir: /sinpe-pgm.com/public_html/pj/100math
+        local-dir: ./dist/
+        server-dir: /sinpe-pgm.com/public_html/pj/100math/
