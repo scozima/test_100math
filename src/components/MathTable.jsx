@@ -1,7 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+
 import "./MathTable.scss";
-import db from "../firebase";
+import { db, auth, provider } from '../firebase';
+
+
 
 function MathTable() {
   const [start, setStart] = useState(false);

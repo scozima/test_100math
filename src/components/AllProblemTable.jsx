@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { collection, onSnapshot, doc, deleteDoc } from "firebase/firestore";
-import db from "../firebase";
+import { db, auth, provider } from '../firebase';
 import "./AllProblemTable.scss";
 import AddQuestion from "./AddQuestion";
 

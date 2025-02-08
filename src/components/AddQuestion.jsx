@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { doc, updateDoc, collection, addDoc, getDocs, query, where, serverTimestamp } from "firebase/firestore";
-import db from "../firebase";
+import { db, auth, provider } from '../firebase';
 
 const AddQuestion = ({ title, btnTitle, problem, closeModal }) => {
   const [name, setName] = useState(problem?.name || "");
