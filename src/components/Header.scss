@@ -1,0 +1,21 @@
+header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  img {
+    display: block;
+    overflow: hidden;
+    border-radius: 50%;
+  }
+  span {
+    display: block;
+  }
+}
