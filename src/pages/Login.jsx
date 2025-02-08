@@ -20,7 +20,7 @@ const Login = () => {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      console.log("Logged in as:", user);
+      // console.log("Logged in as:", user);
     } catch (error) {
       console.error(error);
     }
