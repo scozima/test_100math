@@ -38,7 +38,7 @@ jobs:
         FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
 
     - name: Authenticate with Firebase using service account
-      run: firebase use --add --project ${{ secrets.FIREBASE_PROJECT_ID }} --token ${{ secrets.FIREBASE_DEPLOY_TOKEN }}
+      run: firebase use --add --project ${{ secrets.FIREBASE_PROJECT_ID }}
       env:
         GOOGLE_APPLICATION_CREDENTIALS: $HOME/firebase-key.json  # サービスアカウントのパスを指定
 
