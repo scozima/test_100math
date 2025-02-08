@@ -1,9 +1,9 @@
-name: Deploy to Firebase
+name: Deploy to Firebase and XServer
 
 on:
   push:
     branches:
-      - main  # `main`ブランチにプッシュされるとこのワークフローが実行される
+      - main  # `main`ブランチにプッシュされたら実行
 
 jobs:
   deploy:
@@ -30,7 +30,18 @@ jobs:
       run: npm install
 
     - name: Build project
-      run: npm run build  # 必要に応じてビルドコマンドを変更
+      run: npm run build  # `dist`フォルダが生成される（環境に応じて変更）
 
+    # Firebase デプロイ
     - name: Deploy to Firebase
-      run: firebase deploy --token ${{ secrets.FIREBASE_DEPLOY_TOKEN }}  # Firebaseにデプロイする際のトークンを使用
+      run: firebase deploy --token ${{ secrets.FIREBASE_DEPLOY_TOKEN }}
+
+    # エックスサーバー デプロイ
+    - name: Deploy to XServer via FTP
+      uses: SamKirkland/FTP-Deploy-Action@v4
+      with:
+        server: ${{ secrets.FTP_HOST }}
+        username: ${{ secrets.FTP_USER }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: ./dist/  # ビルド後のフォルダ（環境によって変更）
+        server-dir: /sinpe-pgm.com/public_html/pj/100math
