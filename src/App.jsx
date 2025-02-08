@@ -25,7 +25,7 @@ function App() {
   return (
     // App全体をAuthProviderでラップ
     <AuthProvider>
-      <Router basename="/pj/100math">
+      <Router>
       <Header /> 
         <Routes>
           <Route path="/" element={<AppLayout />}>
