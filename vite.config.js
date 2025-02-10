@@ -1,8 +1,19 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-// https://vite.dev/config/
-export default defineConfig({
-  plugins: [react()],
-  base: './',
-})
+export default defineConfig(({ mode }) => {
+  // mode は 'development' または 'production'
+  const isProduction = mode === 'production';
+
+  // 環境ごとに basename を設定
+  const basename = isProduction ? '/pj/100math' : '/';
+
+  return {
+    plugins: [react()],
+    base: './',
+    define: {
+      // 環境変数を注入
+      'process.env.BASENAME': JSON.stringify(basename),
+    },
+  };
+});

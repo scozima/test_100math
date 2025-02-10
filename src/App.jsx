@@ -21,11 +21,13 @@ import Header from "./components/Header";
 
 function App() {
   const { user } = useContext(AuthContext); // AuthContextからuserを取得
+  // process.env.BASENAME を読み取る
+  const basename = process.env.BASENAME || '/';
 
   return (
     // App全体をAuthProviderでラップ
     <AuthProvider>
-      <Router basename="/pj/100math">
+      <Router basename={basename}>
       <Header /> 
         <Routes>
           <Route path="/" element={<AppLayout />}>
