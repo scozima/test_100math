@@ -1,10 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, query, where } from "firebase/firestore";
 
 import "./MathTable.scss";
-import { db, auth, provider } from '../firebase';
-
-
+import { db, auth } from '../firebase';
 
 function MathTable() {
   const [start, setStart] = useState(false);
@@ -16,16 +14,25 @@ function MathTable() {
   const [answerStates, setAnswerStates] = useState({});
   const [btnHide, setBtnHide] = useState(false);
   const [array, setArray] = useState([]);
-  const [problems, setProblems] = useState({ basic_question_db: [], custom_question_db: [] });
+  const [problems, setProblems] = useState({ basic_question_db: [], users: [] });
   const [selectedProblem, setSelectedProblem] = useState("");
-  const [selectedCollection, setSelectedCollection] =
-    useState("basic_question_db");
+  const [selectedCollection, setSelectedCollection] = useState("basic_question_db");
+  const [currentUser, setCurrentUser] = useState(null);
 
   const firstInputRef = useRef(null);
 
-  // Firestore から `basic_question_db` と `custom_question_db` の問題リストを取得
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setCurrentUser(user);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   useEffect(() => {
     const fetchProblems = async () => {
+      if (!currentUser) return;
+
       try {
         const basicSnapshot = await getDocs(
           collection(db, "basic_question_db")
@@ -36,21 +43,23 @@ function MathTable() {
           collection: "basic_question_db",
         }));
 
-        const dataSnapshot = await getDocs(collection(db, "custom_question_db"));
-        const customList = dataSnapshot.docs.map((doc) => ({
+        const userQuestionsRef = collection(db, `users/${currentUser.uid}/questions`);
+        const userQuestionsSnapshot = await getDocs(userQuestionsRef);
+        const customList = userQuestionsSnapshot.docs.map((doc) => ({
           id: doc.id,
           name: doc.data().name,
-          collection: "custom_question_db",
+          collection: "users",
+          path: doc.ref.path
         }));
 
-        setProblems({ basic_question_db: basicList, custom_question_db: customList });
+        setProblems({ basic_question_db: basicList, users: customList });
 
         if (basicList.length > 0) {
           setSelectedProblem(basicList[0].id);
           setSelectedCollection("basic_question_db");
         } else if (customList.length > 0) {
           setSelectedProblem(customList[0].id);
-          setSelectedCollection("custom_question_db");
+          setSelectedCollection("users");
         }
       } catch (error) {
         console.error("Error fetching problems:", error);
@@ -58,15 +67,20 @@ function MathTable() {
     };
 
     fetchProblems();
-  }, []);
+  }, [currentUser]);
 
-  // Firestore から選択された問題のデータを取得
   useEffect(() => {
-    if (!selectedProblem || !selectedCollection) return;
+    if (!selectedProblem || !selectedCollection || !currentUser) return;
 
     const fetchProblemData = async () => {
       try {
-        const docRef = doc(db, selectedCollection, selectedProblem);
+        let docRef;
+        if (selectedCollection === "basic_question_db") {
+          docRef = doc(db, selectedCollection, selectedProblem);
+        } else {
+          docRef = doc(db, `users/${currentUser.uid}/questions`, selectedProblem);
+        }
+
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
@@ -81,7 +95,7 @@ function MathTable() {
     };
 
     fetchProblemData();
-  }, [selectedProblem, selectedCollection]);
+  }, [selectedProblem, selectedCollection, currentUser]);
 
   const calculateAnswer = (rowValue, colValue, operator) => {
     switch (operator) {
@@ -162,19 +176,24 @@ function MathTable() {
     }
   }, [start]);
 
+  const handleProblemSelection = (e) => {
+    const [collectionName, problemId] = e.target.value.split("/");
+    setSelectedCollection(collectionName);
+    setSelectedProblem(problemId);
+  };
+
+  if (!currentUser) {
+    return <p>Please log in to access the math problems.</p>;
+  }
+
   if (array.length === 0) {
     return <p>Loading...</p>;
   }
 
   return (
     <form onSubmit={handleSubmit}>
-      {/* 問題の選択 */}
       <select
-        onChange={(e) => {
-          const [collectionName, problemName] = e.target.value.split("/");
-          setSelectedCollection(collectionName);
-          setSelectedProblem(problemName);
-        }}
+        onChange={handleProblemSelection}
         value={`${selectedCollection}/${selectedProblem}`}
       >
         <optgroup label="basic_question_db">
@@ -184,9 +203,9 @@ function MathTable() {
             </option>
           ))}
         </optgroup>
-        <optgroup label="custom_question_db">
-          {problems.custom_question_db.map((problem) => (
-            <option key={problem.id} value={`custom_question_db/${problem.id}`}>
+        <optgroup label="users">
+          {problems.users.map((problem) => (
+            <option key={problem.id} value={`users/${problem.id}`}>
               {problem.name}
             </option>
           ))}

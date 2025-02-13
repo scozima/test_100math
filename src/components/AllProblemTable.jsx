@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { collection, onSnapshot, doc, deleteDoc } from "firebase/firestore";
-import { db, auth, provider } from '../firebase';
+import { db, auth } from "../firebase";
 import "./AllProblemTable.scss";
 import AddQuestion from "./AddQuestion";
 
@@ -8,10 +8,18 @@ function AllProblemTable() {
   const [problems, setProblems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editTarget, setEditTarget] = useState(null);
+  const user = auth.currentUser; // 現在のユーザーを取得
 
   useEffect(() => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
+    const userQuestionsRef = collection(db, `users/${user.uid}/questions`);
+
     const unsubscribe = onSnapshot(
-      collection(db, "custom_question_db"),
+      userQuestionsRef,
       (snapshot) => {
         const customList = snapshot.docs.map((doc) => ({
           id: doc.id,
@@ -25,29 +33,31 @@ function AllProblemTable() {
         setLoading(false);
       }
     );
+
     return () => unsubscribe();
-  }, []);
+  }, [user]);
 
   if (loading) {
     return <p>Loading...</p>;
   }
 
   const openModal = (problem) => {
-    setEditTarget(problem); // 編集するデータをセット
+    setEditTarget(problem);
   };
 
   const closeModal = () => {
-    setEditTarget(null); // モーダルを閉じる
+    setEditTarget(null);
   };
 
   const deleteProblem = async (id) => {
+    if (!user) return;
+
     const confirmDelete = window.confirm("本当に削除しますか？");
     if (!confirmDelete) return;
 
     try {
-      await deleteDoc(doc(db, "custom_question_db", id));
-      // alert("削除しました");
-      closeModal(); // モーダルを閉じる
+      await deleteDoc(doc(db, `users/${user.uid}/questions`, id));
+      closeModal();
     } catch (error) {
       console.error("削除エラー:", error);
       alert("削除に失敗しました");
