@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { doc, updateDoc, collection, addDoc, getDocs, query, where, serverTimestamp } from "firebase/firestore";
-import { db, auth, provider } from '../firebase';
+import { db, auth } from '../firebase';
 
 const AddQuestion = ({ title, btnTitle, problem, closeModal }) => {
   const [name, setName] = useState(problem?.name || "");
@@ -25,22 +25,31 @@ const AddQuestion = ({ title, btnTitle, problem, closeModal }) => {
 
     const xArray = x.split(",").map(Number);
     const yArray = y.split(",").map(Number);
+    
+    const user = auth.currentUser;
+    if (!user) {
+      alert("ログインしてください！");
+      return;
+    }
+
+    const userUid = user.uid;
+    const userCollectionRef = collection(db, "users", userUid, "questions");
 
     try {
       if (problem) {
         // 既存の問題を更新
-        const problemRef = doc(db, "custom_question_db", problem.id);
+        const problemRef = doc(userCollectionRef, problem.id);
         await updateDoc(problemRef, {
           name,
           operator,
           x: xArray,
           y: yArray,
-          updatedAt: serverTimestamp(),  // 更新日時を記録
+          updatedAt: serverTimestamp(),
         });
         alert("更新成功！");
       } else {
-        // 新規登録
-        const q = query(collection(db, "custom_question_db"), where("name", "==", name));
+        // 同じ名前の問題が既にあるかチェック
+        const q = query(userCollectionRef, where("name", "==", name));
         const querySnapshot = await getDocs(q);
 
         if (!querySnapshot.empty) {
@@ -48,7 +57,8 @@ const AddQuestion = ({ title, btnTitle, problem, closeModal }) => {
           return;
         }
 
-        await addDoc(collection(db, "custom_question_db"), {
+        // 新規登録
+        await addDoc(userCollectionRef, {
           name,
           operator,
           x: xArray,
@@ -60,7 +70,7 @@ const AddQuestion = ({ title, btnTitle, problem, closeModal }) => {
         alert("登録成功！");
       }
 
-      closeModal(); // モーダルを閉じる
+      closeModal();
     } catch (error) {
       console.error("エラー:", error);
       alert("エラーが発生しました：" + error.message);
