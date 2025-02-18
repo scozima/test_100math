@@ -7,15 +7,22 @@ import { onAuthStateChanged, signOut } from "firebase/auth"; // signOutをイン
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null);  // userをnullに初期化
   const [loading, setLoading] = useState(true);  // ローディング状態を追加
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+      if (user) {
+        // console.log("User authenticated:", user); // デバッグ: ユーザー情報が来るか確認
+        setUser(user);
+      } else {
+        // console.log("No user authenticated");
+        setUser(null);
+      }
       setLoading(false);  // ユーザー情報が取得できたらローディングを解除
     });
-    return unsubscribe;
+
+    return unsubscribe; // コンポーネントがアンマウントされるときにリスナーをクリーンアップ
   }, []);
 
   // ログアウト機能を追加

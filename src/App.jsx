@@ -14,34 +14,41 @@ import Nomatch from "./pages/Nomatch";
 import AppLayout from "./pages/layout/AppLayout";
 import Problem from "./pages/Problem";
 import Home from "./pages/Home";
+import Dashbord from "./pages/Dashbord";
 
 // ここでAuthProviderをインポート
 import { AuthProvider } from "./context/AuthContext"; // 修正
 import Header from "./components/Header";
 
 function App() {
-  const { user } = useContext(AuthContext); // AuthContextからuserを取得
-  // process.env.BASENAME を読み取る
+  const { user, loading } = useContext(AuthContext); // loadingも一緒に取得
   const basename = process.env.BASENAME || '/';
 
+  if (loading) {
+    return <div>Loading...</div>;  // user情報が取得されるまでローディング表示
+  }
+
   return (
-    // App全体をAuthProviderでラップ
     <AuthProvider>
       <Router basename={basename}>
-      <Header /> 
+        <Header />
         <Routes>
           <Route path="/" element={<AppLayout />}>
             <Route
               index
-              element={user ? <Home /> : <Navigate to="/login" />} // ログインしていない場合はログインページにリダイレクト
+              element={user ? <Home /> : <Navigate to="/login" />}
             />
             <Route
               path="/lesson"
-              element={user ? <Lesson /> : <Navigate to="/login" />} // ログインしていない場合はログインページにリダイレクト
+              element={user ? <Lesson /> : <Navigate to="/login" />}
             />
             <Route
               path="/problem"
-              element={user ? <Problem /> : <Navigate to="/login" />} // ログインしていない場合はログインページにリダイレクト
+              element={user ? <Problem /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/dashboard"
+              element={user ? <Dashbord /> : <Navigate to="/login" />}
             />
             <Route path="*" element={<Nomatch />} />
           </Route>

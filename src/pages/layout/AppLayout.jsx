@@ -11,7 +11,8 @@ export default function LContainer() {
       <ul>
         <li><Link to="/">ホーム</Link></li>
         <li><Link to="/lesson">レッスン</Link></li>
-        <li><Link to="/problem">問題を登録する</Link></li>
+        <li><Link to="/dashboard">ダッシュボード</Link></li>
+        <li><Link to="/problem">登録・編集</Link></li>
       </ul>
       <div>
         <a href="https://vite.dev" target="_blank">

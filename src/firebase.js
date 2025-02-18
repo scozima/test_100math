@@ -1,7 +1,7 @@
 // firebase.js
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 // Firebaseの設定情報
 const firebaseConfig = {
@@ -13,14 +13,25 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID || "mock_app",
 };
 
-// 環境変数の値をログに出力（デバッグ用）
-console.log("Auth Domain:", import.meta.env.VITE_FIREBASE_AUTH_DOMAIN);
-
 // Firebaseの初期化
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);  // Firestoreの初期化
 const auth = getAuth(app);  // 認証機能の初期化
 const provider = new GoogleAuthProvider();  // Google認証プロバイダの初期化
 
-// Firestore（db）、認証（auth）、Googleプロバイダ（provider）をエクスポート
-export { db, auth, provider };
+// Google認証サインインの関数
+const signInWithGoogle = async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    console.log("User signed in:", user);
+  } catch (error) {
+    console.error("Error signing in:", error);
+  }
+};
+
+// 環境変数の値をログに出力（デバッグ用）
+console.log("Auth Domain:", import.meta.env.VITE_FIREBASE_AUTH_DOMAIN);
+
+// Firestore（db）、認証（auth）、Googleプロバイダ（provider）、サインイン関数（signInWithGoogle）をエクスポート
+export { db, auth, provider, signInWithGoogle };
