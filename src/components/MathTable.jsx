@@ -336,7 +336,7 @@ function MathTable() {
                   return (
                     <td key={colIndex}>
                       <input
-                        type="text"
+                        type="number"
                         className={`user-answer ${answerStates[key] || ""}`}
                         value={userAnswer}
                         onChange={(e) =>
