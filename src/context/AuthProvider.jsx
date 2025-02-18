@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }) => {
   // Firebase Authentication のユーザーの状態を監視
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+      // console.log("Firebase Auth State Changed:", user); // ここでユーザー情報がどう変わっているかをログ
       setUser(user); // ユーザーがログインしていればuserが設定され、いなければnullが設定される
     });
     return unsubscribe; // クリーンアップ

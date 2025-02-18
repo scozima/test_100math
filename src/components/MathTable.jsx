@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { collection, getDocs, doc, getDoc, query, where } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, query, where, addDoc } from "firebase/firestore";
 
 import "./MathTable.scss";
 import { db, auth } from '../firebase';
@@ -146,12 +146,13 @@ function MathTable() {
   };
 
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setBtnHide(true);
 
     let correctAnswers = 0;
     const newAnswerStates = {};
+    const answersData = [];
 
     array[0].y.forEach((rowValue, rowIndex) => {
       array[0].x.forEach((colValue, colIndex) => {
@@ -163,13 +164,60 @@ function MathTable() {
 
         newAnswerStates[key] = correct ? "correct" : "incorrect";
         if (correct) correctAnswers++;
+
+        answersData.push({
+          question: `${rowValue} ${array[0].operator} ${colValue}`,
+          userAnswer: userAnswer,
+          correctAnswer: calculateAnswer(rowValue, colValue, array[0].operator),
+          isCorrect: correct,
+        });
       });
     });
 
     setAnswerStates(newAnswerStates);
+    const elapsedTime = Math.round((Date.now() - startTime) / 1000);
     setScore(correctAnswers);
-    setTime(Math.round((Date.now() - startTime) / 1000));
+    setTime(elapsedTime);
+
+    if (currentUser) {
+      try {
+        // 問題の詳細を取得
+        let docRef;
+        if (selectedCollection === "basic_question_db") {
+          docRef = doc(db, selectedCollection, selectedProblem);
+        } else {
+          docRef = doc(db, `users/${currentUser.uid}/questions`, selectedProblem);
+        }
+
+        const docSnap = await getDoc(docRef);
+        let problemName = "Unknown";
+        let problemUpdatedAt = null;
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          problemName = data.name || "Unknown";
+          problemUpdatedAt = data.updatedAt || null;
+        }
+
+        // Firebase に保存
+        await addDoc(collection(db, `users/${currentUser.uid}/results`), {
+          problemId: selectedProblem,
+          problemCollection: selectedCollection,
+          problemName: problemName,
+          problemUpdatedAt: problemUpdatedAt,
+          score: correctAnswers,
+          totalQuestions: answersData.length,
+          time: elapsedTime,
+          answers: answersData,
+          createdAt: new Date(),
+        });
+        console.log("結果がFirebaseに保存されました。");
+      } catch (error) {
+        console.error("Firebaseへの保存中にエラーが発生しました:", error);
+      }
+    }
   };
+
 
   const startFlag = () => {
     setStart(true);
