@@ -36,6 +36,11 @@
       border-color: #000
     }
   }
+
+  &.-inactive {
+    pointer-events: none;
+    opacity: .5;
+  }
 }
 
 .btn02 {
