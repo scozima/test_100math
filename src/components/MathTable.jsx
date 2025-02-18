@@ -126,19 +126,25 @@ function MathTable() {
   };
 
   const validateForm = (answers) => {
-    if (array.length === 0) return;
+    if (array.length === 0 || !array[0].x || !array[0].y) return;
 
+    // データ構造が正しいかチェック
+    // console.log("Current problem data:", array[0]);
+
+    // 問題のすべてのキーを取得
     const allKeys = array[0].y.flatMap((rowValue, rowIndex) =>
       array[0].x.map((colValue, colIndex) =>
         generateKey(rowIndex, colIndex, rowValue, colValue)
       )
     );
 
-    const allFilled = allKeys.every(
-      (key) => answers[key] && answers[key].trim() !== ""
-    );
+    // すべてのキーに対して回答が入力されているかを確認
+    const allFilled = allKeys.every((key) => answers[key] && answers[key].trim() !== "");
+
+    // 判定結果をセット
     setIsFormValid(allFilled);
   };
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -180,7 +186,42 @@ function MathTable() {
     const [collectionName, problemId] = e.target.value.split("/");
     setSelectedCollection(collectionName);
     setSelectedProblem(problemId);
+
+    // Startボタンのリセット
+    setStart(false);
+    setStartTime(null);
+    setScore(null);
+    setTime(null);
+    setBtnHide(false);
   };
+
+  // リスタート用の関数
+  const handleRestart = () => {
+    const emptyAnswers = {};
+    // Reset all answers to empty strings
+    array[0].y.forEach((rowValue, rowIndex) => {
+      array[0].x.forEach((colValue, colIndex) => {
+        const key = generateKey(rowIndex, colIndex, rowValue, colValue);
+        emptyAnswers[key] = "";
+      });
+    });
+
+    setUserAnswers(emptyAnswers);
+    setAnswerStates({});
+    setScore(null);
+    setTime(null);
+    setStartTime(Date.now());
+    setBtnHide(false);
+    setIsFormValid(false); // Explicitly reset form validity
+    setStart(true);
+
+    setTimeout(() => {
+      if (firstInputRef.current) {
+        firstInputRef.current.focus();
+      }
+    }, 0);
+  };
+
 
   if (!currentUser) {
     return <p>Please log in to access the math problems.</p>;
@@ -195,6 +236,7 @@ function MathTable() {
       <select
         onChange={handleProblemSelection}
         value={`${selectedCollection}/${selectedProblem}`}
+        className="mb20"
       >
         <optgroup label="basic_question_db">
           {problems.basic_question_db.map((problem) => (
@@ -212,78 +254,85 @@ function MathTable() {
         </optgroup>
       </select>
 
-      {!start ? (
-        <button className="btn01" onClick={startFlag}>
-          Start
-        </button>
-      ) : (
-        <>
-          <table className="table01 mb15">
-            <thead>
-              <tr>
-                <th>{array[0].operator}</th>
-                {array[0].x.map((item, index) => (
-                  <th key={index}>{item}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {array[0].y.map((rowValue, rowIndex) => (
-                <tr key={rowIndex}>
-                  <th>{rowValue}</th>
-                  {array[0].x.map((colValue, colIndex) => {
-                    const key = generateKey(
-                      rowIndex,
-                      colIndex,
-                      rowValue,
-                      colValue
-                    );
-                    const userAnswer = userAnswers[key] || "";
-                    return (
-                      <td key={colIndex}>
-                        <input
-                          type="text"
-                          className={`user-answer ${answerStates[key] || ""}`}
-                          value={userAnswer}
-                          onChange={(e) =>
-                            handleChange(
-                              rowIndex,
-                              colIndex,
-                              rowValue,
-                              colValue,
-                              e
-                            )
-                          }
-                          ref={
-                            rowIndex === 0 && colIndex === 0
-                              ? firstInputRef
-                              : null
-                          }
-                        />
-                      </td>
-                    );
-                  })}
-                </tr>
+      <button
+        className={`btn01 mb20 ${start ? "disabled" : ""}`}
+        onClick={startFlag}
+        disabled={start}
+      >
+        Start
+      </button>
+
+
+      <>
+        <table className={`table01 mb15 ${start ? "" : "-inactive"}`}>
+          <thead>
+            <tr>
+              <th>{array[0].operator}</th>
+              {array[0].x.map((item, index) => (
+                <th key={index}>{item}</th>
               ))}
-            </tbody>
-          </table>
+            </tr>
+          </thead>
+          <tbody>
+            {array[0].y.map((rowValue, rowIndex) => (
+              <tr key={rowIndex}>
+                <th>{rowValue}</th>
+                {array[0].x.map((colValue, colIndex) => {
+                  const key = generateKey(
+                    rowIndex,
+                    colIndex,
+                    rowValue,
+                    colValue
+                  );
+                  const userAnswer = userAnswers[key] || "";
+                  return (
+                    <td key={colIndex}>
+                      <input
+                        type="text"
+                        className={`user-answer ${answerStates[key] || ""}`}
+                        value={userAnswer}
+                        onChange={(e) =>
+                          handleChange(
+                            rowIndex,
+                            colIndex,
+                            rowValue,
+                            colValue,
+                            e
+                          )
+                        }
+                        ref={
+                          rowIndex === 0 && colIndex === 0
+                            ? firstInputRef
+                            : null
+                        }
+                      />
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
-          {!btnHide && (
-            <button className="btn02" type="submit" disabled={!isFormValid}>
-              Submit
-            </button>
-          )}
+        {!btnHide && (
+          <button className="btn02" type="submit" disabled={!isFormValid}>
+            Submit
+          </button>
+        )}
 
-          {score !== null && (
+        {score !== null && (
+          <>
             <div className="result">
-              <p>
-                Score: {score} / {array[0].x.length * array[0].y.length}
-              </p>
+              <p>Score: {score} / {array[0].x.length * array[0].y.length}</p>
               <p>Time: {time} seconds</p>
             </div>
-          )}
-        </>
-      )}
+            <button className="btn02" onClick={handleRestart}>
+              Restart
+            </button>
+          </>
+        )}
+
+      </>
     </form>
   );
 }
