@@ -1,7 +1,5 @@
 // App.jsx
 import { useState, useContext } from "react";
-import "./App.scss";
-import "./Common.scss";
 import MathTable from "./components/MathTable";
 import AddQuestion from "./components/AddQuestion";
 
@@ -15,10 +13,10 @@ import AppLayout from "./pages/layout/AppLayout";
 import Problem from "./pages/Problem";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
-import Header from "./components/Header";
 
 // ここでAuthProviderをインポート
 import { AuthProvider } from "./context/AuthContext"; // 修正
+import { ThemeProvider } from "@/components/theme-provider"
 
 function App() {
   const { user, loading } = useContext(AuthContext); // loadingも一緒に取得
@@ -29,33 +27,34 @@ function App() {
   }
 
   return (
-    <AuthProvider>
-      <Router basename={basename}>
-        <Header />
-        <Routes>
-          <Route path="/" element={<AppLayout />}>
-            <Route
-              index
-              element={user ? <Home /> : <Navigate to="/login" />}
-            />
-            <Route
-              path="/lesson"
-              element={user ? <Lesson /> : <Navigate to="/login" />}
-            />
-            <Route
-              path="/problem"
-              element={user ? <Problem /> : <Navigate to="/login" />}
-            />
-            <Route
-              path="/dashboard"
-              element={user ? <Dashboard /> : <Navigate to="/login" />}
-            />
-            <Route path="*" element={<Nomatch />} />
-          </Route>
-          <Route path="/login" element={<Login />} />
-        </Routes>
-      </Router>
-    </AuthProvider>
+    <ThemeProvider defaultTheme="system" storageKey="app-theme">
+      <AuthProvider>
+        <Router basename={basename}>
+          <Routes>
+            <Route path="/" element={<AppLayout />}>
+              <Route
+                index
+                element={user ? <Home /> : <Navigate to="/login" />}
+              />
+              <Route
+                path="/lesson"
+                element={user ? <Lesson /> : <Navigate to="/login" />}
+              />
+              <Route
+                path="/problem"
+                element={user ? <Problem /> : <Navigate to="/login" />}
+              />
+              <Route
+                path="/dashboard"
+                element={user ? <Dashboard /> : <Navigate to="/login" />}
+              />
+              <Route path="*" element={<Nomatch />} />
+            </Route>
+            <Route path="/login" element={<Login />} />
+          </Routes>
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

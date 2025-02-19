@@ -1,3 +1,4 @@
+import path from 'path'
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
@@ -14,6 +15,11 @@ export default defineConfig(({ mode }) => {
     define: {
       // 環境変数を注入
       'process.env.BASENAME': JSON.stringify(basename),
+    },
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "./src"),
+      },
     },
   };
 });

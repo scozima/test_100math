@@ -1,5 +1,5 @@
 // Login.jsx
-import React, { useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { auth, provider } from "../firebase";
 import { signInWithPopup } from "firebase/auth";
 import { AuthContext } from "../context/AuthContext";
@@ -19,8 +19,7 @@ const Login = () => {
   const handleLogin = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      console.log("Logged in as:", user);
+      console.log("Logged in as:", result.user);
     } catch (error) {
       console.error(error);
     }
