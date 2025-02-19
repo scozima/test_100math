@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { collection, onSnapshot, doc, deleteDoc } from "firebase/firestore";
 import { db, auth } from "../firebase";
-import "./AllProblemTable.scss";
 import AddQuestion from "./AddQuestion";
 
 function AllProblemTable() {

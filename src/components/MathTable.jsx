@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { collection, getDocs, doc, getDoc, query, where, addDoc } from "firebase/firestore";
 
-import "./MathTable.scss";
 import { db, auth } from '../firebase';
 
 import ProblemSelector from './math/ProblemSelector'
