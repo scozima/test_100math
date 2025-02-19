@@ -4,6 +4,10 @@ import { collection, getDocs, doc, getDoc, query, where, addDoc } from "firebase
 import "./MathTable.scss";
 import { db, auth } from '../firebase';
 
+import ProblemSelector from './math/ProblemSelector'
+import MathGrid from './math/MathGrid'
+import ResultDisplay from './math/ResultDisplay'
+
 function MathTable() {
   const [start, setStart] = useState(false);
   const [userAnswers, setUserAnswers] = useState({});
@@ -281,106 +285,48 @@ function MathTable() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <select
-        onChange={handleProblemSelection}
-        value={`${selectedCollection}/${selectedProblem}`}
-        className="mb20"
-      >
-        <optgroup label="basic_question_db">
-          {problems.basic_question_db.map((problem) => (
-            <option key={problem.id} value={`basic_question_db/${problem.id}`}>
-              {problem.name}
-            </option>
-          ))}
-        </optgroup>
-        <optgroup label="users">
-          {problems.users.map((problem) => (
-            <option key={problem.id} value={`users/${problem.id}`}>
-              {problem.name}
-            </option>
-          ))}
-        </optgroup>
-      </select>
+      <ProblemSelector
+        problems={problems}
+        selectedCollection={selectedCollection}
+        selectedProblem={selectedProblem}
+        onProblemSelection={handleProblemSelection}
+      />
 
       <button
-        className={`btn01 mb20 ${start ? "disabled" : ""}`}
+        className={`btn01 mb20 ${start ? 'disabled' : ''}`}
         onClick={startFlag}
         disabled={start}
       >
         Start
       </button>
 
+      {array.length > 0 && (
+        <>
+          <MathGrid
+            array={array}
+            start={start}
+            userAnswers={userAnswers}
+            answerStates={answerStates}
+            handleChange={handleChange}
+            firstInputRef={firstInputRef}
+          />
 
-      <>
-        <table className={`table01 mb15 ${start ? "" : "-inactive"}`}>
-          <thead>
-            <tr>
-              <th>{array[0].operator}</th>
-              {array[0].x.map((item, index) => (
-                <th key={index}>{item}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {array[0].y.map((rowValue, rowIndex) => (
-              <tr key={rowIndex}>
-                <th>{rowValue}</th>
-                {array[0].x.map((colValue, colIndex) => {
-                  const key = generateKey(
-                    rowIndex,
-                    colIndex,
-                    rowValue,
-                    colValue
-                  );
-                  const userAnswer = userAnswers[key] || "";
-                  return (
-                    <td key={colIndex}>
-                      <input
-                        type="number"
-                        className={`user-answer ${answerStates[key] || ""}`}
-                        value={userAnswer}
-                        onChange={(e) =>
-                          handleChange(
-                            rowIndex,
-                            colIndex,
-                            rowValue,
-                            colValue,
-                            e
-                          )
-                        }
-                        ref={
-                          rowIndex === 0 && colIndex === 0
-                            ? firstInputRef
-                            : null
-                        }
-                      />
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        {!btnHide && (
-          <button className="btn02" type="submit" disabled={!isFormValid}>
-            Submit
-          </button>
-        )}
-
-        {score !== null && (
-          <>
-            <div className="result">
-              <p>Score: {score} / {array[0].x.length * array[0].y.length}</p>
-              <p>Time: {time} seconds</p>
-            </div>
-            <button className="btn02" onClick={handleRestart}>
-              Restart
+          {!btnHide && (
+            <button className="btn02" type="submit" disabled={!isFormValid}>
+              Submit
             </button>
-          </>
-        )}
+          )}
 
-      </>
+          {score !== null && (
+            <ResultDisplay
+              score={score}
+              time={time}
+              totalQuestions={array[0].x.length * array[0].y.length}
+              onRestart={handleRestart}
+            />
+          )}
+        </>
+      )}
     </form>
   );
 }

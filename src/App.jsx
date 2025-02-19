@@ -14,11 +14,11 @@ import Nomatch from "./pages/Nomatch";
 import AppLayout from "./pages/layout/AppLayout";
 import Problem from "./pages/Problem";
 import Home from "./pages/Home";
-import Dashbord from "./pages/Dashbord";
+import Dashboard from "./pages/Dashboard";
+import Header from "./components/Header";
 
 // ここでAuthProviderをインポート
 import { AuthProvider } from "./context/AuthContext"; // 修正
-import Header from "./components/Header";
 
 function App() {
   const { user, loading } = useContext(AuthContext); // loadingも一緒に取得
@@ -48,7 +48,7 @@ function App() {
             />
             <Route
               path="/dashboard"
-              element={user ? <Dashbord /> : <Navigate to="/login" />}
+              element={user ? <Dashboard /> : <Navigate to="/login" />}
             />
             <Route path="*" element={<Nomatch />} />
           </Route>
