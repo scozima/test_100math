@@ -7,6 +7,9 @@ import ProblemSelector from './math/ProblemSelector'
 import MathGrid from './math/MathGrid'
 import ResultDisplay from './math/ResultDisplay'
 
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+
 function MathTable() {
   const [start, setStart] = useState(false);
   const [userAnswers, setUserAnswers] = useState({});
@@ -233,18 +236,18 @@ function MathTable() {
     }
   }, [start]);
 
-  const handleProblemSelection = (e) => {
-    const [collectionName, problemId] = e.target.value.split("/");
-    setSelectedCollection(collectionName);
-    setSelectedProblem(problemId);
+  const handleProblemSelection = (value) => {
+    const [collectionName, problemId] = value.split("/")
+    setSelectedCollection(collectionName)
+    setSelectedProblem(problemId)
 
     // Startボタンのリセット
-    setStart(false);
-    setStartTime(null);
-    setScore(null);
-    setTime(null);
-    setBtnHide(false);
-  };
+    setStart(false)
+    setStartTime(null)
+    setScore(null)
+    setTime(null)
+    setBtnHide(false)
+  }
 
   // リスタート用の関数
   const handleRestart = () => {
@@ -283,50 +286,66 @@ function MathTable() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <ProblemSelector
-        problems={problems}
-        selectedCollection={selectedCollection}
-        selectedProblem={selectedProblem}
-        onProblemSelection={handleProblemSelection}
-      />
-
-      <button
-        className={`btn01 mb20 ${start ? 'disabled' : ''}`}
-        onClick={startFlag}
-        disabled={start}
-      >
-        Start
-      </button>
-
-      {array.length > 0 && (
-        <>
-          <MathGrid
-            array={array}
-            start={start}
-            userAnswers={userAnswers}
-            answerStates={answerStates}
-            handleChange={handleChange}
-            firstInputRef={firstInputRef}
+    <div className="container mx-auto p-4 space-y-4">
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-2xl font-bold">計算問題</CardTitle>
+          <ProblemSelector
+            problems={problems}
+            selectedCollection={selectedCollection}
+            selectedProblem={selectedProblem}
+            onProblemSelection={handleProblemSelection}
           />
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-6">
+              <MathGrid
+                array={array}
+                start={start}
+                userAnswers={userAnswers}
+                answerStates={answerStates}
+                handleChange={handleChange}
+                firstInputRef={firstInputRef}
+              />
 
-          {!btnHide && (
-            <button className="btn02" type="submit" disabled={!isFormValid}>
-              Submit
-            </button>
-          )}
+              {!start ? (
+                <Button
+                  type="button"
+                  onClick={startFlag}
+                  className="w-32 mx-auto block"
+                  size="lg"
+                >
+                  スタート
+                </Button>
+              ) : (
+                <>
+                  {!btnHide && (
+                    <Button
+                      type="submit"
+                      className="w-32 mx-auto block"
+                      size="lg"
+                      disabled={!isFormValid}
+                    >
+                      回答する
+                    </Button>
+                  )}
 
-          {score !== null && (
-            <ResultDisplay
-              score={score}
-              time={time}
-              totalQuestions={array[0].x.length * array[0].y.length}
-              onRestart={handleRestart}
-            />
-          )}
-        </>
-      )}
-    </form>
+                  {score !== null && (
+                    <ResultDisplay
+                      score={score}
+                      time={time}
+                      totalQuestions={array[0].x.length * array[0].y.length}
+                      onRestart={handleRestart}
+                    />
+                  )}
+                </>
+              )}
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
 
