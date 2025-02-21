@@ -2,6 +2,16 @@ import { useState, useEffect } from "react";
 import { collection, onSnapshot, doc, deleteDoc } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import AddQuestion from "./AddQuestion";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { MoreHorizontal } from "lucide-react";
 
 function AllProblemTable() {
   const [problems, setProblems] = useState([]);
@@ -64,52 +74,79 @@ function AllProblemTable() {
   };
 
   return (
-    <>
+    <div className="space-y-4">
       {problems.length > 0 ? (
-        <table className="table02">
-          <thead>
-            <tr>
-              <th>id</th>
-              <th>登録日</th>
-              <th>更新日</th>
-              <th>name</th>
-              <th>operator</th>
-              <th>x</th>
-              <th>y</th>
-              <th>編集する</th>
-            </tr>
-          </thead>
-          <tbody>
-            {problems.map((problem) => (
-              <tr key={problem.id}>
-                <td>{problem.id}</td>
-                <td>{problem.createdAt ? problem.createdAt.toDate().toLocaleString() : "N/A"}</td>
-                <td>{problem.updatedAt ? problem.updatedAt.toDate().toLocaleString() : "N/A"}</td>
-                <td>{problem.name}</td>
-                <td>{problem.operator}</td>
-                <td>{problem.x ? problem.x.join(", ") : "N/A"}</td>
-                <td>{problem.y ? problem.y.join(", ") : "N/A"}</td>
-                <td>
-                  <button className="edit-btn" onClick={() => openModal(problem)}>...</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[100px]">ID</TableHead>
+                <TableHead>登録日</TableHead>
+                <TableHead>更新日</TableHead>
+                <TableHead>問題名</TableHead>
+                <TableHead className="w-[80px]">演算子</TableHead>
+                <TableHead>X値</TableHead>
+                <TableHead>Y値</TableHead>
+                <TableHead className="w-[80px]"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {problems.map((problem) => (
+                <TableRow key={problem.id}>
+                  <TableCell className="font-mono">{problem.id.slice(0, 8)}</TableCell>
+                  <TableCell>
+                    {problem.createdAt ? problem.createdAt.toDate().toLocaleString() : "N/A"}
+                  </TableCell>
+                  <TableCell>
+                    {problem.updatedAt ? problem.updatedAt.toDate().toLocaleString() : "N/A"}
+                  </TableCell>
+                  <TableCell className="font-medium">{problem.name}</TableCell>
+                  <TableCell className="text-center">{problem.operator}</TableCell>
+                  <TableCell>{problem.x ? problem.x.join(", ") : "N/A"}</TableCell>
+                  <TableCell>{problem.y ? problem.y.join(", ") : "N/A"}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="ghost"
+                      className="h-8 w-8 p-0"
+                      onClick={() => openModal(problem)}
+                    >
+                      <span className="sr-only">編集</span>
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       ) : (
-        <p>問題の登録がありません。問題を登録してください。</p>
+        <div className="text-center py-10 text-muted-foreground">
+          問題の登録がありません。問題を登録してください。
+        </div>
       )}
 
       {editTarget && (
-        <div className="modal-wrapper">
-          <div className="modal-content owl10">
-            <span className="close-btn" onClick={closeModal}>×</span>
-            <AddQuestion title="編集する" btnTitle="編集完了" problem={editTarget} closeModal={closeModal} />
-            <button className="btn01 -delete" onClick={() => deleteProblem(editTarget.id)}>削除する</button>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-background p-6 rounded-lg shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto relative">
+            <AddQuestion 
+              title="編集する" 
+              btnTitle="編集完了" 
+              problem={editTarget} 
+              closeModal={closeModal} 
+            />
+            <div className="mt-4 pt-4 border-t">
+              <Button 
+                variant="destructive" 
+                className="w-full"
+                onClick={() => deleteProblem(editTarget.id)}
+              >
+                削除する
+              </Button>
+            </div>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
 

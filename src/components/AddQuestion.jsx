@@ -1,63 +1,74 @@
-import React, { useState, useEffect } from "react";
-import { doc, updateDoc, collection, addDoc, getDocs, query, where, serverTimestamp } from "firebase/firestore";
-import { db, auth } from '../firebase';
+import { useState, useEffect } from "react"
+import { doc, updateDoc, collection, addDoc, getDocs, query, where, serverTimestamp } from "firebase/firestore"
+import { db, auth } from '../firebase'
+import PropTypes from 'prop-types'
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { toast } from "sonner"
+import Label from "@/components/ui/label"
 
 const AddQuestion = ({ title, btnTitle, problem, closeModal }) => {
-  const [name, setName] = useState(problem?.name || "");
-  const [operator, setOperator] = useState(problem?.operator || "");
-  const [x, setX] = useState(problem?.x ? problem.x.join(", ") : "");
-  const [y, setY] = useState(problem?.y ? problem.y.join(", ") : "");
+  const [name, setName] = useState(problem?.name || "")
+  const [operator, setOperator] = useState(problem?.operator || "")
+  const [x, setX] = useState(problem?.x ? problem.x.join(", ") : "")
+  const [y, setY] = useState(problem?.y ? problem.y.join(", ") : "")
 
   useEffect(() => {
     if (problem) {
-      setName(problem.name || "");
-      setOperator(problem.operator || "");
-      setX(problem.x ? problem.x.join(", ") : "");
-      setY(problem.y ? problem.y.join(", ") : "");
+      setName(problem.name || "")
+      setOperator(problem.operator || "")
+      setX(problem.x ? problem.x.join(", ") : "")
+      setY(problem.y ? problem.y.join(", ") : "")
     }
-  }, [problem]);
+  }, [problem])
 
   const handleSubmit = async () => {
     if (!name || !operator || !x || !y) {
-      alert("すべての項目を入力してください！");
-      return;
+      toast.error("すべての項目を入力してください")
+      return
     }
 
-    const xArray = x.split(",").map(Number);
-    const yArray = y.split(",").map(Number);
+    const xArray = x.split(",").map(Number)
+    const yArray = y.split(",").map(Number)
     
-    const user = auth.currentUser;
+    const user = auth.currentUser
     if (!user) {
-      alert("ログインしてください！");
-      return;
+      toast.error("ログインしてください")
+      return
     }
 
-    const userUid = user.uid;
-    const userCollectionRef = collection(db, "users", userUid, "questions");
+    const userUid = user.uid
+    const userCollectionRef = collection(db, "users", userUid, "questions")
 
     try {
       if (problem) {
-        // 既存の問題を更新
-        const problemRef = doc(userCollectionRef, problem.id);
+        const problemRef = doc(userCollectionRef, problem.id)
         await updateDoc(problemRef, {
           name,
           operator,
           x: xArray,
           y: yArray,
           updatedAt: serverTimestamp(),
-        });
-        alert("更新成功！");
+        })
+        toast.success("更新しました")
       } else {
-        // 同じ名前の問題が既にあるかチェック
-        const q = query(userCollectionRef, where("name", "==", name));
-        const querySnapshot = await getDocs(q);
+        const q = query(userCollectionRef, where("name", "==", name))
+        const querySnapshot = await getDocs(q)
 
         if (!querySnapshot.empty) {
-          alert("同じ問題名が既に存在します。別の名前を使用してください。");
-          return;
+          toast.error("同じ問題名が既に存在します")
+          return
         }
 
-        // 新規登録
         await addDoc(userCollectionRef, {
           name,
           operator,
@@ -65,59 +76,108 @@ const AddQuestion = ({ title, btnTitle, problem, closeModal }) => {
           y: yArray,
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
-        });
+        })
 
-        alert("登録成功！");
+        toast.success("登録しました")
       }
 
-      closeModal();
+      closeModal()
     } catch (error) {
-      console.error("エラー:", error);
-      alert("エラーが発生しました：" + error.message);
+      console.error("エラー:", error)
+      toast.error("エラーが発生しました：" + error.message)
     }
-  };
+  }
 
   return (
-    <div className="container owl10">
-      <h2>{title}</h2>
+    <Card className="w-full min-w-[500px]">
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold">{title}</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="space-y-2">
+          <Label htmlFor="name">
+            問題名
+          </Label>
+          <Input
+            id="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="例：足し算レベル1"
+          />
+        </div>
 
-      <table className="table02">
-        <tbody>
-          <tr className="form-group">
-            <th>問題名</th>
-            <td>
-              <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
-            </td>
-          </tr>
-          <tr className="form-group">
-            <th>演算子</th>
-            <td>
-              <select value={operator} onChange={(e) => setOperator(e.target.value)} required>
-                <option value="" disabled>選択してください</option>
-                {["+", "-", "✕", "÷"].map((op) => (
-                  <option key={op} value={op}>{op}</option>
-                ))}
-              </select>
-            </td>
-          </tr>
-          <tr className="form-group">
-            <th>Xの値</th>
-            <td>
-              <input type="text" value={x} onChange={(e) => setX(e.target.value)} required />
-            </td>
-          </tr>
-          <tr className="form-group">
-            <th>Yの値</th>
-            <td>
-              <input type="text" value={y} onChange={(e) => setY(e.target.value)} required />
-            </td>
-          </tr>
-        </tbody>
-      </table>
+        <div className="space-y-2">
+          <Label htmlFor="operator">
+            演算子
+          </Label>
+          <Select value={operator} onValueChange={setOperator}>
+            <SelectTrigger>
+              <SelectValue placeholder="選択してください" />
+            </SelectTrigger>
+            <SelectContent>
+              {["+", "-", "✕", "÷"].map((op) => (
+                <SelectItem key={op} value={op}>
+                  {op}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-      <button className="btn01" onClick={handleSubmit}>{btnTitle}</button>
-    </div>
-  );
-};
+        <div className="space-y-2">
+          <Label htmlFor="x">
+            Xの値
+            <span className="text-sm text-muted-foreground ml-2">
+              (カンマ区切りで入力)
+            </span>
+          </Label>
+          <Input
+            id="x"
+            value={x}
+            onChange={(e) => setX(e.target.value)}
+            placeholder="例：1, 2, 3, 4, 5"
+          />
+        </div>
 
-export default AddQuestion;
+        <div className="space-y-2">
+          <Label htmlFor="y">
+            Yの値
+            <span className="text-sm text-muted-foreground ml-2">
+              (カンマ区切りで入力)
+            </span>
+          </Label>
+          <Input
+            id="y"
+            value={y}
+            onChange={(e) => setY(e.target.value)}
+            placeholder="例：1, 2, 3, 4, 5"
+          />
+        </div>
+
+        <div className="flex justify-end space-x-4 pt-4">
+          <Button variant="outline" onClick={closeModal}>
+            キャンセル
+          </Button>
+          <Button onClick={handleSubmit}>
+            {btnTitle}
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+AddQuestion.propTypes = {
+  title: PropTypes.string.isRequired,
+  btnTitle: PropTypes.string.isRequired,
+  problem: PropTypes.shape({
+    id: PropTypes.string,
+    name: PropTypes.string,
+    operator: PropTypes.string,
+    x: PropTypes.arrayOf(PropTypes.number),
+    y: PropTypes.arrayOf(PropTypes.number)
+  }),
+  closeModal: PropTypes.func.isRequired
+}
+
+export default AddQuestion
