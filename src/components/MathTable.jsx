@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { collection, getDocs, doc, getDoc, query, where, addDoc } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, addDoc } from "firebase/firestore";
 
 import { db, auth } from '../firebase';
 
@@ -286,10 +286,10 @@ function MathTable() {
   }
 
   return (
-    <div className="container mx-auto p-4 space-y-4">
+    <div className="container mx-auto p-6 space-y-4">
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-2xl font-bold">計算問題</CardTitle>
+        <CardHeader>
+          
           <ProblemSelector
             problems={problems}
             selectedCollection={selectedCollection}
@@ -298,8 +298,8 @@ function MathTable() {
           />
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-6">
+          <form onSubmit={handleSubmit}>
+            <div>
               <MathGrid
                 array={array}
                 start={start}
@@ -313,7 +313,7 @@ function MathTable() {
                 <Button
                   type="button"
                   onClick={startFlag}
-                  className="w-32 mx-auto block"
+                  className="w-32 mx-auto block py-3"
                   size="lg"
                 >
                   スタート
@@ -323,7 +323,7 @@ function MathTable() {
                   {!btnHide && (
                     <Button
                       type="submit"
-                      className="w-32 mx-auto block"
+                      className="w-32 mx-auto block py-3"
                       size="lg"
                       disabled={!isFormValid}
                     >

@@ -1,4 +1,4 @@
-import React from 'react'
+import PropTypes from 'prop-types'
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 
@@ -17,8 +17,8 @@ const MathGrid = ({
   }
 
   return (
-    <div className="overflow-x-auto relative p-4">
-      <table className="w-full border-collapse table-fixed bg-white shadow-sm">
+    <div className="overflow-x-auto relative">
+      <table className="w-full border-collapse table-fixed bg-white shadow-sm mb-5">
         <thead>
           <tr>
             <th className="w-16 h-16 border-2 border-gray-200 text-center text-xl font-semibold bg-gray-50">
@@ -92,6 +92,21 @@ const MathGrid = ({
       </table>
     </div>
   )
+}
+
+MathGrid.propTypes = {
+  array: PropTypes.arrayOf(
+    PropTypes.shape({
+      operator: PropTypes.string.isRequired,
+      x: PropTypes.arrayOf(PropTypes.number).isRequired,
+      y: PropTypes.arrayOf(PropTypes.number).isRequired
+    })
+  ).isRequired,
+  start: PropTypes.bool.isRequired,
+  userAnswers: PropTypes.object.isRequired,
+  answerStates: PropTypes.object.isRequired,
+  handleChange: PropTypes.func.isRequired,
+  firstInputRef: PropTypes.object
 }
 
 export default MathGrid 
