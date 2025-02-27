@@ -110,6 +110,10 @@ const Dashboard = () => {
   const [page, setPage] = useState(0)
   const [pageSize, setPageSize] = useState(5)
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' })
+  const [problemsData, setProblemsData] = useState({
+    basic_question_db: [],
+    users: []
+  })
 
   // データ取得のuseEffect
   useEffect(() => {
@@ -138,29 +142,74 @@ const Dashboard = () => {
     fetchResults()
   }, [user])
 
-  // 問題の分類を行う
+  // 問題データを取得するuseEffectを追加
+  useEffect(() => {
+    const fetchProblems = async () => {
+      if (user) {
+        try {
+          // ユーザーの問題を取得
+          const userQuestionsRef = collection(db, "users", user.uid, "questions")
+          const userQuestionsSnapshot = await getDocs(userQuestionsRef)
+          const userQuestions = userQuestionsSnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+            collection: 'users'
+          }))
+
+          // 基本問題を取得
+          const basicQuestionsRef = collection(db, "basic_question_db")
+          const basicQuestionsSnapshot = await getDocs(basicQuestionsRef)
+          const basicQuestions = basicQuestionsSnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+            collection: 'basic_question_db'
+          }))
+
+          setProblemsData({
+            basic_question_db: basicQuestions,
+            users: userQuestions
+          })
+        } catch (error) {
+          console.error("Error fetching problems:", error)
+        }
+      }
+    }
+
+    fetchProblems()
+  }, [user])
+
+  // 問題の分類を行う処理を修正
   const categorizedProblems = useMemo(() => {
+    // 有効な問題のIDを Set として保持
+    const validProblemIds = new Set([
+      ...problemsData.basic_question_db.map(p => `basic_question_db/${p.id}`),
+      ...problemsData.users.map(p => `users/${p.id}`)
+    ])
+
     return results.reduce((acc, result) => {
       const collection = result.problemCollection || 'basic_question_db'
+      const problemKey = `${collection}/${result.problemId}`
       
-      if (!acc[collection]) {
-        acc[collection] = new Set()
+      // 問題が存在する場合のみ追加
+      if (result.problemName && result.problemId && validProblemIds.has(problemKey)) {
+        if (!acc[collection]) {
+          acc[collection] = new Set()
+        }
+        
+        const problemData = JSON.stringify({
+          id: result.problemId,
+          name: result.problemName
+        })
+        
+        acc[collection].add(problemData)
       }
-      
-      // 重複を避けるためにJSON文字列化して比較
-      const problemData = JSON.stringify({
-        id: result.problemId,
-        name: result.problemName
-      })
-      
-      acc[collection].add(problemData)
       
       return acc
     }, {
       basic_question_db: new Set(),
       users: new Set()
     })
-  }, [results])
+  }, [results, problemsData])
 
   // 期間の移動処理
   const handleDateNavigation = (direction) => {
@@ -205,8 +254,14 @@ const Dashboard = () => {
     }
   }
 
-  // フィルタリングされたデータを取得
+  // フィルタリングされたデータを取得する処理も修正
   const getFilteredData = () => {
+    // 有効な問題のIDを Set として保持
+    const validProblemIds = new Set([
+      ...problemsData.basic_question_db.map(p => `basic_question_db/${p.id}`),
+      ...problemsData.users.map(p => `users/${p.id}`)
+    ])
+
     let startDate = new Date(currentDate)
     let endDate = new Date(currentDate)
 
@@ -231,16 +286,15 @@ const Dashboard = () => {
 
     return results.filter(result => {
       const resultDate = new Date(result.createdAt.seconds * 1000)
+      const problemKey = `${result.problemCollection || 'basic_question_db'}/${result.problemId}`
       
       // 問題フィルタリングの修正
-      const problemMatch = selectedProblem === 'all' || 
-        (selectedProblem.includes('/') 
-          ? `${result.problemCollection || 'basic_question_db'}/${result.problemId}` === selectedProblem
-          : result.problemName === selectedProblem)
+      const problemMatch = selectedProblem === 'all' || selectedProblem === problemKey
 
       return resultDate >= startDate && 
              resultDate <= endDate && 
-             problemMatch
+             problemMatch &&
+             validProblemIds.has(problemKey) // 有効な問題のみ表示
     })
   }
 
@@ -499,6 +553,7 @@ const Dashboard = () => {
                     <SelectLabel className="px-2 py-1.5 text-sm font-semibold bg-muted">ベーシック問題</SelectLabel>
                     {[...categorizedProblems.basic_question_db]
                       .map(problemStr => JSON.parse(problemStr))
+                      .filter(problem => problem.exists !== false)  // 存在する問題のみ表示
                       .sort((a, b) => a.name.localeCompare(b.name, 'ja'))
                       .map(problem => (
                         <SelectItem 
@@ -518,6 +573,7 @@ const Dashboard = () => {
                     <SelectLabel className="px-2 py-1.5 text-sm font-semibold bg-muted">オリジナル問題</SelectLabel>
                     {[...categorizedProblems.users]
                       .map(problemStr => JSON.parse(problemStr))
+                      .filter(problem => problem.exists !== false)  // 存在する問題のみ表示
                       .sort((a, b) => a.name.localeCompare(b.name, 'ja'))
                       .map(problem => (
                         <SelectItem 

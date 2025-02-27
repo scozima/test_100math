@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { collection, onSnapshot, doc, deleteDoc } from "firebase/firestore";
+import { collection, onSnapshot, doc, deleteDoc, query, where, getDocs, writeBatch } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import AddQuestion from "./AddQuestion";
 import {
@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 function AllProblemTable() {
   const [problems, setProblems] = useState([]);
@@ -65,11 +66,26 @@ function AllProblemTable() {
     if (!confirmDelete) return;
 
     try {
+      // 問題を削除
       await deleteDoc(doc(db, `users/${user.uid}/questions`, id));
+
+      // この問題に関連する回答データを取得
+      const resultsRef = collection(db, `users/${user.uid}/results`);
+      const q = query(resultsRef, where("problemId", "==", id));
+      const querySnapshot = await getDocs(q);
+
+      // バッチ処理で関連する回答データを削除
+      const batch = writeBatch(db);
+      querySnapshot.forEach((doc) => {
+        batch.delete(doc.ref);
+      });
+      await batch.commit();
+
+      toast.success("問題と関連する回答データを削除しました");
       closeModal();
     } catch (error) {
       console.error("削除エラー:", error);
-      alert("削除に失敗しました");
+      toast.error("削除に失敗しました");
     }
   };
 
