@@ -81,7 +81,17 @@ const AddQuestion = ({ title, btnTitle, problem, closeModal }) => {
         toast.success("登録しました")
       }
 
-      closeModal()
+      // closeModalが存在する場合のみ実行
+      if (closeModal) {
+        closeModal()
+      }
+
+      // フォームをリセット（すべての処理が成功した後）
+      setName("")
+      setOperator("")
+      setX("")
+      setY("")
+      
     } catch (error) {
       console.error("エラー:", error)
       toast.error("エラーが発生しました：" + error.message)
@@ -177,7 +187,7 @@ AddQuestion.propTypes = {
     x: PropTypes.arrayOf(PropTypes.number),
     y: PropTypes.arrayOf(PropTypes.number)
   }),
-  closeModal: PropTypes.func.isRequired
+  closeModal: PropTypes.func
 }
 
 export default AddQuestion

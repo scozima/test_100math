@@ -12,13 +12,25 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 function AllProblemTable() {
   const [problems, setProblems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editTarget, setEditTarget] = useState(null);
   const user = auth.currentUser; // 現在のユーザーを取得
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const [deleteTargetId, setDeleteTargetId] = useState(null)
 
   useEffect(() => {
     if (!user) {
@@ -59,34 +71,39 @@ function AllProblemTable() {
     setEditTarget(null);
   };
 
+  const handleDeleteClick = (id) => {
+    setDeleteTargetId(id)
+    setIsDeleteDialogOpen(true)
+  }
+
   const deleteProblem = async (id) => {
     if (!user) return;
 
-    const confirmDelete = window.confirm("本当に削除しますか？");
-    if (!confirmDelete) return;
+    toast.promise(
+      (async () => {
+        // 問題を削除
+        await deleteDoc(doc(db, `users/${user.uid}/questions`, id));
 
-    try {
-      // 問題を削除
-      await deleteDoc(doc(db, `users/${user.uid}/questions`, id));
+        // この問題に関連する回答データを取得
+        const resultsRef = collection(db, `users/${user.uid}/results`);
+        const q = query(resultsRef, where("problemId", "==", id));
+        const querySnapshot = await getDocs(q);
 
-      // この問題に関連する回答データを取得
-      const resultsRef = collection(db, `users/${user.uid}/results`);
-      const q = query(resultsRef, where("problemId", "==", id));
-      const querySnapshot = await getDocs(q);
+        // バッチ処理で関連する回答データを削除
+        const batch = writeBatch(db);
+        querySnapshot.forEach((doc) => {
+          batch.delete(doc.ref);
+        });
+        await batch.commit();
 
-      // バッチ処理で関連する回答データを削除
-      const batch = writeBatch(db);
-      querySnapshot.forEach((doc) => {
-        batch.delete(doc.ref);
-      });
-      await batch.commit();
-
-      toast.success("問題と関連する回答データを削除しました");
-      closeModal();
-    } catch (error) {
-      console.error("削除エラー:", error);
-      toast.error("削除に失敗しました");
-    }
+        closeModal();
+      })(),
+      {
+        loading: '削除中...',
+        success: '問題と関連する回答データを削除しました',
+        error: '削除に失敗しました'
+      }
+    );
   };
 
   return (
@@ -141,6 +158,31 @@ function AllProblemTable() {
         </div>
       )}
 
+      {/* 削除確認ダイアログ */}
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>本当に削除しますか？</AlertDialogTitle>
+            <AlertDialogDescription>
+              この操作は取り消せません。問題と関連する回答データがすべて削除されます。
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>キャンセル</AlertDialogCancel>
+            <AlertDialogAction
+              variant="destructive"
+              onClick={() => {
+                deleteProblem(deleteTargetId)
+                setIsDeleteDialogOpen(false)
+              }}
+            >
+              削除する
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* 編集モーダル */}
       {editTarget && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-background p-6 rounded-lg shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto relative">
@@ -154,7 +196,7 @@ function AllProblemTable() {
               <Button 
                 variant="destructive" 
                 className="w-full"
-                onClick={() => deleteProblem(editTarget.id)}
+                onClick={() => handleDeleteClick(editTarget.id)}
               >
                 削除する
               </Button>

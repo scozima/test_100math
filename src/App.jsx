@@ -17,6 +17,7 @@ import Dashboard from "./pages/Dashboard";
 // ここでAuthProviderをインポート
 import { AuthProvider } from "./context/AuthContext"; // 修正
 import { ThemeProvider } from "@/components/theme-provider"
+import { Toaster } from "sonner"
 
 function App() {
   const { user, loading } = useContext(AuthContext); // loadingも一緒に取得
@@ -30,6 +31,7 @@ function App() {
     <ThemeProvider defaultTheme="system" storageKey="app-theme">
       <AuthProvider>
         <Router basename={basename}>
+          <Toaster richColors />
           <Routes>
             <Route path="/" element={<AppLayout />}>
               <Route
