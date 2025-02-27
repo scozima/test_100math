@@ -4,6 +4,12 @@ import { Button } from "@/components/ui/button"
 import { useContext, useState } from "react"
 import { AuthContext } from "@/context/AuthProvider"
 import Header from "@/components/Header"
+import { 
+  Home,
+  BookOpen,
+  LayoutDashboard,
+  Settings
+} from "lucide-react"
 
 function MainLayout({ children }) {
   const { user, logout } = useContext(AuthContext)
@@ -14,24 +20,49 @@ function MainLayout({ children }) {
     return location.pathname === path
   }
 
+  const handleMenuItemClick = () => {
+    setIsMobileMenuOpen(false)
+  }
+
   const menuItems = [
-    { path: "/", label: "ホーム" },
-    { path: "/lesson", label: "レッスン" },
-    { path: "/dashboard", label: "ダッシュボード" },
-    { path: "/problem", label: "登録・編集" },
+    { 
+      path: "/lesson", 
+      label: "レッスン",
+      icon: <BookOpen className="h-4 w-4" />
+    },
+    { 
+      path: "/dashboard", 
+      label: "ダッシュボード",
+      icon: <LayoutDashboard className="h-4 w-4" />
+    },
+    { 
+      path: "/", 
+      label: "ホーム",
+      icon: <Home className="h-4 w-4" />
+    },
+    { 
+      path: "/problem", 
+      label: "登録・編集",
+      icon: <Settings className="h-4 w-4" />
+    },
   ]
 
   return (
     <div className="grid min-h-screen w-full lg:grid-cols-[280px_1fr]">
       {/* サイドバー */}
       <div className={cn(
-        "border-r bg-muted/40",
+        "border-r bg-background",
         "fixed inset-y-0 z-50 w-[280px] transition-transform duration-300 lg:static lg:block",
+        "shadow-lg",
         isMobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-[60px] items-center justify-between border-b px-6">
-            <Link to="/" className="font-semibold">
+            <Link 
+              to="/" 
+              className="font-semibold"
+              onClick={handleMenuItemClick}
+            >
               100math
             </Link>
             <Button 
@@ -44,10 +75,11 @@ function MainLayout({ children }) {
           </div>
           <div className="flex-1 overflow-auto py-2">
             <nav className="grid items-start px-4 text-sm font-medium gap-2">
-              {menuItems.map(({ path, label }) => (
+              {menuItems.map(({ path, label, icon }) => (
                 <Link
                   key={path}
                   to={path}
+                  onClick={handleMenuItemClick}
                   className={cn(
                     "flex items-center gap-3 rounded-lg px-3 py-2 transition-all",
                     isCurrentPath(path) 
@@ -55,6 +87,7 @@ function MainLayout({ children }) {
                       : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                   )}
                 >
+                  {icon}
                   {label}
                 </Link>
               ))}
@@ -62,6 +95,14 @@ function MainLayout({ children }) {
           </div>
         </div>
       </div>
+
+      {/* オーバーレイ - モバイルでメニューを開いたときに表示 */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
 
       {/* メインコンテンツ */}
       <div className="flex flex-col">
