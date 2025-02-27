@@ -26,6 +26,11 @@ function MainLayout({ children }) {
 
   const menuItems = [
     { 
+      path: "/", 
+      label: "ホーム",
+      icon: <Home className="h-4 w-4" />
+    },
+    { 
       path: "/lesson", 
       label: "レッスン",
       icon: <BookOpen className="h-4 w-4" />
@@ -34,11 +39,6 @@ function MainLayout({ children }) {
       path: "/dashboard", 
       label: "ダッシュボード",
       icon: <LayoutDashboard className="h-4 w-4" />
-    },
-    { 
-      path: "/", 
-      label: "ホーム",
-      icon: <Home className="h-4 w-4" />
     },
     { 
       path: "/problem", 
