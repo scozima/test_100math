@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useContext } from "react";
+import { useState, useRef, useEffect } from "react";
 import { collection, getDocs, doc, getDoc, addDoc } from "firebase/firestore";
 
 import { db, auth } from '../firebase';
@@ -9,9 +9,6 @@ import ResultDisplay from './math/ResultDisplay'
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Skeleton } from "@/components/ui/skeleton"
-
-import { AuthContext } from "@/context/AuthContext"
 
 function MathTable() {
   const [start, setStart] = useState(false);
@@ -29,8 +26,6 @@ function MathTable() {
   const [currentUser, setCurrentUser] = useState(null);
 
   const firstInputRef = useRef(null);
-
-  const { loading } = useContext(AuthContext)
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -281,34 +276,6 @@ function MathTable() {
     }, 0);
   };
 
-
-  if (loading) {
-    return (
-      <div className="space-y-4">
-        {/* 問題選択部分のスケルトン */}
-        <div className="flex gap-4 items-center">
-          <Skeleton className="h-10 w-[180px]" />
-          <Skeleton className="h-10 w-[100px]" />
-        </div>
-        
-        {/* テーブル部分のスケルトン */}
-        <div className="space-y-4">
-          <div className="grid grid-cols-10 gap-2">
-            {[...Array(10)].map((_, i) => (
-              <Skeleton key={i} className="h-16 w-full" />
-            ))}
-          </div>
-          {[...Array(9)].map((_, rowIndex) => (
-            <div key={rowIndex} className="grid grid-cols-10 gap-2">
-              {[...Array(10)].map((_, colIndex) => (
-                <Skeleton key={colIndex} className="h-16 w-full" />
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
-    )
-  }
 
   if (!currentUser) {
     return <p>Please log in to access the math problems.</p>;
