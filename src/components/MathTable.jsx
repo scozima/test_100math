@@ -7,8 +7,10 @@ import ProblemSelector from './math/ProblemSelector'
 import MathGrid from './math/MathGrid'
 import ResultDisplay from './math/ResultDisplay'
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuCheckboxItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
 function MathTable() {
   const [start, setStart] = useState(false);
@@ -26,6 +28,17 @@ function MathTable() {
   const [currentUser, setCurrentUser] = useState(null);
 
   const firstInputRef = useRef(null);
+
+  // カラムの表示状態を管理
+  const [visibleColumns, setVisibleColumns] = useState({
+    date: true,
+    problem: true,
+    score: true,
+    time: true
+  })
+
+  // 結果データの状態管理
+  const [results, setResults] = useState([])
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -104,15 +117,19 @@ function MathTable() {
   }, [selectedProblem, selectedCollection, currentUser]);
 
   const calculateAnswer = (rowValue, colValue, operator) => {
+    // 数値に変換してから計算する
+    const numRowValue = Number(rowValue);
+    const numColValue = Number(colValue);
+    
     switch (operator) {
       case "+":
-        return rowValue + colValue;
+        return numRowValue + numColValue;
       case "-":
-        return rowValue - colValue;
+        return numRowValue - numColValue;
       case "✕":
-        return rowValue * colValue;
+        return numRowValue * numColValue;
       case "÷":
-        return rowValue / colValue;
+        return numRowValue / numColValue;
       default:
         return 0;
     }
@@ -276,6 +293,13 @@ function MathTable() {
     }, 0);
   };
 
+  // カラムの切り替え処理を修正
+  const toggleColumn = (columnName) => {
+    setVisibleColumns(prev => ({
+      ...prev,
+      [columnName]: !prev[columnName]
+    }))
+  }
 
   if (!currentUser) {
     return <p>Please log in to access the math problems.</p>;
@@ -289,7 +313,6 @@ function MathTable() {
     <div className="container mx-auto p-6 space-y-4">
       <Card>
         <CardHeader>
-          
           <ProblemSelector
             problems={problems}
             selectedCollection={selectedCollection}
