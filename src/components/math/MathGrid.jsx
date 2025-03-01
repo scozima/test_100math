@@ -1,20 +1,30 @@
+import React, { useRef, useEffect } from "react";
 import PropTypes from 'prop-types'
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 
-const MathGrid = ({ 
-  array, 
-  start, 
-  userAnswers, 
-  answerStates, 
-  handleChange, 
-  firstInputRef 
+const MathGrid = ({
+  array,
+  start,
+  userAnswers,
+  answerStates,
+  handleChange,
+  firstInputRef
 }) => {
   if (array.length === 0) return null
 
   const generateKey = (rowIndex, colIndex, rowValue, colValue) => {
     return `${rowIndex}-${colIndex}_${rowValue}${array[0].operator}${colValue}`
   }
+
+  // 個別のセルごとにrefを管理するためのオブジェクト
+  const inputRefs = useRef({});
+
+  const handleFocus = (key) => {
+    if (inputRefs.current[key]) {
+      inputRefs.current[key].select();
+    }
+  };
 
   return (
     <div className="overflow-x-auto relative">
@@ -40,11 +50,19 @@ const MathGrid = ({
               {array[0].x.map((colValue, colIndex) => {
                 const key = generateKey(rowIndex, colIndex, rowValue, colValue)
                 const answerState = answerStates[key]
-                
+
                 return (
                   <td key={colIndex} className="w-16 h-16 border-2 border-gray-200 relative p-0">
                     <Input
-                      ref={rowIndex === 0 && colIndex === 0 ? firstInputRef : null}
+                      onFocus={() => handleFocus(key)}
+                      ref={(node) => {
+                        // 各セルのrefを保存
+                        inputRefs.current[key] = node;
+                        // 最初のセルの場合は外部から渡されたrefにも設定
+                        if (rowIndex === 0 && colIndex === 0 && firstInputRef) {
+                          firstInputRef.current = node;
+                        }
+                      }}
                       type="number"
                       value={userAnswers[key] || ""}
                       onChange={(e) => handleChange(rowIndex, colIndex, rowValue, colValue, e)}
