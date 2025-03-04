@@ -10,11 +10,13 @@ import {
   LayoutDashboard,
   Settings
 } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 function MainLayout({ children }) {
   const { user, logout } = useContext(AuthContext)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const location = useLocation()
+  const { t } = useTranslation()
 
   const isCurrentPath = (path) => {
     return location.pathname === path
@@ -27,22 +29,22 @@ function MainLayout({ children }) {
   const menuItems = [
     { 
       path: "/", 
-      label: "ホーム",
+      label: t("common.home"),
       icon: <Home className="h-4 w-4" />
     },
     { 
       path: "/lesson", 
-      label: "レッスン",
+      label: t("common.problems"),
       icon: <BookOpen className="h-4 w-4" />
     },
     { 
       path: "/dashboard", 
-      label: "ダッシュボード",
+      label: t("common.dashboard"),
       icon: <LayoutDashboard className="h-4 w-4" />
     },
     { 
       path: "/problem", 
-      label: "登録・編集",
+      label: t("common.settings"),
       icon: <Settings className="h-4 w-4" />
     },
   ]

@@ -10,10 +10,13 @@ import {
   DropdownMenuTrigger,
 } from "../components/ui/dropdown-menu"
 import { useTheme } from "@/components/theme-provider"
+import LanguageSwitcher from "./LanguageSwitcher"
+import { useTranslation } from "react-i18next"
 
 const Header = () => {
   const { user, logout } = useContext(AuthContext)
   const { theme, setTheme } = useTheme()
+  const { t } = useTranslation()
 
   return (
     <div className="flex-1 flex justify-end items-center gap-2">
@@ -26,6 +29,8 @@ const Header = () => {
         <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
         <span className="sr-only">テーマの切り替え</span>
       </Button> */}
+
+      <LanguageSwitcher />
 
       {user && (
         <DropdownMenu>
@@ -49,7 +54,7 @@ const Header = () => {
               {user.displayName}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={logout}>
-              ログアウト
+              {t('common.logout')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
