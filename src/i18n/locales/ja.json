@@ -2,11 +2,28 @@
   "common": {
     "home": "ホーム",
     "dashboard": "ダッシュボード",
-    "problems": "問題一覧",
+    "lesson": "レッスン",
     "settings": "設定",
     "login": "ログイン",
     "logout": "ログアウト",
     "language": "言語"
+  },
+  "math_table": {
+    "login_required": "問題にアクセスするにはログインしてください。",
+    "loading": "読み込み中...",
+    "start": "スタート",
+    "submit": "回答する",
+    "restart": "もう一度",
+    "categories": {
+      "basic": "ベーシック問題",
+      "original": "オリジナル問題"
+    },
+    "result": {
+      "score": "スコア",
+      "total": "問中",
+      "time_taken": "所要時間",
+      "seconds": "秒"
+    }
   },
   "home": {
     "title": "100マス計算で計算力アップ！",

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { collection, getDocs, doc, getDoc, addDoc } from "firebase/firestore";
+import { useTranslation } from "react-i18next";
 
 import { db, auth } from '../firebase';
 
@@ -13,6 +14,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuCheckboxItem, DropdownMe
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
 function MathTable() {
+  const { t } = useTranslation();
   const [start, setStart] = useState(false);
   const [userAnswers, setUserAnswers] = useState({});
   const [score, setScore] = useState(null);
@@ -302,11 +304,11 @@ function MathTable() {
   }
 
   if (!currentUser) {
-    return <p>Please log in to access the math problems.</p>;
+    return <p>{t('math_table.login_required')}</p>;
   }
 
   if (array.length === 0) {
-    return <p>Loading...</p>;
+    return <p>{t('math_table.loading')}</p>;
   }
 
   return (
@@ -339,7 +341,7 @@ function MathTable() {
                   className="w-32 mx-auto block py-3"
                   size="lg"
                 >
-                  スタート
+                  {t('math_table.start')}
                 </Button>
               ) : (
                 <>
@@ -350,7 +352,7 @@ function MathTable() {
                       size="lg"
                       disabled={!isFormValid}
                     >
-                      回答する
+                      {t('math_table.submit')}
                     </Button>
                   )}
 

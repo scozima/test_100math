@@ -34,7 +34,7 @@ function MainLayout({ children }) {
     },
     { 
       path: "/lesson", 
-      label: t("common.problems"),
+      label: t("common.lesson"),
       icon: <BookOpen className="h-4 w-4" />
     },
     { 
