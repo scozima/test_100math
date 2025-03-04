@@ -2,11 +2,28 @@
   "common": {
     "home": "Home",
     "dashboard": "Dashboard",
-    "problems": "Problems",
+    "lesson": "Lesson",
     "settings": "Settings",
     "login": "Login",
     "logout": "Logout",
     "language": "Language"
+  },
+  "math_table": {
+    "login_required": "Please log in to access the math problems.",
+    "loading": "Loading...",
+    "start": "Start",
+    "submit": "Submit",
+    "restart": "Try Again",
+    "categories": {
+      "basic": "Basic Problems",
+      "original": "Custom Problems"
+    },
+    "result": {
+      "score": "Score",
+      "total": "of",
+      "time_taken": "Time",
+      "seconds": "seconds"
+    }
   },
   "home": {
     "title": "Improve Your Math Skills with 100-Square Math!",
