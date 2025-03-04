@@ -1,0 +1,52 @@
+{
+  "common": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "problems": "Problems",
+    "settings": "Settings",
+    "login": "Login",
+    "logout": "Logout",
+    "language": "Language"
+  },
+  "home": {
+    "title": "Improve Your Math Skills with 100-Square Math!",
+    "subtitle1": "A simple and effective learning tool",
+    "subtitle2": "to develop basic calculation skills in a fun way.",
+    "start_button": "Get Started",
+    "feature1": {
+      "title": "Master the Basics",
+      "description": "Learn addition, subtraction, multiplication, and division in an enjoyable way."
+    },
+    "feature2": {
+      "title": "Time Trial",
+      "description": "Challenge yourself with timed problems and beat your personal best."
+    },
+    "feature3": {
+      "title": "Progressive Challenges",
+      "description": "Learn at your own pace with problems ranging from basic to advanced."
+    },
+    "feature4": {
+      "title": "Customize Your Problems",
+      "description": "Create your own problems for more effective learning."
+    },
+    "usage": {
+      "title": "How to Use",
+      "step1": {
+        "title": "1. Select a Challenge",
+        "description": "Pick a problem set from basic or custom challenges."
+      },
+      "step2": {
+        "title": "2. Start Calculating",
+        "description": "Press start to begin timing and enter answers in sequence."
+      },
+      "step3": {
+        "title": "3. Check Results",
+        "description": "Review your correct answers and time taken after completion."
+      },
+      "step4": {
+        "title": "4. Monitor Your Progress",
+        "description": "Track your learning on the dashboard and see your daily improvement."
+      }
+    }
+  }
+}
