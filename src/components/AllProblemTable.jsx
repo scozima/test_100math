@@ -113,30 +113,28 @@ function AllProblemTable() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[100px]">ID</TableHead>
-                <TableHead>登録日</TableHead>
-                <TableHead>更新日</TableHead>
                 <TableHead>問題名</TableHead>
                 <TableHead className="w-[80px]">演算子</TableHead>
                 <TableHead>X値</TableHead>
                 <TableHead>Y値</TableHead>
-                <TableHead className="w-[80px]"></TableHead>
+                <TableHead>登録日</TableHead>
+                <TableHead>更新日</TableHead>
+                <TableHead className="w-[80px]">編集</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {problems.map((problem) => (
                 <TableRow key={problem.id}>
-                  <TableCell className="font-mono">{problem.id.slice(0, 8)}</TableCell>
-                  <TableCell>
-                    {problem.createdAt ? problem.createdAt.toDate().toLocaleString() : "N/A"}
-                  </TableCell>
-                  <TableCell>
-                    {problem.updatedAt ? problem.updatedAt.toDate().toLocaleString() : "N/A"}
-                  </TableCell>
                   <TableCell className="font-medium">{problem.name}</TableCell>
                   <TableCell className="text-center">{problem.operator}</TableCell>
                   <TableCell>{problem.x ? problem.x.join(", ") : "N/A"}</TableCell>
                   <TableCell>{problem.y ? problem.y.join(", ") : "N/A"}</TableCell>
+                  <TableCell>
+                    {problem.createdAt ? problem.createdAt.toDate().toLocaleString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : "N/A"}
+                  </TableCell>
+                  <TableCell>
+                    {problem.updatedAt ? problem.updatedAt.toDate().toLocaleString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : "N/A"}
+                  </TableCell>
                   <TableCell>
                     <Button
                       variant="ghost"
@@ -186,15 +184,15 @@ function AllProblemTable() {
       {editTarget && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-background p-6 rounded-lg shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto relative">
-            <AddQuestion 
-              title="編集する" 
-              btnTitle="編集完了" 
-              problem={editTarget} 
-              closeModal={closeModal} 
+            <AddQuestion
+              title="編集する"
+              btnTitle="編集完了"
+              problem={editTarget}
+              closeModal={closeModal}
             />
             <div className="mt-4 pt-4 border-t">
-              <Button 
-                variant="destructive" 
+              <Button
+                variant="destructive"
                 className="w-full"
                 onClick={() => handleDeleteClick(editTarget.id)}
               >

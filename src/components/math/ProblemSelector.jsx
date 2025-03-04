@@ -13,7 +13,7 @@ const ProblemSelector = ({ problems, selectedProblem, selectedCollection, onProb
 
   return (
     <Select value={currentValue} onValueChange={onProblemSelection}>
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="w-fit min-w-[200px] max-w-[300px]">
         <SelectValue placeholder="問題を選択" />
       </SelectTrigger>
       <SelectContent>

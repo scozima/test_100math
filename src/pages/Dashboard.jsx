@@ -2,11 +2,11 @@ import { useContext, useEffect, useState, useMemo } from "react"
 import { AuthContext } from "../context/AuthProvider"
 import { collection, getDocs } from "firebase/firestore"
 import { db } from "../firebase"
-import { 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+import {
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   Legend,
   ResponsiveContainer,
   ComposedChart,
@@ -46,7 +46,7 @@ import {
   DropdownMenuTrigger,
 } from "../components/ui/dropdown-menu"
 import { Input } from "../components/ui/input"
-import { ChevronDown, ChevronUp, ChevronsUpDown } from "lucide-react"  // アイコン用
+import { ChevronDown, ChevronUp, ChevronsUpDown, ChevronLeft, ChevronRight } from "lucide-react"  // アイコン用
 
 // 曜日の配列を追加
 const WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土']
@@ -80,7 +80,7 @@ CustomShape.propTypes = {
 // 日付フォーマット関数を修正
 const formatDate = (timestamp) => {
   if (!timestamp) return ''
-  
+
   // timestampがオブジェクトの場合（Firestore timestamp）
   if (typeof timestamp === 'object' && timestamp.seconds) {
     const date = new Date(timestamp.seconds * 1000)
@@ -89,7 +89,7 @@ const formatDate = (timestamp) => {
     const weekday = WEEKDAYS[date.getDay()]
     return `${month}/${day}(${weekday})`
   }
-  
+
   // timestampが数値の場合（ミリ秒）
   if (typeof timestamp === 'number') {
     const date = new Date(timestamp)
@@ -98,7 +98,7 @@ const formatDate = (timestamp) => {
     const weekday = WEEKDAYS[date.getDay()]
     return `${month}/${day}(${weekday})`
   }
-  
+
   return ''
 }
 
@@ -193,21 +193,21 @@ const Dashboard = () => {
     return results.reduce((acc, result) => {
       const collection = result.problemCollection || 'basic_question_db'
       const problemKey = `${collection}/${result.problemId}`
-      
+
       // 問題が存在する場合のみ追加
       if (result.problemName && result.problemId && validProblemIds.has(problemKey)) {
         if (!acc[collection]) {
           acc[collection] = new Set()
         }
-        
+
         const problemData = JSON.stringify({
           id: result.problemId,
           name: result.problemName
         })
-        
+
         acc[collection].add(problemData)
       }
-      
+
       return acc
     }, {
       basic_question_db: new Set(),
@@ -218,8 +218,8 @@ const Dashboard = () => {
   // 期間の移動処理
   const handleDateNavigation = (direction) => {
     const newDate = new Date(currentDate)
-    
-    switch(dateRange) {
+
+    switch (dateRange) {
       case 'month':
         newDate.setMonth(currentDate.getMonth() + (direction === 'prev' ? -1 : 1))
         break
@@ -241,7 +241,7 @@ const Dashboard = () => {
       day: 'numeric'
     })
 
-    switch(dateRange) {
+    switch (dateRange) {
       case 'month':
         return `${currentDate.getFullYear()}年${currentDate.getMonth() + 1}月`
       case 'week': {
@@ -270,7 +270,7 @@ const Dashboard = () => {
     let endDate = new Date(currentDate)
 
     // 日付範囲の設定（既存のコード）
-    switch(dateRange) {
+    switch (dateRange) {
       case 'month':
         startDate.setDate(1)
         endDate.setMonth(endDate.getMonth() + 1)
@@ -291,14 +291,14 @@ const Dashboard = () => {
     return results.filter(result => {
       const resultDate = new Date(result.createdAt.seconds * 1000)
       const problemKey = `${result.problemCollection || 'basic_question_db'}/${result.problemId}`
-      
+
       // 問題フィルタリングの修正
       const problemMatch = selectedProblem === 'all' || selectedProblem === problemKey
 
-      return resultDate >= startDate && 
-             resultDate <= endDate && 
-             problemMatch &&
-             validProblemIds.has(problemKey) // 有効な問題のみ表示
+      return resultDate >= startDate &&
+        resultDate <= endDate &&
+        problemMatch &&
+        validProblemIds.has(problemKey) // 有効な問題のみ表示
     })
   }
 
@@ -437,32 +437,32 @@ const Dashboard = () => {
   // フィルタリングとソートを適用したデータを取得
   const filteredData = useMemo(() => {
     let filtered = [...filteredResults]
-    
+
     // フィルター適用
     if (filterValue) {
-      filtered = filtered.filter(item => 
+      filtered = filtered.filter(item =>
         item.problemName.toLowerCase().includes(filterValue.toLowerCase()) ||
         formatDate(item.createdAt).includes(filterValue)
       )
     }
-    
+
     // ソート適用
     if (sortConfig.key) {
       filtered.sort((a, b) => {
         let aValue = a[sortConfig.key]
         let bValue = b[sortConfig.key]
-        
+
         if (sortConfig.key === 'date') {
           aValue = new Date(a.createdAt.seconds * 1000)
           bValue = new Date(b.createdAt.seconds * 1000)
         }
-        
+
         if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1
         if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1
         return 0
       })
     }
-    
+
     return filtered
   }, [filteredResults, filterValue, sortConfig])
 
@@ -529,7 +529,7 @@ const Dashboard = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">再開記録</CardTitle>
+            <CardTitle className="text-sm font-medium">復活</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{detailedStats.recoveryCount}回</div>
@@ -545,13 +545,18 @@ const Dashboard = () => {
           <CardHeader className="space-y-4">
             <div className="flex items-center justify-between">
               <CardTitle>学習進捗</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent>
+
+            <div className="flex items-center justify-between mb-4">
               <Select value={selectedProblem} onValueChange={setSelectedProblem}>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-fit min-w-[200px] max-w-[300px]">
                   <SelectValue placeholder="問題を選択" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all" className="pl-8 font-medium">すべての問題</SelectItem>
-                  
+
                   {/* ベーシック問題 */}
                   <SelectGroup>
                     <SelectLabel className="px-2 py-1.5 text-sm font-semibold bg-muted">ベーシック問題</SelectLabel>
@@ -560,7 +565,7 @@ const Dashboard = () => {
                       .filter(problem => problem.exists !== false)  // 存在する問題のみ表示
                       .sort((a, b) => a.name.localeCompare(b.name, 'ja'))
                       .map(problem => (
-                        <SelectItem 
+                        <SelectItem
                           key={`basic_question_db/${problem.id}`}
                           value={`basic_question_db/${problem.id}`}
                           className="pl-8 hover:bg-accent"
@@ -569,9 +574,9 @@ const Dashboard = () => {
                         </SelectItem>
                       ))}
                   </SelectGroup>
-                  
+
                   <div className="my-1 px-2 border-t border-border" /> {/* 区切り線 */}
-                  
+
                   {/* オリジナル問題 */}
                   <SelectGroup>
                     <SelectLabel className="px-2 py-1.5 text-sm font-semibold bg-muted">オリジナル問題</SelectLabel>
@@ -580,7 +585,7 @@ const Dashboard = () => {
                       .filter(problem => problem.exists !== false)  // 存在する問題のみ表示
                       .sort((a, b) => a.name.localeCompare(b.name, 'ja'))
                       .map(problem => (
-                        <SelectItem 
+                        <SelectItem
                           key={`users/${problem.id}`}
                           value={`users/${problem.id}`}
                           className="pl-8 hover:bg-accent"
@@ -591,67 +596,70 @@ const Dashboard = () => {
                   </SelectGroup>
                 </SelectContent>
               </Select>
+              {/* 期間選択 */}
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => handleDateNavigation('prev')}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <span className="text-sm font-medium min-w-[120px] text-center">{getDateRangeLabel()}</span>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => handleDateNavigation('next')}
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => setCurrentDate(new Date())}
+                    className="px-5"
+                  >
+                    今日
+                  </Button>
+                  <Select value={dateRange} onValueChange={setDateRange}>
+                    <SelectTrigger className="w-[100px]">
+                      <SelectValue placeholder="期間" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="month">月表示</SelectItem>
+                      <SelectItem value="week">週表示</SelectItem>
+                      <SelectItem value="day">日表示</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
             </div>
-          </CardHeader>
-          <CardContent>
+
             <Tabs defaultValue="graph" className="space-y-4">
               <TabsList>
                 <TabsTrigger value="graph">チャート</TabsTrigger>
                 <TabsTrigger value="list">一覧</TabsTrigger>
               </TabsList>
-              
+
               <TabsContent value="graph" className="space-y-4">
-                {/* フィルターUI */}
-                <div className="flex items-center justify-between">
-                  {/* 期間選択 */}
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2">
-                      <Button 
-                        variant="outline" 
-                        size="icon"
-                        onClick={() => handleDateNavigation('prev')}
-                      >
-                        ←
-                      </Button>
-                      <span className="text-sm font-medium">{getDateRangeLabel()}</span>
-                      <Button 
-                        variant="outline"
-                        size="icon"
-                        onClick={() => handleDateNavigation('next')}
-                      >
-                        →
-                      </Button>
-                    </div>
-
-                    <Select value={dateRange} onValueChange={setDateRange}>
-                      <SelectTrigger className="w-[100px]">
-                        <SelectValue placeholder="期間" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="month">月表示</SelectItem>
-                        <SelectItem value="week">週表示</SelectItem>
-                        <SelectItem value="day">日表示</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
                 {/* グラフ本体 */}
                 <div className="h-[500px]">
                   {filteredData.length > 0 ? (
                     <ResponsiveContainer width="100%" height="100%">
-                      <ComposedChart 
-                        data={chartData} 
+                      <ComposedChart
+                        data={chartData}
                         margin={{ top: 20, right: 30, left: 20, bottom: 35 }}
                       >
-                        <CartesianGrid 
-                          strokeDasharray="3 3" 
+                        <CartesianGrid
+                          strokeDasharray="3 3"
                           className="stroke-muted"
                         />
-                        <XAxis 
+                        <XAxis
                           dataKey="date"
                           tickFormatter={formatDate}
-                          tick={{ 
+                          tick={{
                             fontSize: 12,
                             angle: -45,  // 45度傾ける
                             textAnchor: 'end',  // テキストの配置位置
@@ -660,13 +668,13 @@ const Dashboard = () => {
                           height={60}  // 軸の高さを増やして、傾けたテキストが収まるようにする
                           stroke="hsl(var(--foreground))"
                         />
-                        <YAxis 
+                        <YAxis
                           yAxisId="left"
                           orientation="left"
                           stroke="hsl(var(--foreground))"
-                          label={{ 
-                            value: '時間(秒)', 
-                            angle: -90, 
+                          label={{
+                            value: '時間(秒)',
+                            angle: -90,
                             position: 'insideBottom',
                             offset: 0,
                             style: {
@@ -676,13 +684,13 @@ const Dashboard = () => {
                             }
                           }}
                         />
-                        <YAxis 
+                        <YAxis
                           yAxisId="right"
                           orientation="right"
                           stroke="hsl(var(--foreground))"
-                          label={{ 
-                            value: 'スコア(%)', 
-                            angle: 90, 
+                          label={{
+                            value: 'スコア(%)',
+                            angle: 90,
                             position: 'insideBottom',
                             offset: 0,
                             style: {
@@ -693,7 +701,7 @@ const Dashboard = () => {
                           }}
                           domain={[0, 100]}
                         />
-                        <Tooltip 
+                        <Tooltip
                           contentStyle={{
                             backgroundColor: "hsl(var(--popover))",
                             border: "1px solid hsl(var(--border))",
@@ -710,8 +718,17 @@ const Dashboard = () => {
                             color: "hsl(var(--foreground))",
                             padding: "2px 0"
                           }}
+                          labelFormatter={(label) => {
+                            const data = chartData.find(item => item.date === label)
+                            return data ? data.problem : ''
+                          }}
+                          formatter={(value, name) => {
+                            if (name === '時間') return [`${value}秒`, name]
+                            if (name === 'スコア') return [`${value}%`, name]
+                            return [value, name]
+                          }}
                         />
-                        <Legend 
+                        <Legend
                           verticalAlign="top"
                           height={36}
                           wrapperStyle={{
