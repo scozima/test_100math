@@ -28,7 +28,7 @@ function App() {
   }
 
   return (
-    <ThemeProvider defaultTheme="system" storageKey="app-theme">
+    <ThemeProvider defaultTheme="light">
       <AuthProvider>
         <Router basename={basename}>
           <Toaster richColors />
