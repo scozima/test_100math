@@ -52,13 +52,17 @@ import { ChevronDown, ChevronUp, ChevronsUpDown } from "lucide-react"  // アイ
 const WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土']
 
 const CustomShape = ({ cx, cy, fill, payload }) => {
-  const size = (payload.score || 0) * 2
+  if (!cx || !cy || !fill || !payload) {
+    return null
+  }
+
   return (
     <circle
       cx={cx}
       cy={cy}
-      r={Math.max(4, Math.min(size, 20))}
+      r={4}
       fill={fill}
+      fillOpacity={0.5}
       stroke="none"
     />
   )
@@ -309,7 +313,7 @@ const Dashboard = () => {
       date: result.createdAt.seconds * 1000,  // Unix timestamp（ミリ秒）に変換
       scorePercentage: Math.round(scorePercentage * 10) / 10,
       time: result.time,
-      score: result.score,
+      score: Math.round(scorePercentage * 10) / 10,  // スコアをパーセンテージに変更
       problem: result.problemName
     }
   }).sort((a, b) => a.date - b.date)  // 日付順にソート
