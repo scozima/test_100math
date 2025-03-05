@@ -123,5 +123,75 @@
         "error": "削除に失敗しました"
       }
     }
+  },
+  "dashboard": {
+    "loading": "読み込み中...",
+    "stats": {
+      "streak": {
+        "title": "学習継続",
+        "current": "日",
+        "max": "連続学習中 / 最高"
+      },
+      "totalTime": {
+        "title": "総学習時間",
+        "minutes": "分",
+        "days": "日間で",
+        "seconds": "秒"
+      },
+      "bestScore": {
+        "title": "ベストスコア",
+        "percent": "%",
+        "fastestTime": "最速:"
+      },
+      "recovery": {
+        "title": "復活",
+        "times": "回",
+        "description": "再開した回数"
+      }
+    },
+    "progress": {
+      "title": "学習進捗",
+      "problemSelect": {
+        "placeholder": "問題を選択",
+        "all": "すべての問題",
+        "basic": "ベーシック問題",
+        "original": "オリジナル問題"
+      },
+      "dateRange": {
+        "today": "今日",
+        "period": "期間",
+        "month": "月表示",
+        "week": "週表示",
+        "day": "日表示"
+      },
+      "tabs": {
+        "chart": "チャート",
+        "list": "一覧"
+      },
+      "chart": {
+        "noData": "データがありません",
+        "time": "時間",
+        "score": "スコア",
+        "timeAxis": "時間(秒)",
+        "scoreAxis": "スコア(%)"
+      },
+      "list": {
+        "filter": "フィルター...",
+        "columns": "表示項目",
+        "tableHeaders": {
+          "date": "日付",
+          "problem": "問題",
+          "score": "スコア",
+          "time": "時間"
+        },
+        "pagination": {
+          "showing": "件中",
+          "display": "件を表示",
+          "pageSize": "表示件数",
+          "prev": "前のページ",
+          "next": "次のページ"
+        }
+      }
+    }
   }
 } 

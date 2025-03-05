@@ -2,6 +2,13 @@ import { useContext, useEffect, useState, useMemo } from "react"
 import { AuthContext } from "../context/AuthProvider"
 import { collection, getDocs } from "firebase/firestore"
 import { db } from "../firebase"
+import { useTranslation } from "react-i18next"
+import dayjs from "dayjs"
+import 'dayjs/locale/ja'
+import 'dayjs/locale/en'
+import weekOfYear from 'dayjs/plugin/weekOfYear'
+import weekday from 'dayjs/plugin/weekday'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
 import {
   XAxis,
   YAxis,
@@ -48,8 +55,10 @@ import {
 import { Input } from "../components/ui/input"
 import { ChevronDown, ChevronUp, ChevronsUpDown, ChevronLeft, ChevronRight } from "lucide-react"  // アイコン用
 
-// 曜日の配列を追加
-const WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土']
+// プラグインを拡張
+dayjs.extend(weekOfYear)
+dayjs.extend(weekday)
+dayjs.extend(localizedFormat)
 
 const CustomShape = ({ cx, cy, fill, payload }) => {
   if (!cx || !cy || !fill || !payload) {
@@ -78,31 +87,28 @@ CustomShape.propTypes = {
 }
 
 // 日付フォーマット関数を修正
-const formatDate = (timestamp) => {
-  if (!timestamp) return ''
+const formatDate = (timestamp, locale) => {
+  if (!timestamp) return '';
 
+  let date;
   // timestampがオブジェクトの場合（Firestore timestamp）
   if (typeof timestamp === 'object' && timestamp.seconds) {
-    const date = new Date(timestamp.seconds * 1000)
-    const month = date.getMonth() + 1
-    const day = date.getDate()
-    const weekday = WEEKDAYS[date.getDay()]
-    return `${month}/${day}(${weekday})`
+    date = new Date(timestamp.seconds * 1000);
   }
-
   // timestampが数値の場合（ミリ秒）
-  if (typeof timestamp === 'number') {
-    const date = new Date(timestamp)
-    const month = date.getMonth() + 1
-    const day = date.getDate()
-    const weekday = WEEKDAYS[date.getDay()]
-    return `${month}/${day}(${weekday})`
+  else if (typeof timestamp === 'number') {
+    date = new Date(timestamp);
+  } else {
+    return '';
   }
 
-  return ''
+  // 指定された言語に基づいてフォーマット
+  return dayjs(date).locale(locale).format('MM/DD (ddd)');
 }
 
 const Dashboard = () => {
+  const { t, i18n } = useTranslation()
+  const locale = i18n.language === 'ja' ? 'ja' : 'en';
   const { user } = useContext(AuthContext)
   const [results, setResults] = useState([])
   const [loading, setLoading] = useState(true)
@@ -234,27 +240,28 @@ const Dashboard = () => {
   }
 
   // 期間の表示文字列を生成
-  const getDateRangeLabel = () => {
-    const formatter = new Intl.DateTimeFormat('ja-JP', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    })
-
+  const getDateRangeLabel = (currentDate, dateRange, locale) => {
     switch (dateRange) {
       case 'month':
-        return `${currentDate.getFullYear()}年${currentDate.getMonth() + 1}月`
+        if (locale === 'ja') {
+          return dayjs(currentDate).locale(locale).format('YYYY年MM月');
+        } else {
+          return dayjs(currentDate).locale(locale).format('MMMM YYYY');
+        }
       case 'week': {
-        const startDate = new Date(currentDate)
-        startDate.setDate(currentDate.getDate() - currentDate.getDay())
-        const endDate = new Date(startDate)
-        endDate.setDate(startDate.getDate() + 6)
-        return `${formatter.format(startDate)} 〜 ${formatter.format(endDate)}`
+        const startDate = dayjs(currentDate).startOf('week').locale(locale);
+        const endDate = dayjs(currentDate).endOf('week').locale(locale);
+        
+        if (locale === 'ja') {
+          return `${startDate.format('YYYY年MM月DD日')} 〜 ${endDate.format('YYYY年MM月DD日')}`;
+        } else {
+          return `${startDate.format('MMM DD, YYYY')} - ${endDate.format('MMM DD, YYYY')}`;
+        }
       }
       case 'day':
-        return formatter.format(currentDate)
+        return dayjs(currentDate).locale(locale).format(locale === 'ja' ? 'YYYY年MM月DD日' : 'MMM DD, YYYY');
       default:
-        return ''
+        return '';
     }
   }
 
@@ -414,22 +421,22 @@ const Dashboard = () => {
   const columns = [
     {
       id: "date",
-      name: "日付",
+      name: t('dashboard.progress.list.tableHeaders.date'),
       sortable: true,
     },
     {
       id: "problem",
-      name: "問題",
+      name: t('dashboard.progress.list.tableHeaders.problem'),
       sortable: true,
     },
     {
       id: "score",
-      name: "スコア",
+      name: t('dashboard.progress.list.tableHeaders.score'),
       sortable: true,
     },
     {
       id: "time",
-      name: "時間",
+      name: t('dashboard.progress.list.tableHeaders.time'),
       sortable: true,
     },
   ]
@@ -442,7 +449,7 @@ const Dashboard = () => {
     if (filterValue) {
       filtered = filtered.filter(item =>
         item.problemName.toLowerCase().includes(filterValue.toLowerCase()) ||
-        formatDate(item.createdAt).includes(filterValue)
+        formatDate(item.createdAt, locale).includes(filterValue)
       )
     }
 
@@ -464,7 +471,7 @@ const Dashboard = () => {
     }
 
     return filtered
-  }, [filteredResults, filterValue, sortConfig])
+  }, [filteredResults, filterValue, sortConfig, locale])
 
   // ページネーション適用
   const paginatedData = useMemo(() => {
@@ -483,7 +490,7 @@ const Dashboard = () => {
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <div className="text-lg">Loading...</div>
+        <div className="text-lg">{t('dashboard.loading')}</div>
       </div>
     )
   }
@@ -493,48 +500,48 @@ const Dashboard = () => {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">学習継続</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.stats.streak.title')}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{detailedStats.currentStreak}日</div>
+            <div className="text-2xl font-bold">{detailedStats.currentStreak}{t('dashboard.stats.streak.current')}</div>
             <p className="text-xs text-muted-foreground">
-              連続学習中 / 最高{detailedStats.maxStreak}日
+              {t('dashboard.stats.streak.max')}{detailedStats.maxStreak}{t('dashboard.stats.streak.current')}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">総学習時間</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.stats.totalTime.title')}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{Math.floor(detailedStats.totalTime / 60)}分</div>
+            <div className="text-2xl font-bold">{Math.floor(detailedStats.totalTime / 60)}{t('dashboard.stats.totalTime.minutes')}</div>
             <p className="text-xs text-muted-foreground">
-              {detailedStats.totalDays}日間で{detailedStats.totalTime}秒
+              {detailedStats.totalDays}{t('dashboard.stats.totalTime.days')}{detailedStats.totalTime}{t('dashboard.stats.totalTime.seconds')}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">ベストスコア</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.stats.bestScore.title')}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{detailedStats.bestScore}%</div>
+            <div className="text-2xl font-bold">{detailedStats.bestScore}{t('dashboard.stats.bestScore.percent')}</div>
             <p className="text-xs text-muted-foreground">
-              最速: {detailedStats.bestTime}秒
+              {t('dashboard.stats.bestScore.fastestTime')} {detailedStats.bestTime}{t('dashboard.stats.totalTime.seconds')}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">復活</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.stats.recovery.title')}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{detailedStats.recoveryCount}回</div>
+            <div className="text-2xl font-bold">{detailedStats.recoveryCount}{t('dashboard.stats.recovery.times')}</div>
             <p className="text-xs text-muted-foreground">
-              再開した回数
+              {t('dashboard.stats.recovery.description')}
             </p>
           </CardContent>
         </Card>
@@ -544,7 +551,7 @@ const Dashboard = () => {
         <Card className="col-span-7">
           <CardHeader className="space-y-4">
             <div className="flex items-center justify-between">
-              <CardTitle>学習進捗</CardTitle>
+              <CardTitle>{t('dashboard.progress.title')}</CardTitle>
             </div>
           </CardHeader>
           <CardContent>
@@ -552,14 +559,14 @@ const Dashboard = () => {
             <div className="flex items-center justify-between mb-4">
               <Select value={selectedProblem} onValueChange={setSelectedProblem}>
                 <SelectTrigger className="w-fit min-w-[200px] max-w-[300px]">
-                  <SelectValue placeholder="問題を選択" />
+                  <SelectValue placeholder={t('dashboard.progress.problemSelect.placeholder')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all" className="pl-8 font-medium">すべての問題</SelectItem>
+                  <SelectItem value="all" className="pl-8 font-medium">{t('dashboard.progress.problemSelect.all')}</SelectItem>
 
                   {/* ベーシック問題 */}
                   <SelectGroup>
-                    <SelectLabel className="px-2 py-1.5 text-sm font-semibold bg-muted">ベーシック問題</SelectLabel>
+                    <SelectLabel className="px-2 py-1.5 text-sm font-semibold bg-muted">{t('dashboard.progress.problemSelect.basic')}</SelectLabel>
                     {[...categorizedProblems.basic_question_db]
                       .map(problemStr => JSON.parse(problemStr))
                       .filter(problem => problem.exists !== false)  // 存在する問題のみ表示
@@ -579,7 +586,7 @@ const Dashboard = () => {
 
                   {/* オリジナル問題 */}
                   <SelectGroup>
-                    <SelectLabel className="px-2 py-1.5 text-sm font-semibold bg-muted">オリジナル問題</SelectLabel>
+                    <SelectLabel className="px-2 py-1.5 text-sm font-semibold bg-muted">{t('dashboard.progress.problemSelect.original')}</SelectLabel>
                     {[...categorizedProblems.users]
                       .map(problemStr => JSON.parse(problemStr))
                       .filter(problem => problem.exists !== false)  // 存在する問題のみ表示
@@ -606,7 +613,7 @@ const Dashboard = () => {
                   >
                     <ChevronLeft className="h-4 w-4" />
                   </Button>
-                  <span className="text-sm font-medium min-w-[120px] text-center">{getDateRangeLabel()}</span>
+                  <span className="text-sm font-medium min-w-[120px] text-center">{getDateRangeLabel(currentDate, dateRange, locale)}</span>
                   <Button
                     variant="outline"
                     size="icon"
@@ -619,18 +626,18 @@ const Dashboard = () => {
                     variant="outline"
                     size="icon"
                     onClick={() => setCurrentDate(new Date())}
-                    className="px-5"
+                    className="px-10"
                   >
-                    今日
+                    {t('dashboard.progress.dateRange.today')}
                   </Button>
                   <Select value={dateRange} onValueChange={setDateRange}>
                     <SelectTrigger className="w-[100px]">
-                      <SelectValue placeholder="期間" />
+                      <SelectValue placeholder={t('dashboard.progress.dateRange.period')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="month">月表示</SelectItem>
-                      <SelectItem value="week">週表示</SelectItem>
-                      <SelectItem value="day">日表示</SelectItem>
+                      <SelectItem value="month">{t('dashboard.progress.dateRange.month')}</SelectItem>
+                      <SelectItem value="week">{t('dashboard.progress.dateRange.week')}</SelectItem>
+                      <SelectItem value="day">{t('dashboard.progress.dateRange.day')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -639,8 +646,8 @@ const Dashboard = () => {
 
             <Tabs defaultValue="graph" className="space-y-4">
               <TabsList>
-                <TabsTrigger value="graph">チャート</TabsTrigger>
-                <TabsTrigger value="list">一覧</TabsTrigger>
+                <TabsTrigger value="graph">{t('dashboard.progress.tabs.chart')}</TabsTrigger>
+                <TabsTrigger value="list">{t('dashboard.progress.tabs.list')}</TabsTrigger>
               </TabsList>
 
               <TabsContent value="graph" className="space-y-4">
@@ -658,7 +665,7 @@ const Dashboard = () => {
                         />
                         <XAxis
                           dataKey="date"
-                          tickFormatter={formatDate}
+                          tickFormatter={(str) => formatDate(str, locale)}
                           tick={{
                             fontSize: 12,
                             angle: -45,  // 45度傾ける
@@ -673,7 +680,7 @@ const Dashboard = () => {
                           orientation="left"
                           stroke="hsl(var(--foreground))"
                           label={{
-                            value: '時間(秒)',
+                            value: t('dashboard.progress.chart.timeAxis'),
                             angle: -90,
                             position: 'insideBottom',
                             offset: 0,
@@ -689,7 +696,7 @@ const Dashboard = () => {
                           orientation="right"
                           stroke="hsl(var(--foreground))"
                           label={{
-                            value: 'スコア(%)',
+                            value: t('dashboard.progress.chart.scoreAxis'),
                             angle: 90,
                             position: 'insideBottom',
                             offset: 0,
@@ -723,8 +730,8 @@ const Dashboard = () => {
                             return data ? data.problem : ''
                           }}
                           formatter={(value, name) => {
-                            if (name === '時間') return [`${value}秒`, name]
-                            if (name === 'スコア') return [`${value}%`, name]
+                            if (name === t('dashboard.progress.chart.time')) return [`${value}${t('dashboard.stats.totalTime.seconds')}`, name]
+                            if (name === t('dashboard.progress.chart.score')) return [`${value}${t('dashboard.stats.bestScore.percent')}`, name]
                             return [value, name]
                           }}
                         />
@@ -741,7 +748,7 @@ const Dashboard = () => {
                           type="monotone"
                           dataKey="time"
                           stroke="hsl(var(--primary))"
-                          name="時間"
+                          name={t('dashboard.progress.chart.time')}
                           dot={{ r: 4, fill: "hsl(var(--primary))" }}
                           activeDot={{ r: 8 }}
                           strokeWidth={2}
@@ -750,7 +757,7 @@ const Dashboard = () => {
                           yAxisId="right"
                           dataKey="score"
                           fill="hsl(var(--muted-foreground))"
-                          name="スコア"
+                          name={t('dashboard.progress.chart.score')}
                           data={chartData.map(data => ({
                             ...data,
                             z: data.score
@@ -762,7 +769,7 @@ const Dashboard = () => {
                     </ResponsiveContainer>
                   ) : (
                     <div className="h-full flex items-center justify-center">
-                      <p className="text-muted-foreground">データがありません</p>
+                      <p className="text-muted-foreground">{t('dashboard.progress.chart.noData')}</p>
                     </div>
                   )}
                 </div>
@@ -773,7 +780,7 @@ const Dashboard = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Input
-                        placeholder="フィルター..."
+                        placeholder={t('dashboard.progress.list.filter')}
                         value={filterValue}
                         onChange={(e) => setFilterValue(e.target.value)}
                         className="h-8 w-[150px] lg:w-[250px]"
@@ -782,7 +789,7 @@ const Dashboard = () => {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="outline" size="sm" className="ml-auto h-8 px-2">
-                          Columns <ChevronDown className="ml-2 h-4 w-4" />
+                          {t('dashboard.progress.list.columns')} <ChevronDown className="ml-2 h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-[150px]">
@@ -800,7 +807,7 @@ const Dashboard = () => {
                                 }
                               }}
                             >
-                              {column.name}
+                              {t(`dashboard.progress.list.tableHeaders.${column.id}`)}
                             </DropdownMenuCheckboxItem>
                           )
                         ))}
@@ -821,7 +828,7 @@ const Dashboard = () => {
                                   className="h-8 px-2 font-medium"
                                   disabled={!column.sortable}
                                 >
-                                  {column.name}
+                                  {t(`dashboard.progress.list.tableHeaders.${column.id}`)}
                                   {sortConfig.key === column.id ? (
                                     sortConfig.direction === 'asc' ? (
                                       <ChevronUp className="ml-2 h-4 w-4" />
@@ -841,7 +848,7 @@ const Dashboard = () => {
                         {paginatedData.map((result) => (
                           <TableRow key={result.id} className="h-12">
                             {visibleColumns.includes('date') && (
-                              <TableCell>{formatDate(result.createdAt)}</TableCell>
+                              <TableCell>{formatDate(result.createdAt, locale)}</TableCell>
                             )}
                             {visibleColumns.includes('problem') && (
                               <TableCell>{result.problemName}</TableCell>
@@ -853,7 +860,7 @@ const Dashboard = () => {
                               </TableCell>
                             )}
                             {visibleColumns.includes('time') && (
-                              <TableCell>{result.time}秒</TableCell>
+                              <TableCell>{result.time}{t('dashboard.stats.totalTime.seconds')}</TableCell>
                             )}
                           </TableRow>
                         ))}
@@ -863,11 +870,11 @@ const Dashboard = () => {
 
                   <div className="flex items-center justify-between px-2">
                     <div className="flex-1 text-sm text-muted-foreground">
-                      {filteredData.length}件中 {paginatedData.length}件を表示
+                      {filteredData.length}{t('dashboard.progress.list.pagination.showing')} {paginatedData.length}{t('dashboard.progress.list.pagination.display')}
                     </div>
                     <div className="flex items-center space-x-6 lg:space-x-8">
                       <div className="flex items-center space-x-2">
-                        <p className="text-sm font-medium">表示件数</p>
+                        <p className="text-sm font-medium">{t('dashboard.progress.list.pagination.pageSize')}</p>
                         <Select
                           value={pageSize.toString()}
                           onValueChange={(value) => {
@@ -895,7 +902,7 @@ const Dashboard = () => {
                           onClick={() => setPage((p) => Math.max(0, p - 1))}
                           disabled={page === 0}
                         >
-                          <span className="sr-only">前のページ</span>
+                          <span className="sr-only">{t('dashboard.progress.list.pagination.prev')}</span>
                           <ChevronDown className="h-4 w-4 rotate-90" />
                         </Button>
                         <div className="text-sm font-medium">
@@ -907,7 +914,7 @@ const Dashboard = () => {
                           onClick={() => setPage((p) => Math.min(Math.ceil(filteredData.length / pageSize) - 1, p + 1))}
                           disabled={page >= Math.ceil(filteredData.length / pageSize) - 1}
                         >
-                          <span className="sr-only">次のページ</span>
+                          <span className="sr-only">{t('dashboard.progress.list.pagination.next')}</span>
                           <ChevronDown className="h-4 w-4 -rotate-90" />
                         </Button>
                       </div>

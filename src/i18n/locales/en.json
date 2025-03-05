@@ -123,5 +123,75 @@
         "error": "Failed to delete"
       }
     }
+  },
+  "dashboard": {
+    "loading": "Loading...",
+    "stats": {
+      "streak": {
+        "title": "Learning Streak",
+        "current": "days",
+        "max": "Current streak / Best"
+      },
+      "totalTime": {
+        "title": "Total Learning Time",
+        "minutes": "min",
+        "days": "days over",
+        "seconds": "sec"
+      },
+      "bestScore": {
+        "title": "Best Score",
+        "percent": "%",
+        "fastestTime": "Fastest:"
+      },
+      "recovery": {
+        "title": "Comebacks",
+        "times": "times",
+        "description": "Times resumed learning"
+      }
+    },
+    "progress": {
+      "title": "Learning Progress",
+      "problemSelect": {
+        "placeholder": "Select Problem",
+        "all": "All Problems",
+        "basic": "Basic Problems",
+        "original": "Custom Problems"
+      },
+      "dateRange": {
+        "today": "Today",
+        "period": "Period",
+        "month": "Month",
+        "week": "Week",
+        "day": "Day"
+      },
+      "tabs": {
+        "chart": "Chart",
+        "list": "List"
+      },
+      "chart": {
+        "noData": "No data available",
+        "time": "Time",
+        "score": "Score",
+        "timeAxis": "Time (sec)",
+        "scoreAxis": "Score (%)"
+      },
+      "list": {
+        "filter": "Filter...",
+        "columns": "Columns",
+        "tableHeaders": {
+          "date": "Date",
+          "problem": "Problem",
+          "score": "Score",
+          "time": "Time"
+        },
+        "pagination": {
+          "showing": "of",
+          "display": "items shown",
+          "pageSize": "Page Size",
+          "prev": "Previous Page",
+          "next": "Next Page"
+        }
+      }
+    }
   }
 }
