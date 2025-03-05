@@ -65,5 +65,63 @@
         "description": "ダッシュボードで学習の進捗を確認できます。日々の成長を実感しましょう。"
       }
     }
+  },
+  "problem": {
+    "tabs": {
+      "create": "作成",
+      "editDelete": "編集・削除"
+    },
+    "addQuestion": {
+      "title": "問題を作成する",
+      "btnTitle": "登録する",
+      "problemName": "問題名",
+      "problemNameExample": "例：足し算レベル1",
+      "operator": "演算子",
+      "operatorPlaceholder": "選択してください",
+      "xValues": "Xの値",
+      "xValuesNote": "(カンマ区切りで入力)",
+      "xValuesExample": "例：1, 2, 3, 4, 5",
+      "yValues": "Yの値",
+      "yValuesNote": "(カンマ区切りで入力)",
+      "yValuesExample": "例：1, 2, 3, 4, 5",
+      "cancel": "キャンセル",
+      "errorAllFields": "すべての項目を入力してください",
+      "errorLogin": "ログインしてください",
+      "errorDuplicateName": "同じ問題名が既に存在します",
+      "successUpdate": "更新しました",
+      "successRegister": "登録しました",
+      "error": "エラーが発生しました："
+    },
+    "editQuestion": {
+      "title": "編集する",
+      "btnTitle": "登録する"
+    },
+    "allProblemTable": {
+      "loading": "読み込み中...",
+      "edit": "編集",
+      "delete": "削除する",
+      "editComplete": "編集完了",
+      "tableHeaders": {
+        "problemName": "問題名",
+        "operator": "演算子",
+        "xValues": "X値",
+        "yValues": "Y値",
+        "createdAt": "登録日",
+        "updatedAt": "更新日",
+        "edit": "編集"
+      },
+      "noProblems": "問題の登録がありません。問題を登録してください。",
+      "deleteDialog": {
+        "title": "本当に削除しますか？",
+        "description": "この操作は取り消せません。問題と関連する回答データがすべて削除されます。",
+        "cancel": "キャンセル",
+        "confirm": "削除する"
+      },
+      "deleteStatus": {
+        "loading": "削除中...",
+        "success": "問題と関連する回答データを削除しました",
+        "error": "削除に失敗しました"
+      }
+    }
   }
 } 

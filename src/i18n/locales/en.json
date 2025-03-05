@@ -65,5 +65,63 @@
         "description": "Track your learning on the dashboard and see your daily improvement."
       }
     }
+  },
+  "problem": {
+    "tabs": {
+      "create": "Create",
+      "editDelete": "Edit/Delete"
+    },
+    "addQuestion": {
+      "title": "Create Problem",
+      "btnTitle": "Register",
+      "problemName": "Problem Name",
+      "problemNameExample": "Example: Addition Level 1",
+      "operator": "Operator",
+      "operatorPlaceholder": "Please select",
+      "xValues": "X Values",
+      "xValuesNote": "(Comma separated)",
+      "xValuesExample": "Example: 1, 2, 3, 4, 5",
+      "yValues": "Y Values",
+      "yValuesNote": "(Comma separated)",
+      "yValuesExample": "Example: 1, 2, 3, 4, 5",
+      "cancel": "Cancel",
+      "errorAllFields": "Please fill in all fields",
+      "errorLogin": "Please log in",
+      "errorDuplicateName": "A problem with this name already exists",
+      "successUpdate": "Updated successfully",
+      "successRegister": "Registered successfully",
+      "error": "An error occurred: "
+    },
+    "editQuestion": {
+      "title": "Edit",
+      "btnTitle": "Register"
+    },
+    "allProblemTable": {
+      "loading": "Loading...",
+      "edit": "Edit",
+      "delete": "Delete",
+      "editComplete": "Complete Edit",
+      "tableHeaders": {
+        "problemName": "Problem Name",
+        "operator": "Operator",
+        "xValues": "X Values",
+        "yValues": "Y Values",
+        "createdAt": "Created Date",
+        "updatedAt": "Updated Date",
+        "edit": "Edit"
+      },
+      "noProblems": "No problems registered. Please create a problem.",
+      "deleteDialog": {
+        "title": "Are you sure you want to delete?",
+        "description": "This action cannot be undone. All problem data and related answers will be deleted.",
+        "cancel": "Cancel",
+        "confirm": "Delete"
+      },
+      "deleteStatus": {
+        "loading": "Deleting...",
+        "success": "Problem and related answer data have been deleted",
+        "error": "Failed to delete"
+      }
+    }
   }
 }
