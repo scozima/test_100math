@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { collection, onSnapshot, doc, deleteDoc, query, where, getDocs, writeBatch } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import AddQuestion from "./AddQuestion";
+import { useTranslation } from "react-i18next";
 import {
   Table,
   TableBody,
@@ -25,6 +26,7 @@ import {
 } from "@/components/ui/alert-dialog"
 
 function AllProblemTable() {
+  const { t } = useTranslation();
   const [problems, setProblems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editTarget, setEditTarget] = useState(null);
@@ -60,7 +62,7 @@ function AllProblemTable() {
   }, [user]);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <p>{t('problem.allProblemTable.loading')}</p>;
   }
 
   const openModal = (problem) => {
@@ -99,9 +101,9 @@ function AllProblemTable() {
         closeModal();
       })(),
       {
-        loading: '削除中...',
-        success: '問題と関連する回答データを削除しました',
-        error: '削除に失敗しました'
+        loading: t('problem.allProblemTable.deleteStatus.loading'),
+        success: t('problem.allProblemTable.deleteStatus.success'),
+        error: t('problem.allProblemTable.deleteStatus.error')
       }
     );
   };
@@ -113,13 +115,13 @@ function AllProblemTable() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>問題名</TableHead>
-                <TableHead className="w-[80px]">演算子</TableHead>
-                <TableHead>X値</TableHead>
-                <TableHead>Y値</TableHead>
-                <TableHead>登録日</TableHead>
-                <TableHead>更新日</TableHead>
-                <TableHead className="w-[80px]">編集</TableHead>
+                <TableHead>{t('problem.allProblemTable.tableHeaders.problemName')}</TableHead>
+                <TableHead className="w-[80px]">{t('problem.allProblemTable.tableHeaders.operator')}</TableHead>
+                <TableHead>{t('problem.allProblemTable.tableHeaders.xValues')}</TableHead>
+                <TableHead>{t('problem.allProblemTable.tableHeaders.yValues')}</TableHead>
+                <TableHead>{t('problem.allProblemTable.tableHeaders.createdAt')}</TableHead>
+                <TableHead>{t('problem.allProblemTable.tableHeaders.updatedAt')}</TableHead>
+                <TableHead className="w-[80px]">{t('problem.allProblemTable.tableHeaders.edit')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -141,7 +143,7 @@ function AllProblemTable() {
                       className="h-8 w-8 p-0"
                       onClick={() => openModal(problem)}
                     >
-                      <span className="sr-only">編集</span>
+                      <span className="sr-only">{t('problem.allProblemTable.edit')}</span>
                       <MoreHorizontal className="h-4 w-4" />
                     </Button>
                   </TableCell>
@@ -152,7 +154,7 @@ function AllProblemTable() {
         </div>
       ) : (
         <div className="text-center py-10 text-muted-foreground">
-          問題の登録がありません。問題を登録してください。
+          {t('problem.allProblemTable.noProblems')}
         </div>
       )}
 
@@ -160,13 +162,13 @@ function AllProblemTable() {
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>本当に削除しますか？</AlertDialogTitle>
+            <AlertDialogTitle>{t('problem.allProblemTable.deleteDialog.title')}</AlertDialogTitle>
             <AlertDialogDescription>
-              この操作は取り消せません。問題と関連する回答データがすべて削除されます。
+              {t('problem.allProblemTable.deleteDialog.description')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>キャンセル</AlertDialogCancel>
+            <AlertDialogCancel>{t('problem.allProblemTable.deleteDialog.cancel')}</AlertDialogCancel>
             <AlertDialogAction
               variant="destructive"
               onClick={() => {
@@ -174,7 +176,7 @@ function AllProblemTable() {
                 setIsDeleteDialogOpen(false)
               }}
             >
-              削除する
+              {t('problem.allProblemTable.deleteDialog.confirm')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -185,8 +187,8 @@ function AllProblemTable() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-background p-6 rounded-lg shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto relative">
             <AddQuestion
-              title="編集する"
-              btnTitle="編集完了"
+              title={t('problem.editQuestion.title')}
+              btnTitle={t('problem.allProblemTable.editComplete')}
               problem={editTarget}
               closeModal={closeModal}
             />
@@ -196,7 +198,7 @@ function AllProblemTable() {
                 className="w-full"
                 onClick={() => handleDeleteClick(editTarget.id)}
               >
-                削除する
+                {t('problem.allProblemTable.delete')}
               </Button>
             </div>
           </div>

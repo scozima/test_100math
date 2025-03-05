@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { doc, updateDoc, collection, addDoc, getDocs, query, where, serverTimestamp } from "firebase/firestore"
 import { db, auth } from '../firebase'
 import PropTypes from 'prop-types'
+import { useTranslation } from "react-i18next"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -17,6 +18,7 @@ import { toast } from "sonner"
 import Label from "@/components/ui/label"
 
 const AddQuestion = ({ title, btnTitle, problem, closeModal }) => {
+  const { t } = useTranslation()
   const [name, setName] = useState(problem?.name || "")
   const [operator, setOperator] = useState(problem?.operator || "")
   const [x, setX] = useState(problem?.x ? problem.x.join(", ") : "")
@@ -33,7 +35,7 @@ const AddQuestion = ({ title, btnTitle, problem, closeModal }) => {
 
   const handleSubmit = async () => {
     if (!name || !operator || !x || !y) {
-      toast.error("すべての項目を入力してください")
+      toast.error(t('problem.addQuestion.errorAllFields'))
       return
     }
 
@@ -42,7 +44,7 @@ const AddQuestion = ({ title, btnTitle, problem, closeModal }) => {
     
     const user = auth.currentUser
     if (!user) {
-      toast.error("ログインしてください")
+      toast.error(t('problem.addQuestion.errorLogin'))
       return
     }
 
@@ -59,13 +61,13 @@ const AddQuestion = ({ title, btnTitle, problem, closeModal }) => {
           y: yArray,
           updatedAt: serverTimestamp(),
         })
-        toast.success("更新しました")
+        toast.success(t('problem.addQuestion.successUpdate'))
       } else {
         const q = query(userCollectionRef, where("name", "==", name))
         const querySnapshot = await getDocs(q)
 
         if (!querySnapshot.empty) {
-          toast.error("同じ問題名が既に存在します")
+          toast.error(t('problem.addQuestion.errorDuplicateName'))
           return
         }
 
@@ -78,7 +80,7 @@ const AddQuestion = ({ title, btnTitle, problem, closeModal }) => {
           updatedAt: serverTimestamp(),
         })
 
-        toast.success("登録しました")
+        toast.success(t('problem.addQuestion.successRegister'))
       }
 
       // closeModalが存在する場合のみ実行
@@ -94,7 +96,7 @@ const AddQuestion = ({ title, btnTitle, problem, closeModal }) => {
       
     } catch (error) {
       console.error("エラー:", error)
-      toast.error("エラーが発生しました：" + error.message)
+      toast.error(t('problem.addQuestion.error') + error.message)
     }
   }
 
@@ -106,23 +108,23 @@ const AddQuestion = ({ title, btnTitle, problem, closeModal }) => {
       <CardContent className="space-y-6">
         <div className="space-y-2">
           <Label htmlFor="name">
-            問題名
+            {t('problem.addQuestion.problemName')}
           </Label>
           <Input
             id="name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="例：足し算レベル1"
+            placeholder={t('problem.addQuestion.problemNameExample')}
           />
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="operator">
-            演算子
+            {t('problem.addQuestion.operator')}
           </Label>
           <Select value={operator} onValueChange={setOperator}>
             <SelectTrigger>
-              <SelectValue placeholder="選択してください" />
+              <SelectValue placeholder={t('problem.addQuestion.operatorPlaceholder')} />
             </SelectTrigger>
             <SelectContent>
               {["+", "-", "✕", "÷"].map((op) => (
@@ -136,37 +138,37 @@ const AddQuestion = ({ title, btnTitle, problem, closeModal }) => {
 
         <div className="space-y-2">
           <Label htmlFor="x">
-            Xの値
+            {t('problem.addQuestion.xValues')}
             <span className="text-sm text-muted-foreground ml-2">
-              (カンマ区切りで入力)
+              {t('problem.addQuestion.xValuesNote')}
             </span>
           </Label>
           <Input
             id="x"
             value={x}
             onChange={(e) => setX(e.target.value)}
-            placeholder="例：1, 2, 3, 4, 5"
+            placeholder={t('problem.addQuestion.xValuesExample')}
           />
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="y">
-            Yの値
+            {t('problem.addQuestion.yValues')}
             <span className="text-sm text-muted-foreground ml-2">
-              (カンマ区切りで入力)
+              {t('problem.addQuestion.yValuesNote')}
             </span>
           </Label>
           <Input
             id="y"
             value={y}
             onChange={(e) => setY(e.target.value)}
-            placeholder="例：1, 2, 3, 4, 5"
+            placeholder={t('problem.addQuestion.yValuesExample')}
           />
         </div>
 
         <div className="flex justify-end space-x-4 pt-4">
           <Button variant="outline" onClick={closeModal}>
-            キャンセル
+            {t('problem.addQuestion.cancel')}
           </Button>
           <Button onClick={handleSubmit}>
             {btnTitle}
