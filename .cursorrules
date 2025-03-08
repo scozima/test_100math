@@ -1,203 +1,105 @@
-This comprehensive guide outlines best practices, conventions, and standards for development with modern web technologies including ReactJS, NextJS, Redux, TypeScript, JavaScript, HTML, CSS, and UI frameworks.
+# 開発ガイドライン: モダンWeb技術 (Vite, ReactJS, Redux, JavaScript, HTML, CSS, UIフレームワーク)
 
-    Development Philosophy
-    - Write clean, maintainable, and scalable code
-    - Follow SOLID principles
-    - Prefer functional and declarative programming patterns over imperative
-    - Emphasize type safety and static analysis
-    - Practice component-driven development
+## 開発理念
+- クリーンでメンテナブルかつスケーラブルなコードを書く
+- SOLID原則を遵守する
+- 命令型よりも関数型・宣言型プログラミングを優先する
+- 型安全性と静的解析を重視する
+- コンポーネント駆動開発を実践する
 
-    Code Implementation Guidelines
-    Planning Phase
-    - Begin with step-by-step planning
-    - Write detailed pseudocode before implementation
-    - Document component architecture and data flow
-    - Consider edge cases and error scenarios
+## コード実装ガイドライン
 
-    Code Style
-    - Use tabs for indentation
-    - Use single quotes for strings (except to avoid escaping)
-    - Omit semicolons (unless required for disambiguation)
-    - Eliminate unused variables
-    - Add space after keywords
-    - Add space before function declaration parentheses
-    - Always use strict equality (===) instead of loose equality (==)
-    - Space infix operators
-    - Add space after commas
-    - Keep else statements on the same line as closing curly braces
-    - Use curly braces for multi-line if statements
-    - Always handle error parameters in callbacks
-    - Limit line length to 80 characters
-    - Use trailing commas in multiline object/array literals
+### 計画フェーズ
+- 段階的な計画を立てる
+- 実装前に詳細な疑似コードを書く
+- コンポーネントのアーキテクチャとデータフローを文書化する
+- エッジケースやエラーパターンを考慮する
 
-    Naming Conventions
-    General Rules
-    - Use PascalCase for:
-      - Components
-      - Type definitions
-      - Interfaces
-    - Use kebab-case for:
-      - Directory names (e.g., components/auth-wizard)
-      - File names (e.g., user-profile.tsx)
-    - Use camelCase for:
-      - Variables
-      - Functions
-      - Methods
-      - Hooks
-      - Properties
-      - Props
-    - Use UPPERCASE for:
-      - Environment variables
-      - Constants
-      - Global configurations
+### コードスタイル
+- 文字列はシングルクォート（エスケープ回避のためならダブルクォートも可）
+- セミコロンは不要（曖昧さを避ける場合のみ使用）
+- 未使用の変数は削除する
+- キーワードの後にはスペースを入れる
+- 関数宣言の括弧の前にスペースを入れる
+- 厳格な比較演算子 (`===`) を常に使用する
+- 中置演算子の前後にスペースを入れる
+- カンマの後にスペースを入れる
+- `else` は閉じ括弧と同じ行に記述する
+- 複数行の `if` 文では必ず `{}` を使用する
+- コールバックのエラー引数を必ず処理する
+- 1行の長さは80文字以内にする
+- 複数行のオブジェクト・配列リテラルにはトレーリングカンマを使用する
 
-    Specific Naming Patterns
-    - Prefix event handlers with 'handle': handleClick, handleSubmit
-    - Prefix boolean variables with verbs: isLoading, hasError, canSubmit
-    - Prefix custom hooks with 'use': useAuth, useForm
-    - Use complete words over abbreviations except for:
-      - err (error)
-      - req (request)
-      - res (response)
-      - props (properties)
-      - ref (reference)
+### 命名規則
 
-    React Best Practices
-    Component Architecture
-    - Use functional components with TypeScript interfaces
-    - Define components using the function keyword
-    - Extract reusable logic into custom hooks
-    - Implement proper component composition
-    - Use React.memo() strategically for performance
-    - Implement proper cleanup in useEffect hooks
+#### 一般ルール
+- **PascalCase**（先頭大文字）:
+  - コンポーネント
+  - 型定義
+  - インターフェース
+- **kebab-case**（小文字＋ハイフン）:
+  - ディレクトリ名（例: `components/auth-wizard`）
+  - ファイル名（例: `user-profile.tsx`）
+- **camelCase**（小文字＋大文字）:
+  - 変数
+  - 関数
+  - メソッド
+  - フック
+  - プロパティ
+  - Props
+- **UPPERCASE**（全大文字）:
+  - 環境変数
+  - 定数
+  - グローバル設定
 
-    React Performance Optimization
-    - Use useCallback for memoizing callback functions
-    - Implement useMemo for expensive computations
-    - Avoid inline function definitions in JSX
-    - Implement code splitting using dynamic imports
-    - Implement proper key props in lists (avoid using index as key)
+#### 特定の命名パターン
+- イベントハンドラには `handle` を接頭辞として付ける（例: `handleClick`, `handleSubmit`）
+- ブール型変数には動詞を含める（例: `isLoading`, `hasError`, `canSubmit`）
+- カスタムフックには `use` を接頭辞として付ける（例: `useAuth`, `useForm`）
+- 省略形は以下のケースのみ許可:
+  - `err`（error）
+  - `req`（request）
+  - `res`（response）
+  - `props`（properties）
+  - `ref`（reference）
 
-    Next.js Best Practices
-    Core Concepts
-    - Utilize App Router for routing
-    - Implement proper metadata management
-    - Use proper caching strategies
-    - Implement proper error boundaries
+## React ベストプラクティス
 
-    Components and Features
-    - Use Next.js built-in components:
-      - Image component for optimized images
-      - Link component for client-side navigation
-      - Script component for external scripts
-      - Head component for metadata
-    - Implement proper loading states
-    - Use proper data fetching methods
+### コンポーネントアーキテクチャ
+- TypeScript のインターフェースを用いた関数コンポーネントを使用する
+- `function` キーワードを使ってコンポーネントを定義する
+- 再利用可能なロジックはカスタムフックに切り出す
+- 適切なコンポーネントの分割と構成を行う
+- `React.memo()` を適切に使用し、パフォーマンスを最適化する
+- `useEffect` フックのクリーンアップを適切に実装する
 
-    Server Components
-    - Default to Server Components
-    - Use URL query parameters for data fetching and server state management
-    - Use 'use client' directive only when necessary:
-      - Event listeners
-      - Browser APIs
-      - State management
-      - Client-side-only libraries
+### React パフォーマンス最適化
+- `useCallback` でコールバック関数をメモ化する
+- `useMemo` を使用して計算コストの高い処理を最適化する
+- JSX 内でインライン関数を定義しない
+- 動的インポートを使用してコード分割を実装する
+- リストの `key` プロパティを適切に設定し、インデックスを `key` にしない
 
-    TypeScript Implementation
-    - Enable strict mode
-    - Define clear interfaces for component props, state, and Redux state structure.
-    - Use type guards to handle potential undefined or null values safely.
-    - Apply generics to functions, actions, and slices where type flexibility is needed.
-    - Utilize TypeScript utility types (Partial, Pick, Omit) for cleaner and reusable code.
-    - Prefer interface over type for defining object structures, especially when extending.
-    - Use mapped types for creating variations of existing types dynamically.
+## UI とスタイリング
+- **Shadcn UI** を使用して一貫性のあるデザインを実現
+- **Radix UI** を活用してカスタマイズ可能なアクセシブル UI を提供
+- **Tailwind CSS** を使用し、ユーティリティファーストのスタイリングを適用
+- **モバイルファーストの設計** を徹底し、レスポンシブ対応を強化
+- CSS 変数または Tailwind の `dark` クラスで **ダークモード** を実装
 
-    UI and Styling
-    Component Libraries
-    - Use Shadcn UI for consistent, accessible component design.
-    - Integrate Radix UI primitives for customizable, accessible UI elements.
-    - Apply composition patterns to create modular, reusable components.
+## 状態管理
+### ローカルステート
+- `useState` を使用してコンポーネント単位の状態を管理
+- `useReducer` を使用して複雑な状態管理を行う
+- `useContext` を使用して状態を共有する
 
-    Styling Guidelines
-    - Use Tailwind CSS for styling
-    - Use Tailwind CSS for utility-first, maintainable styling.
-    - Design with mobile-first, responsive principles for flexibility across devices.
-    - Implement dark mode using CSS variables or Tailwind’s dark mode features.
-    - Ensure color contrast ratios meet accessibility standards for readability.
-    - Maintain consistent spacing values to establish visual harmony.
-    - Define CSS variables for theme colors and spacing to support easy theming and maintainability.
+### グローバルステート
+- **Redux Toolkit** を使用してグローバルステートを管理
+- `createSlice` を活用して状態、リデューサー、アクションを統合
+- `createReducer` や `createAction` は必要な場合のみ使用
+- 状態の正規化を行い、深いネストを避ける
 
-    State Management
-    Local State
-    - Use useState for component-level state
-    - Implement useReducer for complex state
-    - Use useContext for shared state
-    - Implement proper state initialization
-
-    Global State
-    - Use Redux Toolkit for global state
-    - Use createSlice to define state, reducers, and actions together.
-    - Avoid using createReducer and createAction unless necessary.
-    - Normalize state structure to avoid deeply nested data.
-    - Use selectors to encapsulate state access.
-    - Avoid large, all-encompassing slices; separate concerns by feature.
-
-
-    Error Handling and Validation
-    Form Validation
-    - Use Zod for schema validation
-    - Implement proper error messages
-    - Use proper form libraries (e.g., React Hook Form)
-
-    Error Boundaries
-    - Use error boundaries to catch and handle errors in React component trees gracefully.
-    - Log caught errors to an external service (e.g., Sentry) for tracking and debugging.
-    - Design user-friendly fallback UIs to display when errors occur, keeping users informed without breaking the app.
-
-    Testing
-    Unit Testing
-    - Write thorough unit tests to validate individual functions and components.
-    - Use Jest and React Testing Library for reliable and efficient testing of React components.
-    - Follow patterns like Arrange-Act-Assert to ensure clarity and consistency in tests.
-    - Mock external dependencies and API calls to isolate unit tests.
-
-    Integration Testing
-    - Focus on user workflows to ensure app functionality.
-    - Set up and tear down test environments properly to maintain test independence.
-    - Use snapshot testing selectively to catch unintended UI changes without over-relying on it.
-    - Leverage testing utilities (e.g., screen in RTL) for cleaner and more readable tests.
-
-    Accessibility (a11y)
-    Core Requirements
-    - Use semantic HTML for meaningful structure.
-    - Apply accurate ARIA attributes where needed.
-    - Ensure full keyboard navigation support.
-    - Manage focus order and visibility effectively.
-    - Maintain accessible color contrast ratios.
-    - Follow a logical heading hierarchy.
-    - Make all interactive elements accessible.
-    - Provide clear and accessible error feedback.
-
-    Security
-    - Implement input sanitization to prevent XSS attacks.
-    - Use DOMPurify for sanitizing HTML content.
-    - Use proper authentication methods.
-
-    Internationalization (i18n)
-    - Use next-i18next for translations
-    - Implement proper locale detection
-    - Use proper number and date formatting
-    - Implement proper RTL support
-    - Use proper currency formatting
-
-    Documentation
-    - Use JSDoc for documentation
-    - Document all public functions, classes, methods, and interfaces
-    - Add examples when appropriate
-    - Use complete sentences with proper punctuation
-    - Keep descriptions clear and concise
-    - Use proper markdown formatting
-    - Use proper code blocks
-    - Use proper links
-    - Use proper headings
-    - Use proper lists
+## セキュリティ
+- **入力値のサニタイズ** を実施し、XSS を防止
+- **DOMPurify** を使用して HTML を安全に処理
+- 適切な認証・認可の仕組みを導入する
