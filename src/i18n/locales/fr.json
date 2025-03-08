@@ -1,0 +1,197 @@
+{
+  "common": {
+    "home": "Accueil",
+    "dashboard": "Tableau de bord",
+    "lesson": "Leçon",
+    "settings": "Paramètres",
+    "login": "Connexion",
+    "logout": "Déconnexion",
+    "language": "Langue"
+  },
+  "math_table": {
+    "login_required": "Veuillez vous connecter pour accéder aux problèmes mathématiques.",
+    "loading": "Chargement...",
+    "start": "Commencer",
+    "submit": "Soumettre",
+    "restart": "Réessayer",
+    "categories": {
+      "basic": "Problèmes de base",
+      "original": "Problèmes personnalisés"
+    },
+    "result": {
+      "score": "Score",
+      "total": "sur",
+      "time_taken": "Temps",
+      "seconds": "secondes"
+    }
+  },
+  "home": {
+    "title": "Améliorez vos compétences en mathématiques avec Math 100 cases !",
+    "subtitle1": "Un outil d'apprentissage simple et efficace",
+    "subtitle2": "pour développer les compétences de calcul de base de manière amusante.",
+    "start_button": "Commencer",
+    "feature1": {
+      "title": "Maîtrisez les bases",
+      "description": "Apprenez l'addition, la soustraction, la multiplication et la division de manière amusante."
+    },
+    "feature2": {
+      "title": "Contre la montre",
+      "description": "Relevez des défis chronométrés et battez vos records personnels."
+    },
+    "feature3": {
+      "title": "Défis progressifs",
+      "description": "Apprenez à votre rythme avec des problèmes du niveau débutant à avancé."
+    },
+    "feature4": {
+      "title": "Personnalisez vos problèmes",
+      "description": "Créez vos propres problèmes pour un apprentissage plus efficace."
+    },
+    "usage": {
+      "title": "Comment utiliser",
+      "step1": {
+        "title": "1. Choisissez un défi",
+        "description": "Sélectionnez un ensemble de problèmes de base ou personnalisés."
+      },
+      "step2": {
+        "title": "2. Commencez à calculer",
+        "description": "Appuyez sur démarrer pour lancer le chronomètre et entrez les réponses dans l'ordre."
+      },
+      "step3": {
+        "title": "3. Vérifiez les résultats",
+        "description": "Examinez vos réponses correctes et le temps pris après avoir terminé."
+      },
+      "step4": {
+        "title": "4. Suivez vos progrès",
+        "description": "Surveillez votre apprentissage sur le tableau de bord et observez votre progression quotidienne."
+      }
+    }
+  },
+  "problem": {
+    "tabs": {
+      "create": "Créer",
+      "editDelete": "Modifier/Supprimer"
+    },
+    "addQuestion": {
+      "title": "Créer un problème",
+      "btnTitle": "Enregistrer",
+      "problemName": "Nom du problème",
+      "problemNameExample": "Exemple : Addition Niveau 1",
+      "operator": "Opérateur",
+      "operatorPlaceholder": "Veuillez sélectionner",
+      "xValues": "Valeurs X",
+      "xValuesNote": "(Séparées par des virgules)",
+      "xValuesExample": "Exemple : 1, 2, 3, 4, 5",
+      "yValues": "Valeurs Y",
+      "yValuesNote": "(Séparées par des virgules)",
+      "yValuesExample": "Exemple : 1, 2, 3, 4, 5",
+      "cancel": "Annuler",
+      "errorAllFields": "Veuillez remplir tous les champs",
+      "errorLogin": "Veuillez vous connecter",
+      "errorDuplicateName": "Un problème avec ce nom existe déjà",
+      "successUpdate": "Mise à jour réussie",
+      "successRegister": "Enregistrement réussi",
+      "error": "Une erreur est survenue : "
+    },
+    "editQuestion": {
+      "title": "Modifier",
+      "btnTitle": "Enregistrer"
+    },
+    "allProblemTable": {
+      "loading": "Chargement...",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "editComplete": "Terminer la modification",
+      "tableHeaders": {
+        "problemName": "Nom du problème",
+        "operator": "Opérateur",
+        "xValues": "Valeurs X",
+        "yValues": "Valeurs Y",
+        "createdAt": "Date de création",
+        "updatedAt": "Date de mise à jour",
+        "edit": "Modifier"
+      },
+      "noProblems": "Aucun problème enregistré. Veuillez créer un problème.",
+      "deleteDialog": {
+        "title": "Êtes-vous sûr de vouloir supprimer ?",
+        "description": "Cette action ne peut pas être annulée. Toutes les données du problème et les réponses associées seront supprimées.",
+        "cancel": "Annuler",
+        "confirm": "Supprimer"
+      },
+      "deleteStatus": {
+        "loading": "Suppression...",
+        "success": "Le problème et les données de réponses associées ont été supprimés",
+        "error": "Échec de la suppression"
+      }
+    }
+  },
+  "dashboard": {
+    "loading": "Chargement...",
+    "stats": {
+      "streak": {
+        "title": "Série d'apprentissage",
+        "current": "jours",
+        "max": "Série actuelle / Meilleure"
+      },
+      "totalTime": {
+        "title": "Temps total d'apprentissage",
+        "minutes": "min",
+        "days": "jours sur",
+        "seconds": "sec"
+      },
+      "bestScore": {
+        "title": "Meilleur score",
+        "percent": "%",
+        "fastestTime": "Plus rapide :"
+      },
+      "recovery": {
+        "title": "Retours",
+        "times": "fois",
+        "description": "Nombre de reprises d'apprentissage"
+      }
+    },
+    "progress": {
+      "title": "Progression d'apprentissage",
+      "problemSelect": {
+        "placeholder": "Sélectionner un problème",
+        "all": "Tous les problèmes",
+        "basic": "Problèmes de base",
+        "original": "Problèmes personnalisés"
+      },
+      "dateRange": {
+        "today": "Aujourd'hui",
+        "period": "Période",
+        "month": "Mois",
+        "week": "Semaine",
+        "day": "Jour"
+      },
+      "tabs": {
+        "chart": "Graphique",
+        "list": "Liste"
+      },
+      "chart": {
+        "noData": "Aucune donnée disponible",
+        "time": "Temps",
+        "score": "Score",
+        "timeAxis": "Temps (sec)",
+        "scoreAxis": "Score (%)"
+      },
+      "list": {
+        "filter": "Filtrer...",
+        "columns": "Colonnes",
+        "tableHeaders": {
+          "date": "Date",
+          "problem": "Problème",
+          "score": "Score",
+          "time": "Temps"
+        },
+        "pagination": {
+          "showing": "sur",
+          "display": "éléments affichés",
+          "pageSize": "Taille de page",
+          "prev": "Page précédente",
+          "next": "Page suivante"
+        }
+      }
+    }
+  }
+} 

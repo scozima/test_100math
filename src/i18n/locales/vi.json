@@ -1,0 +1,197 @@
+{
+  "common": {
+    "home": "Trang chủ",
+    "dashboard": "Bảng điều khiển",
+    "lesson": "Bài học",
+    "settings": "Cài đặt",
+    "login": "Đăng nhập",
+    "logout": "Đăng xuất",
+    "language": "Ngôn ngữ"
+  },
+  "math_table": {
+    "login_required": "Vui lòng đăng nhập để truy cập các bài toán.",
+    "loading": "Đang tải...",
+    "start": "Bắt đầu",
+    "submit": "Nộp bài",
+    "restart": "Thử lại",
+    "categories": {
+      "basic": "Bài toán cơ bản",
+      "original": "Bài toán tự tạo"
+    },
+    "result": {
+      "score": "Điểm số",
+      "total": "trên",
+      "time_taken": "Thời gian",
+      "seconds": "giây"
+    }
+  },
+  "home": {
+    "title": "Cải thiện kỹ năng toán học với Bảng 100 ô!",
+    "subtitle1": "Công cụ học tập đơn giản và hiệu quả",
+    "subtitle2": "để phát triển kỹ năng tính toán cơ bản một cách thú vị.",
+    "start_button": "Bắt đầu",
+    "feature1": {
+      "title": "Làm chủ kiến thức cơ bản",
+      "description": "Học cộng, trừ, nhân, chia một cách thú vị."
+    },
+    "feature2": {
+      "title": "Thi đấu với thời gian",
+      "description": "Thử thách bản thân với bài tập có tính giờ và phá kỷ lục cá nhân."
+    },
+    "feature3": {
+      "title": "Thử thách từng bước",
+      "description": "Học theo tốc độ của riêng bạn với các bài toán từ cơ bản đến nâng cao."
+    },
+    "feature4": {
+      "title": "Tùy chỉnh bài toán",
+      "description": "Tạo bài toán riêng để học tập hiệu quả hơn."
+    },
+    "usage": {
+      "title": "Cách sử dụng",
+      "step1": {
+        "title": "1. Chọn thử thách",
+        "description": "Chọn một bộ bài toán cơ bản hoặc tự tạo."
+      },
+      "step2": {
+        "title": "2. Bắt đầu tính toán",
+        "description": "Nhấn bắt đầu để tính giờ và nhập câu trả lời theo thứ tự."
+      },
+      "step3": {
+        "title": "3. Kiểm tra kết quả",
+        "description": "Xem lại câu trả lời đúng và thời gian hoàn thành."
+      },
+      "step4": {
+        "title": "4. Theo dõi tiến độ",
+        "description": "Theo dõi việc học tập trên bảng điều khiển và xem sự tiến bộ hàng ngày."
+      }
+    }
+  },
+  "problem": {
+    "tabs": {
+      "create": "Tạo mới",
+      "editDelete": "Sửa/Xóa"
+    },
+    "addQuestion": {
+      "title": "Tạo bài toán",
+      "btnTitle": "Đăng ký",
+      "problemName": "Tên bài toán",
+      "problemNameExample": "Ví dụ: Phép cộng Cấp độ 1",
+      "operator": "Phép tính",
+      "operatorPlaceholder": "Vui lòng chọn",
+      "xValues": "Giá trị X",
+      "xValuesNote": "(Phân cách bằng dấu phẩy)",
+      "xValuesExample": "Ví dụ: 1, 2, 3, 4, 5",
+      "yValues": "Giá trị Y",
+      "yValuesNote": "(Phân cách bằng dấu phẩy)",
+      "yValuesExample": "Ví dụ: 1, 2, 3, 4, 5",
+      "cancel": "Hủy",
+      "errorAllFields": "Vui lòng điền đầy đủ thông tin",
+      "errorLogin": "Vui lòng đăng nhập",
+      "errorDuplicateName": "Đã tồn tại bài toán với tên này",
+      "successUpdate": "Cập nhật thành công",
+      "successRegister": "Đăng ký thành công",
+      "error": "Đã xảy ra lỗi: "
+    },
+    "editQuestion": {
+      "title": "Chỉnh sửa",
+      "btnTitle": "Đăng ký"
+    },
+    "allProblemTable": {
+      "loading": "Đang tải...",
+      "edit": "Sửa",
+      "delete": "Xóa",
+      "editComplete": "Hoàn thành chỉnh sửa",
+      "tableHeaders": {
+        "problemName": "Tên bài toán",
+        "operator": "Phép tính",
+        "xValues": "Giá trị X",
+        "yValues": "Giá trị Y",
+        "createdAt": "Ngày tạo",
+        "updatedAt": "Ngày cập nhật",
+        "edit": "Sửa"
+      },
+      "noProblems": "Chưa có bài toán nào. Vui lòng tạo bài toán mới.",
+      "deleteDialog": {
+        "title": "Bạn có chắc chắn muốn xóa?",
+        "description": "Hành động này không thể hoàn tác. Tất cả dữ liệu bài toán và câu trả lời liên quan sẽ bị xóa.",
+        "cancel": "Hủy",
+        "confirm": "Xóa"
+      },
+      "deleteStatus": {
+        "loading": "Đang xóa...",
+        "success": "Bài toán và dữ liệu câu trả lời liên quan đã được xóa",
+        "error": "Xóa thất bại"
+      }
+    }
+  },
+  "dashboard": {
+    "loading": "Đang tải...",
+    "stats": {
+      "streak": {
+        "title": "Chuỗi học tập",
+        "current": "ngày",
+        "max": "Chuỗi hiện tại / Tốt nhất"
+      },
+      "totalTime": {
+        "title": "Tổng thời gian học",
+        "minutes": "phút",
+        "days": "ngày trong",
+        "seconds": "giây"
+      },
+      "bestScore": {
+        "title": "Điểm cao nhất",
+        "percent": "%",
+        "fastestTime": "Nhanh nhất:"
+      },
+      "recovery": {
+        "title": "Quay lại",
+        "times": "lần",
+        "description": "Số lần tiếp tục học tập"
+      }
+    },
+    "progress": {
+      "title": "Tiến độ học tập",
+      "problemSelect": {
+        "placeholder": "Chọn bài toán",
+        "all": "Tất cả bài toán",
+        "basic": "Bài toán cơ bản",
+        "original": "Bài toán tự tạo"
+      },
+      "dateRange": {
+        "today": "Hôm nay",
+        "period": "Khoảng thời gian",
+        "month": "Tháng",
+        "week": "Tuần",
+        "day": "Ngày"
+      },
+      "tabs": {
+        "chart": "Biểu đồ",
+        "list": "Danh sách"
+      },
+      "chart": {
+        "noData": "Không có dữ liệu",
+        "time": "Thời gian",
+        "score": "Điểm số",
+        "timeAxis": "Thời gian (giây)",
+        "scoreAxis": "Điểm số (%)"
+      },
+      "list": {
+        "filter": "Lọc...",
+        "columns": "Cột",
+        "tableHeaders": {
+          "date": "Ngày",
+          "problem": "Bài toán",
+          "score": "Điểm số",
+          "time": "Thời gian"
+        },
+        "pagination": {
+          "showing": "trong",
+          "display": "mục được hiển thị",
+          "pageSize": "Kích thước trang",
+          "prev": "Trang trước",
+          "next": "Trang sau"
+        }
+      }
+    }
+  }
+} 

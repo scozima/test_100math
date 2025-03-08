@@ -1,0 +1,197 @@
+{
+  "common": {
+    "home": "Beranda",
+    "dashboard": "Dasbor",
+    "lesson": "Pelajaran",
+    "settings": "Pengaturan",
+    "login": "Masuk",
+    "logout": "Keluar",
+    "language": "Bahasa"
+  },
+  "math_table": {
+    "login_required": "Silakan masuk untuk mengakses soal matematika.",
+    "loading": "Memuat...",
+    "start": "Mulai",
+    "submit": "Kirim",
+    "restart": "Coba Lagi",
+    "categories": {
+      "basic": "Soal Dasar",
+      "original": "Soal Kustom"
+    },
+    "result": {
+      "score": "Skor",
+      "total": "dari",
+      "time_taken": "Waktu",
+      "seconds": "detik"
+    }
+  },
+  "home": {
+    "title": "Tingkatkan Kemampuan Matematika dengan Matematika 100 Kotak!",
+    "subtitle1": "Alat pembelajaran sederhana dan efektif",
+    "subtitle2": "untuk mengembangkan keterampilan berhitung dasar dengan cara yang menyenangkan.",
+    "start_button": "Mulai",
+    "feature1": {
+      "title": "Kuasai Dasar",
+      "description": "Pelajari penjumlahan, pengurangan, perkalian, dan pembagian dengan cara yang menyenangkan."
+    },
+    "feature2": {
+      "title": "Tantangan Waktu",
+      "description": "Tantang diri Anda dengan soal berwaktu dan kalahkan rekor pribadi Anda."
+    },
+    "feature3": {
+      "title": "Tantangan Progresif",
+      "description": "Belajar sesuai kecepatan Anda dengan soal dari dasar hingga lanjutan."
+    },
+    "feature4": {
+      "title": "Kustomisasi Soal",
+      "description": "Buat soal Anda sendiri untuk pembelajaran yang lebih efektif."
+    },
+    "usage": {
+      "title": "Cara Penggunaan",
+      "step1": {
+        "title": "1. Pilih Tantangan",
+        "description": "Pilih set soal dari dasar atau kustom."
+      },
+      "step2": {
+        "title": "2. Mulai Berhitung",
+        "description": "Tekan mulai untuk memulai waktu dan masukkan jawaban secara berurutan."
+      },
+      "step3": {
+        "title": "3. Periksa Hasil",
+        "description": "Tinjau jawaban benar dan waktu yang dibutuhkan setelah selesai."
+      },
+      "step4": {
+        "title": "4. Pantau Kemajuan",
+        "description": "Lacak pembelajaran Anda di dasbor dan lihat peningkatan harian Anda."
+      }
+    }
+  },
+  "problem": {
+    "tabs": {
+      "create": "Buat",
+      "editDelete": "Edit/Hapus"
+    },
+    "addQuestion": {
+      "title": "Buat Soal",
+      "btnTitle": "Daftar",
+      "problemName": "Nama Soal",
+      "problemNameExample": "Contoh: Penjumlahan Level 1",
+      "operator": "Operator",
+      "operatorPlaceholder": "Silakan pilih",
+      "xValues": "Nilai X",
+      "xValuesNote": "(Pisahkan dengan koma)",
+      "xValuesExample": "Contoh: 1, 2, 3, 4, 5",
+      "yValues": "Nilai Y",
+      "yValuesNote": "(Pisahkan dengan koma)",
+      "yValuesExample": "Contoh: 1, 2, 3, 4, 5",
+      "cancel": "Batal",
+      "errorAllFields": "Silakan isi semua kolom",
+      "errorLogin": "Silakan masuk",
+      "errorDuplicateName": "Soal dengan nama ini sudah ada",
+      "successUpdate": "Berhasil diperbarui",
+      "successRegister": "Berhasil didaftarkan",
+      "error": "Terjadi kesalahan: "
+    },
+    "editQuestion": {
+      "title": "Edit",
+      "btnTitle": "Daftar"
+    },
+    "allProblemTable": {
+      "loading": "Memuat...",
+      "edit": "Edit",
+      "delete": "Hapus",
+      "editComplete": "Selesai Edit",
+      "tableHeaders": {
+        "problemName": "Nama Soal",
+        "operator": "Operator",
+        "xValues": "Nilai X",
+        "yValues": "Nilai Y",
+        "createdAt": "Tanggal Dibuat",
+        "updatedAt": "Tanggal Diperbarui",
+        "edit": "Edit"
+      },
+      "noProblems": "Tidak ada soal terdaftar. Silakan buat soal.",
+      "deleteDialog": {
+        "title": "Apakah Anda yakin ingin menghapus?",
+        "description": "Tindakan ini tidak dapat dibatalkan. Semua data soal dan jawaban terkait akan dihapus.",
+        "cancel": "Batal",
+        "confirm": "Hapus"
+      },
+      "deleteStatus": {
+        "loading": "Menghapus...",
+        "success": "Soal dan data jawaban terkait telah dihapus",
+        "error": "Gagal menghapus"
+      }
+    }
+  },
+  "dashboard": {
+    "loading": "Memuat...",
+    "stats": {
+      "streak": {
+        "title": "Rentetan Belajar",
+        "current": "hari",
+        "max": "Rentetan saat ini / Terbaik"
+      },
+      "totalTime": {
+        "title": "Total Waktu Belajar",
+        "minutes": "menit",
+        "days": "hari selama",
+        "seconds": "detik"
+      },
+      "bestScore": {
+        "title": "Skor Terbaik",
+        "percent": "%",
+        "fastestTime": "Tercepat:"
+      },
+      "recovery": {
+        "title": "Kembali",
+        "times": "kali",
+        "description": "Jumlah kali melanjutkan belajar"
+      }
+    },
+    "progress": {
+      "title": "Kemajuan Belajar",
+      "problemSelect": {
+        "placeholder": "Pilih Soal",
+        "all": "Semua Soal",
+        "basic": "Soal Dasar",
+        "original": "Soal Kustom"
+      },
+      "dateRange": {
+        "today": "Hari Ini",
+        "period": "Periode",
+        "month": "Bulan",
+        "week": "Minggu",
+        "day": "Hari"
+      },
+      "tabs": {
+        "chart": "Grafik",
+        "list": "Daftar"
+      },
+      "chart": {
+        "noData": "Tidak ada data tersedia",
+        "time": "Waktu",
+        "score": "Skor",
+        "timeAxis": "Waktu (detik)",
+        "scoreAxis": "Skor (%)"
+      },
+      "list": {
+        "filter": "Filter...",
+        "columns": "Kolom",
+        "tableHeaders": {
+          "date": "Tanggal",
+          "problem": "Soal",
+          "score": "Skor",
+          "time": "Waktu"
+        },
+        "pagination": {
+          "showing": "dari",
+          "display": "item ditampilkan",
+          "pageSize": "Ukuran Halaman",
+          "prev": "Halaman Sebelumnya",
+          "next": "Halaman Berikutnya"
+        }
+      }
+    }
+  }
+} 
