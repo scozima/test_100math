@@ -1,0 +1,197 @@
+{
+  "common": {
+    "home": "Inicio",
+    "dashboard": "Panel",
+    "lesson": "Lección",
+    "settings": "Ajustes",
+    "login": "Iniciar sesión",
+    "logout": "Cerrar sesión",
+    "language": "Idioma"
+  },
+  "math_table": {
+    "login_required": "Por favor, inicia sesión para acceder a los problemas matemáticos.",
+    "loading": "Cargando...",
+    "start": "Comenzar",
+    "submit": "Enviar",
+    "restart": "Intentar de nuevo",
+    "categories": {
+      "basic": "Problemas básicos",
+      "original": "Problemas personalizados"
+    },
+    "result": {
+      "score": "Puntuación",
+      "total": "de",
+      "time_taken": "Tiempo",
+      "seconds": "segundos"
+    }
+  },
+  "home": {
+    "title": "¡Mejora tus habilidades matemáticas con Matemáticas de 100 casillas!",
+    "subtitle1": "Una herramienta de aprendizaje simple y efectiva",
+    "subtitle2": "para desarrollar habilidades básicas de cálculo de forma divertida.",
+    "start_button": "Comenzar",
+    "feature1": {
+      "title": "Domina lo básico",
+      "description": "Aprende suma, resta, multiplicación y división de forma divertida."
+    },
+    "feature2": {
+      "title": "Contrarreloj",
+      "description": "Ponte a prueba con problemas cronometrados y supera tu mejor marca."
+    },
+    "feature3": {
+      "title": "Desafíos progresivos",
+      "description": "Aprende a tu propio ritmo con problemas desde básicos hasta avanzados."
+    },
+    "feature4": {
+      "title": "Personaliza tus problemas",
+      "description": "Crea tus propios problemas para un aprendizaje más efectivo."
+    },
+    "usage": {
+      "title": "Cómo usar",
+      "step1": {
+        "title": "1. Selecciona un desafío",
+        "description": "Elige un conjunto de problemas básicos o personalizados."
+      },
+      "step2": {
+        "title": "2. Comienza a calcular",
+        "description": "Presiona comenzar para iniciar el tiempo y responde en secuencia."
+      },
+      "step3": {
+        "title": "3. Revisa resultados",
+        "description": "Revisa tus respuestas correctas y el tiempo empleado al terminar."
+      },
+      "step4": {
+        "title": "4. Monitorea tu progreso",
+        "description": "Sigue tu aprendizaje en el panel y observa tu mejora diaria."
+      }
+    }
+  },
+  "problem": {
+    "tabs": {
+      "create": "Crear",
+      "editDelete": "Editar/Eliminar"
+    },
+    "addQuestion": {
+      "title": "Crear problema",
+      "btnTitle": "Registrar",
+      "problemName": "Nombre del problema",
+      "problemNameExample": "Ejemplo: Suma Nivel 1",
+      "operator": "Operador",
+      "operatorPlaceholder": "Por favor selecciona",
+      "xValues": "Valores X",
+      "xValuesNote": "(Separados por comas)",
+      "xValuesExample": "Ejemplo: 1, 2, 3, 4, 5",
+      "yValues": "Valores Y",
+      "yValuesNote": "(Separados por comas)",
+      "yValuesExample": "Ejemplo: 1, 2, 3, 4, 5",
+      "cancel": "Cancelar",
+      "errorAllFields": "Por favor completa todos los campos",
+      "errorLogin": "Por favor inicia sesión",
+      "errorDuplicateName": "Ya existe un problema con este nombre",
+      "successUpdate": "Actualizado exitosamente",
+      "successRegister": "Registrado exitosamente",
+      "error": "Ocurrió un error: "
+    },
+    "editQuestion": {
+      "title": "Editar",
+      "btnTitle": "Registrar"
+    },
+    "allProblemTable": {
+      "loading": "Cargando...",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "editComplete": "Completar edición",
+      "tableHeaders": {
+        "problemName": "Nombre del problema",
+        "operator": "Operador",
+        "xValues": "Valores X",
+        "yValues": "Valores Y",
+        "createdAt": "Fecha de creación",
+        "updatedAt": "Fecha de actualización",
+        "edit": "Editar"
+      },
+      "noProblems": "No hay problemas registrados. Por favor crea un problema.",
+      "deleteDialog": {
+        "title": "¿Estás seguro de que quieres eliminar?",
+        "description": "Esta acción no se puede deshacer. Se eliminarán todos los datos del problema y las respuestas relacionadas.",
+        "cancel": "Cancelar",
+        "confirm": "Eliminar"
+      },
+      "deleteStatus": {
+        "loading": "Eliminando...",
+        "success": "El problema y los datos de respuestas relacionadas han sido eliminados",
+        "error": "Error al eliminar"
+      }
+    }
+  },
+  "dashboard": {
+    "loading": "Cargando...",
+    "stats": {
+      "streak": {
+        "title": "Racha de aprendizaje",
+        "current": "días",
+        "max": "Racha actual / Mejor"
+      },
+      "totalTime": {
+        "title": "Tiempo total de aprendizaje",
+        "minutes": "min",
+        "days": "días durante",
+        "seconds": "seg"
+      },
+      "bestScore": {
+        "title": "Mejor puntuación",
+        "percent": "%",
+        "fastestTime": "Más rápido:"
+      },
+      "recovery": {
+        "title": "Regresos",
+        "times": "veces",
+        "description": "Veces que se retomó el aprendizaje"
+      }
+    },
+    "progress": {
+      "title": "Progreso de aprendizaje",
+      "problemSelect": {
+        "placeholder": "Seleccionar problema",
+        "all": "Todos los problemas",
+        "basic": "Problemas básicos",
+        "original": "Problemas personalizados"
+      },
+      "dateRange": {
+        "today": "Hoy",
+        "period": "Período",
+        "month": "Mes",
+        "week": "Semana",
+        "day": "Día"
+      },
+      "tabs": {
+        "chart": "Gráfico",
+        "list": "Lista"
+      },
+      "chart": {
+        "noData": "No hay datos disponibles",
+        "time": "Tiempo",
+        "score": "Puntuación",
+        "timeAxis": "Tiempo (seg)",
+        "scoreAxis": "Puntuación (%)"
+      },
+      "list": {
+        "filter": "Filtrar...",
+        "columns": "Columnas",
+        "tableHeaders": {
+          "date": "Fecha",
+          "problem": "Problema",
+          "score": "Puntuación",
+          "time": "Tiempo"
+        },
+        "pagination": {
+          "showing": "de",
+          "display": "elementos mostrados",
+          "pageSize": "Tamaño de página",
+          "prev": "Página anterior",
+          "next": "Página siguiente"
+        }
+      }
+    }
+  }
+} 

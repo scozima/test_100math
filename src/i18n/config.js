@@ -4,6 +4,13 @@ import LanguageDetector from 'i18next-browser-languagedetector'
 
 import translationEN from './locales/en.json'
 import translationJA from './locales/ja.json'
+import translationKO from './locales/ko.json'
+import translationES from './locales/es.json'
+import translationFR from './locales/fr.json'
+import translationVI from './locales/vi.json'
+import translationID from './locales/id.json'
+import translationHI from './locales/hi.json'
+import translationTH from './locales/th.json'
 
 const resources = {
   en: {
@@ -11,6 +18,27 @@ const resources = {
   },
   ja: {
     translation: translationJA
+  },
+  ko: {
+    translation: translationKO
+  },
+  es: {
+    translation: translationES
+  },
+  fr: {
+    translation: translationFR
+  },
+  vi: {
+    translation: translationVI
+  },
+  id: {
+    translation: translationID
+  },
+  hi: {
+    translation: translationHI
+  },
+  th: {
+    translation: translationTH
   }
 }
 
@@ -19,7 +47,7 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: 'ja',
+    fallbackLng: 'en',
     interpolation: {
       escapeValue: false
     }

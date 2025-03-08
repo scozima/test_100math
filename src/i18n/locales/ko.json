@@ -1,0 +1,197 @@
+{
+  "common": {
+    "home": "홈",
+    "dashboard": "대시보드",
+    "lesson": "학습",
+    "settings": "설정",
+    "login": "로그인",
+    "logout": "로그아웃",
+    "language": "언어"
+  },
+  "math_table": {
+    "login_required": "수학 문제를 풀기 위해 로그인해 주세요.",
+    "loading": "로딩 중...",
+    "start": "시작",
+    "submit": "제출",
+    "restart": "다시 시도",
+    "categories": {
+      "basic": "기본 문제",
+      "original": "사용자 정의 문제"
+    },
+    "result": {
+      "score": "점수",
+      "total": "중",
+      "time_taken": "소요 시간",
+      "seconds": "초"
+    }
+  },
+  "home": {
+    "title": "100칸 수학으로 수학 실력을 향상시키세요!",
+    "subtitle1": "간단하고 효과적인 학습 도구",
+    "subtitle2": "재미있게 기초 계산 능력을 키우세요.",
+    "start_button": "시작하기",
+    "feature1": {
+      "title": "기초 마스터",
+      "description": "덧셈, 뺄셈, 곱셈, 나눗셈을 재미있게 배우세요."
+    },
+    "feature2": {
+      "title": "시간 도전",
+      "description": "시간을 재며 문제를 풀고 자신의 기록을 갱신하세요."
+    },
+    "feature3": {
+      "title": "단계별 도전",
+      "description": "기초부터 고급까지 자신의 페이스로 학습하세요."
+    },
+    "feature4": {
+      "title": "문제 커스터마이징",
+      "description": "더 효과적인 학습을 위해 나만의 문제를 만드세요."
+    },
+    "usage": {
+      "title": "사용 방법",
+      "step1": {
+        "title": "1. 도전 선택",
+        "description": "기본 또는 사용자 정의 문제 세트를 선택하세요."
+      },
+      "step2": {
+        "title": "2. 계산 시작",
+        "description": "시작을 눌러 타이머를 시작하고 순서대로 답을 입력하세요."
+      },
+      "step3": {
+        "title": "3. 결과 확인",
+        "description": "완료 후 정답과 소요 시간을 확인하세요."
+      },
+      "step4": {
+        "title": "4. 진도 관리",
+        "description": "대시보드에서 학습 현황을 확인하고 일일 향상도를 확인하세요."
+      }
+    }
+  },
+  "problem": {
+    "tabs": {
+      "create": "생성",
+      "editDelete": "수정/삭제"
+    },
+    "addQuestion": {
+      "title": "문제 생성",
+      "btnTitle": "등록",
+      "problemName": "문제 이름",
+      "problemNameExample": "예: 덧셈 레벨 1",
+      "operator": "연산자",
+      "operatorPlaceholder": "선택해 주세요",
+      "xValues": "X 값",
+      "xValuesNote": "(쉼표로 구분)",
+      "xValuesExample": "예: 1, 2, 3, 4, 5",
+      "yValues": "Y 값",
+      "yValuesNote": "(쉼표로 구분)",
+      "yValuesExample": "예: 1, 2, 3, 4, 5",
+      "cancel": "취소",
+      "errorAllFields": "모든 필드를 입력해 주세요",
+      "errorLogin": "로그인해 주세요",
+      "errorDuplicateName": "이미 존재하는 문제 이름입니다",
+      "successUpdate": "업데이트 완료",
+      "successRegister": "등록 완료",
+      "error": "오류 발생: "
+    },
+    "editQuestion": {
+      "title": "수정",
+      "btnTitle": "등록"
+    },
+    "allProblemTable": {
+      "loading": "로딩 중...",
+      "edit": "수정",
+      "delete": "삭제",
+      "editComplete": "수정 완료",
+      "tableHeaders": {
+        "problemName": "문제 이름",
+        "operator": "연산자",
+        "xValues": "X 값",
+        "yValues": "Y 값",
+        "createdAt": "생성일",
+        "updatedAt": "수정일",
+        "edit": "수정"
+      },
+      "noProblems": "등록된 문제가 없습니다. 문제를 생성해 주세요.",
+      "deleteDialog": {
+        "title": "정말 삭제하시겠습니까?",
+        "description": "이 작업은 취소할 수 없습니다. 모든 문제 데이터와 관련 답안이 삭제됩니다.",
+        "cancel": "취소",
+        "confirm": "삭제"
+      },
+      "deleteStatus": {
+        "loading": "삭제 중...",
+        "success": "문제와 관련 답안 데이터가 삭제되었습니다",
+        "error": "삭제 실패"
+      }
+    }
+  },
+  "dashboard": {
+    "loading": "로딩 중...",
+    "stats": {
+      "streak": {
+        "title": "학습 연속일",
+        "current": "일",
+        "max": "현재 연속 / 최고 기록"
+      },
+      "totalTime": {
+        "title": "총 학습 시간",
+        "minutes": "분",
+        "days": "일 동안",
+        "seconds": "초"
+      },
+      "bestScore": {
+        "title": "최고 점수",
+        "percent": "%",
+        "fastestTime": "최단 시간:"
+      },
+      "recovery": {
+        "title": "복귀 횟수",
+        "times": "회",
+        "description": "학습 재개 횟수"
+      }
+    },
+    "progress": {
+      "title": "학습 진도",
+      "problemSelect": {
+        "placeholder": "문제 선택",
+        "all": "모든 문제",
+        "basic": "기본 문제",
+        "original": "사용자 정의 문제"
+      },
+      "dateRange": {
+        "today": "오늘",
+        "period": "기간",
+        "month": "월",
+        "week": "주",
+        "day": "일"
+      },
+      "tabs": {
+        "chart": "차트",
+        "list": "목록"
+      },
+      "chart": {
+        "noData": "데이터가 없습니다",
+        "time": "시간",
+        "score": "점수",
+        "timeAxis": "시간 (초)",
+        "scoreAxis": "점수 (%)"
+      },
+      "list": {
+        "filter": "필터...",
+        "columns": "열",
+        "tableHeaders": {
+          "date": "날짜",
+          "problem": "문제",
+          "score": "점수",
+          "time": "시간"
+        },
+        "pagination": {
+          "showing": "중",
+          "display": "항목 표시",
+          "pageSize": "페이지 크기",
+          "prev": "이전 페이지",
+          "next": "다음 페이지"
+        }
+      }
+    }
+  }
+} 
