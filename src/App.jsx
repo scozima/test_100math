@@ -1,10 +1,7 @@
 // App.jsx
-import { useState, useContext } from "react";
-import MathTable from "./components/MathTable";
-import AddQuestion from "./components/AddQuestion";
-
+import { useContext } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { AuthContext } from "./context/AuthProvider"; // ここでインポート
+import { AuthContext } from "./context/AuthProvider";
 
 import Login from "./pages/Login";
 import Lesson from "./pages/Lesson";
@@ -14,49 +11,39 @@ import Problem from "./pages/Problem";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 
-// ここでAuthProviderをインポート
-import { AuthProvider } from "./context/AuthContext"; // 修正
-import { ThemeProvider } from "@/components/theme-provider"
-import { Toaster } from "sonner"
+import { Toaster } from "sonner";
 
 function App() {
-  const { user, loading } = useContext(AuthContext); // loadingも一緒に取得
-  const basename = process.env.BASENAME || '/';
+  const { user, loading } = useContext(AuthContext);
+  const basename = process.env.BASENAME || "/";
 
   if (loading) {
-    return <div>Loading...</div>;  // user情報が取得されるまでローディング表示
+    return <div>Loading...</div>;
   }
 
   return (
-    <ThemeProvider defaultTheme="light">
-      <AuthProvider>
-        <Router basename={basename}>
-          <Toaster richColors />
-          <Routes>
-            <Route path="/" element={<AppLayout />}>
-              <Route
-                index
-                element={user ? <Home /> : <Navigate to="/login" />}
-              />
-              <Route
-                path="/lesson"
-                element={user ? <Lesson /> : <Navigate to="/login" />}
-              />
-              <Route
-                path="/problem"
-                element={user ? <Problem /> : <Navigate to="/login" />}
-              />
-              <Route
-                path="/dashboard"
-                element={user ? <Dashboard /> : <Navigate to="/login" />}
-              />
-              <Route path="*" element={<Nomatch />} />
-            </Route>
-            <Route path="/login" element={<Login />} />
-          </Routes>
-        </Router>
-      </AuthProvider>
-    </ThemeProvider>
+    <Router basename={basename}>
+      <Toaster richColors />
+      <Routes>
+        <Route path="/" element={<AppLayout />}>
+          <Route index element={<Home />} />
+          <Route path="/lesson" element={<Lesson />} />
+          <Route
+            path="/problem"
+            element={user ? <Problem /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/dashboard"
+            element={user ? <Dashboard /> : <Navigate to="/" />}
+          />
+          <Route path="*" element={<Nomatch />} />
+        </Route>
+        <Route
+          path="/login"
+          element={user ? <Navigate to="/dashboard" /> : <Login />}
+        />
+      </Routes>
+    </Router>
   );
 }
 

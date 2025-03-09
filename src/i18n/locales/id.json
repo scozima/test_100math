@@ -3,17 +3,28 @@
     "home": "Beranda",
     "dashboard": "Dasbor",
     "lesson": "Pelajaran",
-    "settings": "Pengaturan",
+    "settings": "Manajemen Soal",
     "login": "Masuk",
     "logout": "Keluar",
     "language": "Bahasa"
   },
   "login": {
-    "title": "Matematika 100 Kotak",
-    "subtitle": "Masuk dengan Google untuk memulai",
+    "title": "100 Kotak Hitung",
+    "subtitle": "Masuk dengan akun Google untuk memulai",
     "googleButton": "Masuk dengan Google",
-    "slogan": "Tingkatkan Kemampuan Matematika Anda",
-    "description": "Alat pembelajaran sederhana dan efektif untuk mengembangkan keterampilan berhitung dasar dengan cara yang menyenangkan."
+    "slogan": "Tingkatkan Kemampuan Berhitung",
+    "description": "Alat pembelajaran sederhana dan efektif untuk mengembangkan keterampilan berhitung dasar dengan cara yang menyenangkan.",
+    "features": {
+      "dashboard": "Analisis dan kelola kemajuan belajar Anda di dasbor",
+      "problem_management": "Buat dan edit soal Anda sendiri"
+    },
+    "benefits": {
+      "title": "Fitur yang tersedia saat masuk",
+      "progress_tracking": "Pelacakan dan analisis detail kemajuan belajar",
+      "custom_problems": "Buat soal matematika yang disesuaikan",
+      "analytics": "Visualisasi data pembelajaran dan analisis kinerja",
+      "progress_save": "Penyimpanan otomatis dan pemantauan kemajuan berkelanjutan"
+    }
   },
   "math_table": {
     "login_required": "Silakan masuk untuk mengakses soal matematika.",

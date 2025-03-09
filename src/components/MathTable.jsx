@@ -52,9 +52,8 @@ function MathTable() {
 
   useEffect(() => {
     const fetchProblems = async () => {
-      if (!currentUser) return;
-
       try {
+        // ベーシック問題を取得（ログイン不要）
         const basicSnapshot = await getDocs(
           collection(db, "basic_question_db")
         );
@@ -64,22 +63,29 @@ function MathTable() {
           collection: "basic_question_db",
         }));
 
-        const userQuestionsRef = collection(db, `users/${currentUser.uid}/questions`);
-        const userQuestionsSnapshot = await getDocs(userQuestionsRef);
-        const customList = userQuestionsSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          name: doc.data().name,
-          collection: "users",
-          path: doc.ref.path
-        }));
+        // カスタム問題はログインユーザーのみ取得
+        let customList = [];
+        if (currentUser) {
+          const userQuestionsRef = collection(db, `users/${currentUser.uid}/questions`);
+          const userQuestionsSnapshot = await getDocs(userQuestionsRef);
+          customList = userQuestionsSnapshot.docs.map((doc) => ({
+            id: doc.id,
+            name: doc.data().name,
+            collection: "users",
+            path: doc.ref.path
+          }));
+        }
 
         setProblems({ basic_question_db: basicList, users: customList });
 
+        // 初期選択問題の設定
         if (basicList.length > 0) {
-          setSelectedProblem(basicList[0].id);
+          const firstProblem = basicList[0];
+          setSelectedProblem(`${firstProblem.collection}/${firstProblem.id}`);
           setSelectedCollection("basic_question_db");
-        } else if (customList.length > 0) {
-          setSelectedProblem(customList[0].id);
+        } else if (customList.length > 0 && currentUser) {
+          const firstProblem = customList[0];
+          setSelectedProblem(`${firstProblem.collection}/${firstProblem.id}`);
           setSelectedCollection("users");
         }
       } catch (error) {
@@ -91,22 +97,34 @@ function MathTable() {
   }, [currentUser]);
 
   useEffect(() => {
-    if (!selectedProblem || !selectedCollection || !currentUser) return;
+    if (!selectedProblem) return;
 
     const fetchProblemData = async () => {
       try {
+        const [collection, id] = selectedProblem.split('/');
         let docRef;
-        if (selectedCollection === "basic_question_db") {
-          docRef = doc(db, selectedCollection, selectedProblem);
+        if (collection === "basic_question_db") {
+          docRef = doc(db, collection, id);
+        } else if (currentUser) {
+          docRef = doc(db, `users/${currentUser.uid}/questions`, id);
         } else {
-          docRef = doc(db, `users/${currentUser.uid}/questions`, selectedProblem);
+          return; // ログインしていない場合はカスタム問題を取得しない
         }
 
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
           const data = docSnap.data();
-          setArray([{ id: 1, operator: data.operator, x: data.x, y: data.y }]);
+          // x と y の配列の要素を数値型に変換
+          const xArray = data.x.map(Number);
+          const yArray = data.y.map(Number);
+          
+          setArray([{ 
+            id: 1, 
+            operator: data.operator, 
+            x: xArray,  // 数値型の配列
+            y: yArray   // 数値型の配列
+          }]);
         } else {
           console.error("No such document!");
         }
@@ -116,7 +134,7 @@ function MathTable() {
     };
 
     fetchProblemData();
-  }, [selectedProblem, selectedCollection, currentUser]);
+  }, [selectedProblem, currentUser]);
 
   const calculateAnswer = (rowValue, colValue, operator) => {
     // 数値に変換してから計算する
@@ -209,9 +227,9 @@ function MathTable() {
         // 問題の詳細を取得
         let docRef;
         if (selectedCollection === "basic_question_db") {
-          docRef = doc(db, selectedCollection, selectedProblem);
+          docRef = doc(db, selectedCollection, selectedProblem.split('/')[1]);
         } else {
-          docRef = doc(db, `users/${currentUser.uid}/questions`, selectedProblem);
+          docRef = doc(db, `users/${currentUser.uid}/questions`, selectedProblem.split('/')[1]);
         }
 
         const docSnap = await getDoc(docRef);
@@ -226,7 +244,7 @@ function MathTable() {
 
         // Firebase に保存
         await addDoc(collection(db, `users/${currentUser.uid}/results`), {
-          problemId: selectedProblem,
+          problemId: selectedProblem.split('/')[1],
           problemCollection: selectedCollection,
           problemName: problemName,
           problemUpdatedAt: problemUpdatedAt,
@@ -258,7 +276,7 @@ function MathTable() {
   const handleProblemSelection = (value) => {
     const [collectionName, problemId] = value.split("/")
     setSelectedCollection(collectionName)
-    setSelectedProblem(problemId)
+    setSelectedProblem(value)
 
     // Startボタンのリセット
     setStart(false)
@@ -303,10 +321,7 @@ function MathTable() {
     }))
   }
 
-  if (!currentUser) {
-    return <p>{t('math_table.login_required')}</p>;
-  }
-
+  // ローディング中の表示
   if (array.length === 0) {
     return <p>{t('math_table.loading')}</p>;
   }
@@ -319,7 +334,8 @@ function MathTable() {
             problems={problems}
             selectedCollection={selectedCollection}
             selectedProblem={selectedProblem}
-            onProblemSelection={handleProblemSelection}
+            onProblemChange={handleProblemSelection}
+            currentUser={currentUser}
           />
         </CardHeader>
         <CardContent>

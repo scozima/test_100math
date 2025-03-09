@@ -3,17 +3,28 @@
     "home": "Trang chủ",
     "dashboard": "Bảng điều khiển",
     "lesson": "Bài học",
-    "settings": "Cài đặt",
+    "settings": "Quản lý bài tập",
     "login": "Đăng nhập",
     "logout": "Đăng xuất",
     "language": "Ngôn ngữ"
   },
   "login": {
-    "title": "Bảng tính 100 ô",
-    "subtitle": "Đăng nhập bằng Google để bắt đầu",
+    "title": "100 Ô Tính Toán",
+    "subtitle": "Đăng nhập bằng tài khoản Google để bắt đầu",
     "googleButton": "Đăng nhập bằng Google",
     "slogan": "Nâng cao kỹ năng tính toán",
-    "description": "Công cụ học tập đơn giản và hiệu quả để phát triển kỹ năng tính toán cơ bản một cách thú vị."
+    "description": "Công cụ học tập đơn giản và hiệu quả để phát triển kỹ năng tính toán cơ bản một cách thú vị.",
+    "features": {
+      "dashboard": "Phân tích và quản lý tiến trình học tập của bạn trên bảng điều khiển",
+      "problem_management": "Tạo và chỉnh sửa bài tập của riêng bạn"
+    },
+    "benefits": {
+      "title": "Tính năng có sẵn khi đăng nhập",
+      "progress_tracking": "Theo dõi và phân tích chi tiết tiến trình học tập",
+      "custom_problems": "Tạo bài tập toán tùy chỉnh của riêng bạn",
+      "analytics": "Trực quan hóa dữ liệu học tập và phân tích hiệu suất",
+      "progress_save": "Tự động lưu và theo dõi sự tiến bộ liên tục"
+    }
   },
   "math_table": {
     "login_required": "Vui lòng đăng nhập để truy cập các bài toán.",

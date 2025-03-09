@@ -2,18 +2,29 @@
   "common": {
     "home": "홈",
     "dashboard": "대시보드",
-    "lesson": "학습",
-    "settings": "설정",
+    "lesson": "레슨",
+    "settings": "문제 관리",
     "login": "로그인",
     "logout": "로그아웃",
     "language": "언어"
   },
   "login": {
-    "title": "100칸 수학",
+    "title": "100칸 계산",
     "subtitle": "Google 계정으로 로그인하여 시작하세요",
     "googleButton": "Google로 로그인",
-    "slogan": "100칸 수학으로 계산 실력 향상",
-    "description": "기초 계산 능력을 재미있게 키울 수 있는 간단하고 효과적인 학습 도구입니다."
+    "slogan": "계산 실력 향상",
+    "description": "기초 계산 능력을 재미있게 기를 수 있는 간단하고 효과적인 학습 도구입니다.",
+    "features": {
+      "dashboard": "대시보드에서 학습 진행 상황을 분석하고 관리할 수 있습니다",
+      "problem_management": "나만의 문제를 만들고 편집할 수 있습니다"
+    },
+    "benefits": {
+      "title": "로그인 시 사용 가능한 기능",
+      "progress_tracking": "학습 진행 상황의 상세한 기록과 분석",
+      "custom_problems": "나만의 맞춤형 수학 문제 만들기",
+      "analytics": "학습 데이터 시각화 및 성과 분석",
+      "progress_save": "학습 기록 자동 저장 및 지속적인 성장 기록"
+    }
   },
   "math_table": {
     "login_required": "수학 문제를 풀기 위해 로그인해 주세요.",

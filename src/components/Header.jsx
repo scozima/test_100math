@@ -1,6 +1,6 @@
 // Header.jsx
 import { useContext } from "react"
-import { AuthContext } from "../context/AuthContext"
+import { AuthContext } from "@/context/AuthProvider"
 import { Moon, Sun } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -12,9 +12,11 @@ import {
 import { useTheme } from "@/components/theme-provider"
 import LanguageSwitcher from "./LanguageSwitcher"
 import { useTranslation } from "react-i18next"
+import { useAuth } from "@/hooks/useAuth"
+import { logout } from "@/lib/auth"
 
 const Header = () => {
-  const { user, logout } = useContext(AuthContext)
+  const { user, loading } = useAuth()
   const { theme, setTheme } = useTheme()
   const { t } = useTranslation()
 

@@ -11,6 +11,7 @@ import {
   Settings
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
+import { Navigation } from "./Navigation"
 
 function MainLayout({ children }) {
   const { user, logout } = useContext(AuthContext)
@@ -53,20 +54,16 @@ function MainLayout({ children }) {
     <div className="grid min-h-screen w-full lg:grid-cols-[280px_1fr]">
       {/* サイドバー */}
       <div className={cn(
+        "h-[100svh]",
+        "min-h-full",
         "border-r bg-background",
         "fixed inset-y-0 z-50 w-[280px] transition-transform duration-300 lg:static lg:block",
         "shadow-lg",
         isMobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
-        <div className="flex h-full max-h-screen flex-col gap-2">
+        <div className="flex h-full max-h-screen flex-col">
           <div className="flex h-[60px] items-center justify-between border-b px-6">
-            <Link 
-              to="/" 
-              className="font-semibold"
-              onClick={handleMenuItemClick}
-            >
-              100math
-            </Link>
+            <span className="font-semibold">100math</span>
             <Button 
               variant="ghost" 
               className="lg:hidden" 
@@ -75,26 +72,7 @@ function MainLayout({ children }) {
               ✕
             </Button>
           </div>
-          <div className="flex-1 overflow-auto py-2">
-            <nav className="grid items-start px-4 text-sm font-medium gap-2">
-              {menuItems.map(({ path, label, icon }) => (
-                <Link
-                  key={path}
-                  to={path}
-                  onClick={handleMenuItemClick}
-                  className={cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2 transition-all",
-                    isCurrentPath(path) 
-                      ? "bg-accent text-accent-foreground" 
-                      : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-                  )}
-                >
-                  {icon}
-                  {label}
-                </Link>
-              ))}
-            </nav>
-          </div>
+          <Navigation />
         </div>
       </div>
 
