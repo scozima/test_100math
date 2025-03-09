@@ -8,6 +8,13 @@
     "logout": "Logout",
     "language": "Language"
   },
+  "login": {
+    "title": "100-Square Math",
+    "subtitle": "Sign in with Google to get started",
+    "googleButton": "Sign in with Google",
+    "slogan": "Improve Your Math Skills",
+    "description": "A simple and effective learning tool to develop basic calculation skills in a fun way."
+  },
   "math_table": {
     "login_required": "Please log in to access the math problems.",
     "loading": "Loading...",

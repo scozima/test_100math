@@ -8,6 +8,13 @@
     "logout": "ログアウト",
     "language": "言語"
   },
+  "login": {
+    "title": "100マス計算",
+    "subtitle": "Googleアカウントでログインして始めましょう",
+    "googleButton": "Googleでログイン",
+    "slogan": "100マス計算で計算力アップ",
+    "description": "基礎的な計算力を楽しく身につけられる、シンプルで効果的な学習ツールです。"
+  },
   "math_table": {
     "login_required": "問題にアクセスするにはログインしてください。",
     "loading": "読み込み中...",
