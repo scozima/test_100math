@@ -9,43 +9,44 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-function ProblemSelector({ problems, selectedCollection, selectedProblem, onProblemSelection }) {
+function ProblemSelector({ problems, selectedProblem, onProblemChange, currentUser }) {
   const { t } = useTranslation()
 
   return (
-    <Select
-      value={`${selectedCollection}/${selectedProblem}`}
-      onValueChange={onProblemSelection}
-    >
-      <SelectTrigger className="w-[280px]">
-        <SelectValue placeholder="問題を選択" />
+    <Select value={selectedProblem} onValueChange={onProblemChange}>
+      <SelectTrigger className="w-[200px]">
+        <SelectValue placeholder={t('math_table.categories.basic')} />
       </SelectTrigger>
       <SelectContent>
-        {problems.basic_question_db.length > 0 && (
-          <SelectGroup>
-            <SelectLabel>{t('math_table.categories.basic')}</SelectLabel>
-            {problems.basic_question_db.map((problem) => (
-              <SelectItem
-                key={problem.id}
-                value={`${problem.collection}/${problem.id}`}
-              >
-                {problem.name}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        )}
-        {problems.users.length > 0 && (
-          <SelectGroup>
-            <SelectLabel>{t('math_table.categories.original')}</SelectLabel>
-            {problems.users.map((problem) => (
-              <SelectItem
-                key={problem.id}
-                value={`${problem.collection}/${problem.id}`}
-              >
-                {problem.name}
-              </SelectItem>
-            ))}
-          </SelectGroup>
+        {/* ベーシック問題 */}
+        <SelectGroup>
+          <SelectLabel>{t('math_table.categories.basic')}</SelectLabel>
+          {problems.basic_question_db.map((problem) => (
+            <SelectItem
+              key={`${problem.collection}/${problem.id}`}
+              value={`${problem.collection}/${problem.id}`}
+            >
+              {problem.name}
+            </SelectItem>
+          ))}
+        </SelectGroup>
+
+        {/* オリジナル問題（ログインユーザーのみ表示） */}
+        {currentUser && problems.users.length > 0 && (
+          <>
+            <div className="my-1 px-2 border-t border-border" />
+            <SelectGroup>
+              <SelectLabel>{t('math_table.categories.original')}</SelectLabel>
+              {problems.users.map((problem) => (
+                <SelectItem
+                  key={`${problem.collection}/${problem.id}`}
+                  value={`${problem.collection}/${problem.id}`}
+                >
+                  {problem.name}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </>
         )}
       </SelectContent>
     </Select>

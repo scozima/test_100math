@@ -3,7 +3,7 @@
     "home": "Home",
     "dashboard": "Dashboard",
     "lesson": "Lesson",
-    "settings": "Settings",
+    "settings": "Problem Management",
     "login": "Login",
     "logout": "Logout",
     "language": "Language"
@@ -13,7 +13,18 @@
     "subtitle": "Sign in with Google to get started",
     "googleButton": "Sign in with Google",
     "slogan": "Improve Your Math Skills",
-    "description": "A simple and effective learning tool to develop basic calculation skills in a fun way."
+    "description": "A simple and effective learning tool to develop basic calculation skills in a fun way.",
+    "features": {
+      "dashboard": "Analyze and manage your learning progress in the dashboard",
+      "problem_management": "Create and edit your own custom problems"
+    },
+    "benefits": {
+      "title": "Features Available After Login",
+      "progress_tracking": "Detailed tracking and analysis of learning progress",
+      "custom_problems": "Create your own custom math problems",
+      "analytics": "Visualize learning data and performance analysis",
+      "progress_save": "Automatic saving of learning history and continuous growth tracking"
+    }
   },
   "math_table": {
     "login_required": "Please log in to access the math problems.",

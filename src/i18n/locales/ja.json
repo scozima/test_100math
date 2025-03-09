@@ -3,7 +3,7 @@
     "home": "ホーム",
     "dashboard": "ダッシュボード",
     "lesson": "レッスン",
-    "settings": "設定",
+    "settings": "問題管理",
     "login": "ログイン",
     "logout": "ログアウト",
     "language": "言語"
@@ -13,7 +13,18 @@
     "subtitle": "Googleアカウントでログインして始めましょう",
     "googleButton": "Googleでログイン",
     "slogan": "100マス計算で計算力アップ",
-    "description": "基礎的な計算力を楽しく身につけられる、シンプルで効果的な学習ツールです。"
+    "description": "基礎的な計算力を楽しく身につけられる、シンプルで効果的な学習ツールです。",
+    "features": {
+      "dashboard": "ダッシュボードで学習の進捗を分析・管理できます",
+      "problem_management": "オリジナル問題の作成・編集ができます"
+    },
+    "benefits": {
+      "title": "ログインすると使える機能",
+      "progress_tracking": "学習進捗の詳細な記録と分析",
+      "custom_problems": "自分だけのオリジナル問題を作成可能",
+      "analytics": "学習データの可視化とパフォーマンス分析",
+      "progress_save": "学習履歴の自動保存と継続的な成長の記録"
+    }
   },
   "math_table": {
     "login_required": "問題にアクセスするにはログインしてください。",

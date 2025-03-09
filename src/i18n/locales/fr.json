@@ -3,17 +3,28 @@
     "home": "Accueil",
     "dashboard": "Tableau de bord",
     "lesson": "Leçon",
-    "settings": "Paramètres",
+    "settings": "Gestion des problèmes",
     "login": "Connexion",
     "logout": "Déconnexion",
     "language": "Langue"
   },
   "login": {
-    "title": "Math 100 cases",
-    "subtitle": "Connectez-vous avec Google pour commencer",
+    "title": "100 Cases de Calcul",
+    "subtitle": "Connectez-vous avec votre compte Google pour commencer",
     "googleButton": "Se connecter avec Google",
-    "slogan": "Améliorez vos compétences en mathématiques",
-    "description": "Un outil d'apprentissage simple et efficace pour développer les compétences de calcul de base de manière amusante."
+    "slogan": "Améliorez vos compétences en calcul",
+    "description": "Un outil d'apprentissage simple et efficace pour développer les compétences de calcul de base de manière ludique.",
+    "features": {
+      "dashboard": "Analysez et gérez votre progression d'apprentissage sur le tableau de bord",
+      "problem_management": "Créez et modifiez vos propres problèmes"
+    },
+    "benefits": {
+      "title": "Fonctionnalités disponibles après connexion",
+      "progress_tracking": "Suivi et analyse détaillés de la progression d'apprentissage",
+      "custom_problems": "Créez des problèmes mathématiques personnalisés",
+      "analytics": "Visualisation des données d'apprentissage et analyse des performances",
+      "progress_save": "Sauvegarde automatique et suivi continu des progrès"
+    }
   },
   "math_table": {
     "login_required": "Veuillez vous connecter pour accéder aux problèmes mathématiques.",

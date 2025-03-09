@@ -3,17 +3,28 @@
     "home": "Inicio",
     "dashboard": "Panel",
     "lesson": "Lección",
-    "settings": "Ajustes",
+    "settings": "Gestión de Problemas",
     "login": "Iniciar sesión",
     "logout": "Cerrar sesión",
     "language": "Idioma"
   },
   "login": {
-    "title": "Matemáticas de 100 casillas",
-    "subtitle": "Inicia sesión con Google para comenzar",
+    "title": "100 Casillas de Cálculo",
+    "subtitle": "Inicia sesión con tu cuenta de Google para comenzar",
     "googleButton": "Iniciar sesión con Google",
-    "slogan": "Mejora tus habilidades matemáticas",
-    "description": "Una herramienta de aprendizaje simple y efectiva para desarrollar habilidades básicas de cálculo de forma divertida."
+    "slogan": "Mejora tus habilidades de cálculo",
+    "description": "Una herramienta de aprendizaje simple y efectiva para desarrollar habilidades básicas de cálculo de manera divertida.",
+    "features": {
+      "dashboard": "Analiza y gestiona tu progreso de aprendizaje en el panel",
+      "problem_management": "Crea y edita tus propios problemas"
+    },
+    "benefits": {
+      "title": "Funciones disponibles al iniciar sesión",
+      "progress_tracking": "Seguimiento y análisis detallado del progreso de aprendizaje",
+      "custom_problems": "Crea problemas matemáticos personalizados",
+      "analytics": "Visualización de datos de aprendizaje y análisis de rendimiento",
+      "progress_save": "Guardado automático y seguimiento continuo del progreso"
+    }
   },
   "math_table": {
     "login_required": "Por favor, inicia sesión para acceder a los problemas matemáticos.",
