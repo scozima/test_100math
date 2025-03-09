@@ -8,6 +8,13 @@
     "logout": "로그아웃",
     "language": "언어"
   },
+  "login": {
+    "title": "100칸 수학",
+    "subtitle": "Google 계정으로 로그인하여 시작하세요",
+    "googleButton": "Google로 로그인",
+    "slogan": "100칸 수학으로 계산 실력 향상",
+    "description": "기초 계산 능력을 재미있게 키울 수 있는 간단하고 효과적인 학습 도구입니다."
+  },
   "math_table": {
     "login_required": "수학 문제를 풀기 위해 로그인해 주세요.",
     "loading": "로딩 중...",

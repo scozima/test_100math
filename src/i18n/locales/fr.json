@@ -8,6 +8,13 @@
     "logout": "Déconnexion",
     "language": "Langue"
   },
+  "login": {
+    "title": "Math 100 cases",
+    "subtitle": "Connectez-vous avec Google pour commencer",
+    "googleButton": "Se connecter avec Google",
+    "slogan": "Améliorez vos compétences en mathématiques",
+    "description": "Un outil d'apprentissage simple et efficace pour développer les compétences de calcul de base de manière amusante."
+  },
   "math_table": {
     "login_required": "Veuillez vous connecter pour accéder aux problèmes mathématiques.",
     "loading": "Chargement...",

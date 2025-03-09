@@ -8,6 +8,13 @@
     "logout": "Đăng xuất",
     "language": "Ngôn ngữ"
   },
+  "login": {
+    "title": "Bảng tính 100 ô",
+    "subtitle": "Đăng nhập bằng Google để bắt đầu",
+    "googleButton": "Đăng nhập bằng Google",
+    "slogan": "Nâng cao kỹ năng tính toán",
+    "description": "Công cụ học tập đơn giản và hiệu quả để phát triển kỹ năng tính toán cơ bản một cách thú vị."
+  },
   "math_table": {
     "login_required": "Vui lòng đăng nhập để truy cập các bài toán.",
     "loading": "Đang tải...",

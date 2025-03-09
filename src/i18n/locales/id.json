@@ -8,6 +8,13 @@
     "logout": "Keluar",
     "language": "Bahasa"
   },
+  "login": {
+    "title": "Matematika 100 Kotak",
+    "subtitle": "Masuk dengan Google untuk memulai",
+    "googleButton": "Masuk dengan Google",
+    "slogan": "Tingkatkan Kemampuan Matematika Anda",
+    "description": "Alat pembelajaran sederhana dan efektif untuk mengembangkan keterampilan berhitung dasar dengan cara yang menyenangkan."
+  },
   "math_table": {
     "login_required": "Silakan masuk untuk mengakses soal matematika.",
     "loading": "Memuat...",

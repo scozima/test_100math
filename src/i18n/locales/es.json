@@ -8,6 +8,13 @@
     "logout": "Cerrar sesión",
     "language": "Idioma"
   },
+  "login": {
+    "title": "Matemáticas de 100 casillas",
+    "subtitle": "Inicia sesión con Google para comenzar",
+    "googleButton": "Iniciar sesión con Google",
+    "slogan": "Mejora tus habilidades matemáticas",
+    "description": "Una herramienta de aprendizaje simple y efectiva para desarrollar habilidades básicas de cálculo de forma divertida."
+  },
   "math_table": {
     "login_required": "Por favor, inicia sesión para acceder a los problemas matemáticos.",
     "loading": "Cargando...",
