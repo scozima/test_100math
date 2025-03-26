@@ -211,5 +211,16 @@
         }
       }
     }
-  }
+  },
+  "upgradeToPremium": "プレミアムにアップグレード",
+  "premiumFeatures": "プレミアム機能",
+  "premiumFeature1": "詳細な学習分析と進捗管理",
+  "premiumFeature2": "カスタム問題の作成と共有",
+  "premiumFeature3": "高度な学習データの可視化",
+  "premiumPrice": "プレミアムプラン料金",
+  "premiumPriceDetail1": "月額500円（税込）",
+  "premiumPriceDetail2": "いつでもキャンセル可能",
+  "upgrading": "アップグレード中...",
+  "upgradeFailed": "アップグレードに失敗しました",
+  "error": "エラー"
 } 

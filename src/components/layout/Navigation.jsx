@@ -3,6 +3,7 @@ import { useAuth } from "@/hooks/useAuth"
 import { Button } from "@/components/ui/button"
 import { signInWithGoogle } from "@/lib/auth"
 import { useTranslation } from "react-i18next"
+import PropTypes from 'prop-types'
 import { 
   Home, 
   BookOpen, 
@@ -21,10 +22,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { SubscriptionStatus } from '@/components/SubscriptionStatus'
+import { useState } from 'react'
+import { PremiumUpgradeDialog } from '@/components/PremiumUpgradeDialog'
+import { useSubscription } from '@/hooks/useSubscription'
 
 export function Navigation() {
   const { user } = useAuth()
   const { t } = useTranslation()
+  const [showUpgradeDialog, setShowUpgradeDialog] = useState(false)
+  const { subscription } = useSubscription()
 
   // ログイン案内モーダルの内容
   const LoginPrompt = ({ feature }) => (
@@ -82,7 +89,7 @@ export function Navigation() {
           variant="outline"
         >
           <img 
-            src="/google-icon.svg" 
+            src="google-icon.svg" 
             alt="Google" 
             className="w-5 h-5 mr-2"
           />
@@ -91,6 +98,11 @@ export function Navigation() {
       </div>
     </DialogContent>
   )
+
+  // PropTypesの定義
+  LoginPrompt.propTypes = {
+    feature: PropTypes.string.isRequired
+  }
 
   // メニュー項目の定義
   const menuItems = [
@@ -160,12 +172,34 @@ export function Navigation() {
             variant="outline"
           >
             <img 
-              src="/google-icon.svg" 
+              src="google-icon.svg" 
               alt="Google" 
               className="w-5 h-5 mr-2"
             />
             {t('login.googleButton')}
           </Button>
+        </div>
+      )}
+
+      {/* サブスクリプションステータス - ログインユーザーのみ表示 */}
+      {user && (
+        <div className="p-4 bg-background">
+          <SubscriptionStatus />
+        </div>
+      )}
+
+      {/* プレミアムアップグレードダイアログ */}
+      {user && !subscription?.isActive && (
+        <div className="p-6 border rounded-lg bg-muted/20">
+          <h2 className="text-xl font-bold mb-4">分析機能</h2>
+          <p className="text-muted-foreground mb-4">
+            分析機能はプレミアムプランでご利用いただけます。
+          </p>
+          <PremiumUpgradeDialog 
+            open={showUpgradeDialog} 
+            onOpenChange={setShowUpgradeDialog}
+            feature="分析機能"
+          />
         </div>
       )}
     </nav>
