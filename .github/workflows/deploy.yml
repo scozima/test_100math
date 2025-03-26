@@ -1,51 +1,31 @@
+name: Deploy to GitHub Pages
+
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
-
-    env:
-      VITE_FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
-      VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
-      VITE_FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-      VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
-      VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
-      VITE_FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    # 環境変数のデバッグ用ステップ
-    - name: Debug environment variables
-      run: |
-        echo "Firebase API Key is set to: ${VITE_FIREBASE_API_KEY}"
-        echo "Firebase Auth Domain is set to: ${VITE_FIREBASE_AUTH_DOMAIN}"
-        echo "Firebase Project ID is set to: ${VITE_FIREBASE_PROJECT_ID}"
-        echo "Firebase Storage Bucket is set to: ${VITE_FIREBASE_STORAGE_BUCKET}"
-        echo "Firebase Messaging Sender ID is set to: ${VITE_FIREBASE_MESSAGING_SENDER_ID}"
-        echo "Firebase App ID is set to: ${VITE_FIREBASE_APP_ID}"
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20'
-
-    - name: Install dependencies
-      run: npm ci && npm run build
-
-    - name: Build project
-      run: npm run build
-
-    # エックスサーバーデプロイ
-    - name: Deploy to XServer via FTP
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-      with:
-        server: ${{ secrets.FTP_HOST }}
-        username: ${{ secrets.FTP_USER }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: ./dist/
-        server-dir: /113110.net/public_html/pj/100math/
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Build
+        env:
+          VITE_STRIPE_PUBLISHABLE_KEY: ${{ secrets.VITE_STRIPE_PUBLISHABLE_KEY }}
+          VITE_STRIPE_PRICE_ID: ${{ secrets.VITE_STRIPE_PRICE_ID }}
+        run: npm run build
+        
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist
+          branch: gh-pages
