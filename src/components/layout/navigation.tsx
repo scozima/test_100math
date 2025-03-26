@@ -74,7 +74,7 @@ export function Navigation() {
             variant="outline"
           >
             <img 
-              src="/google-icon.svg" 
+              src="google-icon.svg" 
               alt="Google" 
               className="w-5 h-5 mr-2"
             />
