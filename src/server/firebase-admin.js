@@ -47,4 +47,4 @@ export async function getDoc(docRef) {
     exists: () => doc.exists,
     data: () => doc.data(),
   };
-} 
+}
