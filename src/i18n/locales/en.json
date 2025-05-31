@@ -6,7 +6,9 @@
     "settings": "Problem Management",
     "login": "Login",
     "logout": "Logout",
-    "language": "Language"
+    "language": "Language",
+    "previous": "Previous",
+    "next": "Next"
   },
   "login": {
     "title": "100-Square Math",
@@ -27,6 +29,7 @@
     }
   },
   "math_table": {
+    "title": "100-Square Math",
     "login_required": "Please log in to access the math problems.",
     "loading": "Loading...",
     "start": "Start",
@@ -103,6 +106,9 @@
       "yValuesNote": "(Comma separated)",
       "yValuesExample": "Example: 1, 2, 3, 4, 5",
       "cancel": "Cancel",
+      "standardPlanLimit": "Standard plan allows up to 1 custom problem. Current: {{current}}/{{max}}",
+      "upgradeMessage": "Upgrade to Premium plan to create unlimited custom problems.",
+      "loginRequired": "Login is required to create custom problems.",
       "errorAllFields": "Please fill in all fields",
       "errorLogin": "Please log in",
       "errorDuplicateName": "A problem with this name already exists",
@@ -143,12 +149,19 @@
     }
   },
   "dashboard": {
+    "title": "Dashboard",
     "loading": "Loading...",
     "stats": {
-      "streak": {
-        "title": "Learning Streak",
-        "current": "days",
-        "max": "Current streak / Best"
+      "totalProblems": {
+        "title": "Problems Solved",
+        "suffix": " problems"
+      },
+      "totalScore": {
+        "title": "Total Score",
+        "suffix": " points"
+      },
+      "averageScore": {
+        "title": "Average Score"
       },
       "totalTime": {
         "title": "Total Learning Time",
@@ -156,10 +169,19 @@
         "days": "days over",
         "seconds": "sec"
       },
+      "averageTime": {
+        "title": "Average Time",
+        "seconds": "sec"
+      },
       "bestScore": {
         "title": "Best Score",
         "percent": "%",
         "fastestTime": "Fastest:"
+      },
+      "streak": {
+        "title": "Learning Streak",
+        "current": "days",
+        "max": "Current streak / Best"
       },
       "recovery": {
         "title": "Comebacks",
@@ -167,20 +189,41 @@
         "description": "Times resumed learning"
       }
     },
+    "filters": {
+      "title": "Filters",
+      "problem": {
+        "placeholder": "Select Problem",
+        "all": "All Problems",
+        "basic": "Basic Problems",
+        "custom": "Custom Problems"
+      },
+      "period": {
+        "day": "Day",
+        "week": "Week",
+        "month": "Month"
+      },
+      "search": {
+        "placeholder": "Search by problem name..."
+      }
+    },
+    "tabs": {
+      "chart": "Chart",
+      "table": "Table"
+    },
     "progress": {
       "title": "Learning Progress",
       "problemSelect": {
         "placeholder": "Select Problem",
         "all": "All Problems",
         "basic": "Basic Problems",
-        "original": "Custom Problems"
+        "original": "Original Problems"
       },
       "dateRange": {
         "today": "Today",
         "period": "Period",
-        "month": "Month",
+        "day": "Day",
         "week": "Week",
-        "day": "Day"
+        "month": "Month"
       },
       "tabs": {
         "chart": "Chart",
@@ -194,7 +237,7 @@
         "scoreAxis": "Score (%)"
       },
       "list": {
-        "filter": "Filter...",
+        "filter": "Search by problem name...",
         "columns": "Columns",
         "tableHeaders": {
           "date": "Date",
@@ -203,13 +246,36 @@
           "time": "Time"
         },
         "pagination": {
-          "showing": "of",
-          "display": "items shown",
-          "pageSize": "Page Size",
-          "prev": "Previous Page",
-          "next": "Next Page"
+          "showing": " results",
+          "display": " displayed",
+          "pageSize": "Page size",
+          "prev": "Previous",
+          "next": "Next"
         }
       }
+    },
+    "results": {
+      "title": "Results",
+      "noData": "No data available",
+      "total": " results",
+      "columns": "Columns",
+      "table": {
+        "date": "Date",
+        "problem": "Problem",
+        "score": "Score",
+        "time": "Time"
+      }
     }
-  }
+  },
+  "upgradeToPremium": "Upgrade to Premium",
+  "premiumFeatures": "Premium Features",
+  "premiumFeature1": "Detailed learning analytics and progress management",
+  "premiumFeature2": "Custom problem creation and sharing",
+  "premiumFeature3": "Advanced learning data visualization",
+  "premiumPrice": "Premium Plan Pricing",
+  "premiumPriceDetail1": "500 yen per month (tax included)",
+  "premiumPriceDetail2": "Cancel anytime",
+  "upgrading": "Upgrading...",
+  "upgradeFailed": "Upgrade failed",
+  "error": "Error"
 }

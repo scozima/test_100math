@@ -3,6 +3,7 @@ import { doc, updateDoc, collection, addDoc, getDocs, query, where, serverTimest
 import { db, auth } from '../firebase'
 import PropTypes from 'prop-types'
 import { useTranslation } from "react-i18next"
+import { usePlanRestrictions } from "@/hooks/usePlanRestrictions"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -19,6 +20,7 @@ import Label from "@/components/ui/label"
 
 const AddQuestion = ({ title, btnTitle, problem, closeModal }) => {
   const { t } = useTranslation()
+  const { canCreateCustomProblem, customProblemCount, userPlan } = usePlanRestrictions()
   const [name, setName] = useState(problem?.name || "")
   const [operator, setOperator] = useState(problem?.operator || "")
   const [x, setX] = useState(problem?.x ? problem.x.join(", ") : "")
@@ -39,20 +41,31 @@ const AddQuestion = ({ title, btnTitle, problem, closeModal }) => {
       return
     }
 
-    const xArray = x.split(",").map(Number)
-    const yArray = y.split(",").map(Number)
-    
     const user = auth.currentUser
     if (!user) {
       toast.error(t('problem.addQuestion.errorLogin'))
       return
     }
 
+    // 新規作成の場合のみプラン制限をチェック
+    if (!problem && !canCreateCustomProblem()) {
+      if (userPlan === 'standard') {
+        toast.error(`スタンダードプランでは、カスタム問題を1つまで作成できます。現在の作成数: ${customProblemCount}/1`)
+      } else {
+        toast.error('カスタム問題を作成するには、プレミアムプランが必要です。')
+      }
+      return
+    }
+
+    const xArray = x.split(",").map(Number)
+    const yArray = y.split(",").map(Number)
+    
     const userUid = user.uid
     const userCollectionRef = collection(db, "users", userUid, "questions")
 
     try {
       if (problem) {
+        // 編集の場合
         const problemRef = doc(userCollectionRef, problem.id)
         await updateDoc(problemRef, {
           name,
@@ -63,6 +76,7 @@ const AddQuestion = ({ title, btnTitle, problem, closeModal }) => {
         })
         toast.success(t('problem.addQuestion.successUpdate'))
       } else {
+        // 新規作成の場合
         const q = query(userCollectionRef, where("name", "==", name))
         const querySnapshot = await getDocs(q)
 
@@ -76,6 +90,7 @@ const AddQuestion = ({ title, btnTitle, problem, closeModal }) => {
           operator,
           x: xArray,
           y: yArray,
+          createdBy: userUid,
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
         })
@@ -104,6 +119,17 @@ const AddQuestion = ({ title, btnTitle, problem, closeModal }) => {
     <Card className="w-full min-w-[500px]">
       <CardHeader>
         <CardTitle className="text-2xl font-bold">{title}</CardTitle>
+        {/* プラン制限の表示 */}
+        {userPlan === 'standard' && !problem && (
+          <div className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg">
+            スタンダードプラン: カスタム問題 {customProblemCount}/1
+            {customProblemCount >= 1 && (
+              <div className="text-destructive font-medium mt-1">
+                制限に達しています。無制限に作成するにはプレミアムプランにアップグレードしてください。
+              </div>
+            )}
+          </div>
+        )}
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-2">
@@ -170,7 +196,10 @@ const AddQuestion = ({ title, btnTitle, problem, closeModal }) => {
           <Button variant="outline" onClick={closeModal}>
             {t('problem.addQuestion.cancel')}
           </Button>
-          <Button onClick={handleSubmit}>
+          <Button 
+            onClick={handleSubmit}
+            disabled={!problem && !canCreateCustomProblem()}
+          >
             {btnTitle}
           </Button>
         </div>

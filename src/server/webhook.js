@@ -5,6 +5,7 @@ import { createCheckoutSession } from './create-checkout-session.js';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import dotenv from 'dotenv';
+import process from 'process';
 import { doc, getDoc, db } from './firebase-admin.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -87,7 +88,7 @@ app.post('/create-portal-session', async (req, res) => {
     // 顧客ポータルセッションを作成
     const session = await stripe.billingPortal.sessions.create({
       customer: userData.stripeCustomerId,
-      return_url: `${process.env.APP_URL}/dashboard`,
+      return_url: `http://localhost:5173/dashboard`,
     });
     
     res.json({ url: session.url });
@@ -110,22 +111,121 @@ app.post('/webhook', async (req, res) => {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
+  console.log('=== Webhook Event Received ===');
+  console.log('Event Type:', event.type);
+  console.log('Event ID:', event.id);
+
   // イベントの処理
   let eventData;
   switch (event.type) {
     case 'checkout.session.completed':
       eventData = event.data.object;
       console.log('支払い完了:', eventData);
-      // ここでユーザーのサブスクリプション状態を更新
+      
+      try {
+        // サブスクリプション情報を取得
+        const subscription = await stripe.subscriptions.retrieve(eventData.subscription);
+        console.log('Subscription retrieved:', subscription.id);
+        
+        // ユーザーのFirebaseUIDを取得
+        const firebaseUID = eventData.metadata.firebaseUID;
+        console.log('Firebase UID from metadata:', firebaseUID);
+        
+        if (firebaseUID) {
+          // Firestoreのユーザードキュメントを更新
+          const userRef = doc(db, 'users', firebaseUID);
+          
+          const updateData = {
+            plan: 'premium',
+            stripeCustomerId: eventData.customer,
+            subscription: {
+              id: subscription.id,
+              status: subscription.status,
+              currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+              createdAt: new Date(),
+            },
+            updatedAt: new Date(),
+          };
+          
+          console.log('Updating user document with:', updateData);
+          
+          // Firebase Admin SDKでは .set() を使用して更新
+          await userRef.set(updateData, { merge: true });
+          
+          console.log(`✅ ユーザー ${firebaseUID} のプランをプレミアムに更新しました`);
+        } else {
+          console.error('❌ Firebase UIDがメタデータに見つかりません');
+          console.log('Available metadata:', eventData.metadata);
+        }
+      } catch (error) {
+        console.error('❌ プラン更新エラー:', error);
+        console.error('Error details:', error.message);
+      }
       break;
+      
     case 'customer.subscription.updated':
       eventData = event.data.object;
       console.log('サブスクリプション更新:', eventData);
+      
+      try {
+        // 顧客IDからFirebaseのユーザーを検索
+        const usersSnapshot = await db.collection('users')
+          .where('stripeCustomerId', '==', eventData.customer)
+          .get();
+        
+        if (!usersSnapshot.empty) {
+          const userDoc = usersSnapshot.docs[0];
+          const plan = eventData.status === 'active' ? 'premium' : 'standard';
+          
+          await userDoc.ref.set({
+            plan,
+            subscription: {
+              id: eventData.id,
+              status: eventData.status,
+              currentPeriodEnd: new Date(eventData.current_period_end * 1000),
+              updatedAt: new Date(),
+            },
+            updatedAt: new Date(),
+          }, { merge: true });
+          
+          console.log(`✅ ユーザー ${userDoc.id} のプランを ${plan} に更新しました`);
+        } else {
+          console.log('❌ 顧客IDに対応するユーザーが見つかりません:', eventData.customer);
+        }
+      } catch (error) {
+        console.error('❌ サブスクリプション更新エラー:', error);
+      }
       break;
+      
     case 'customer.subscription.deleted':
       eventData = event.data.object;
       console.log('サブスクリプション削除:', eventData);
+      
+      try {
+        // 顧客IDからFirebaseのユーザーを検索
+        const usersSnapshot = await db.collection('users')
+          .where('stripeCustomerId', '==', eventData.customer)
+          .get();
+        
+        if (!usersSnapshot.empty) {
+          const userDoc = usersSnapshot.docs[0];
+          
+          await userDoc.ref.set({
+            plan: 'standard',
+            subscription: {
+              status: 'canceled',
+              canceledAt: new Date(),
+            },
+            updatedAt: new Date(),
+          }, { merge: true });
+          
+          console.log(`✅ ユーザー ${userDoc.id} のプランをスタンダードに戻しました`);
+        }
+      } catch (error) {
+        console.error('❌ サブスクリプション削除エラー:', error);
+      }
       break;
+      
     default:
       console.log(`未処理のイベントタイプ: ${event.type}`);
   }

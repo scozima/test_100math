@@ -6,7 +6,9 @@
     "settings": "問題管理",
     "login": "ログイン",
     "logout": "ログアウト",
-    "language": "言語"
+    "language": "言語",
+    "previous": "前へ",
+    "next": "次へ"
   },
   "login": {
     "title": "100マス計算",
@@ -27,6 +29,7 @@
     }
   },
   "math_table": {
+    "title": "100マス計算",
     "login_required": "問題にアクセスするにはログインしてください。",
     "loading": "読み込み中...",
     "start": "スタート",
@@ -103,6 +106,9 @@
       "yValuesNote": "(カンマ区切りで入力)",
       "yValuesExample": "例：1, 2, 3, 4, 5",
       "cancel": "キャンセル",
+      "standardPlanLimit": "スタンダードプランでは、カスタム問題を1つまで作成できます。現在の作成数: {{current}}/{{max}}",
+      "upgradeMessage": "無制限にカスタム問題を作成するには、プレミアムプランにアップグレードしてください。",
+      "loginRequired": "カスタム問題を作成するには、ログインが必要です。",
       "errorAllFields": "すべての項目を入力してください",
       "errorLogin": "ログインしてください",
       "errorDuplicateName": "同じ問題名が既に存在します",
@@ -143,12 +149,19 @@
     }
   },
   "dashboard": {
+    "title": "ダッシュボード",
     "loading": "読み込み中...",
     "stats": {
-      "streak": {
-        "title": "学習継続",
-        "current": "日",
-        "max": "連続学習中 / 最高"
+      "totalProblems": {
+        "title": "解いた問題数",
+        "suffix": "問"
+      },
+      "totalScore": {
+        "title": "合計得点",
+        "suffix": "点"
+      },
+      "averageScore": {
+        "title": "平均スコア"
       },
       "totalTime": {
         "title": "総学習時間",
@@ -156,16 +169,46 @@
         "days": "日間で",
         "seconds": "秒"
       },
+      "averageTime": {
+        "title": "平均解答時間",
+        "seconds": "秒"
+      },
       "bestScore": {
         "title": "ベストスコア",
         "percent": "%",
         "fastestTime": "最速:"
+      },
+      "streak": {
+        "title": "学習継続",
+        "current": "日",
+        "max": "連続学習中 / 最高"
       },
       "recovery": {
         "title": "復活",
         "times": "回",
         "description": "再開した回数"
       }
+    },
+    "filters": {
+      "title": "フィルター設定",
+      "problem": {
+        "placeholder": "問題を選択",
+        "all": "すべての問題",
+        "basic": "ベーシック問題",
+        "custom": "カスタム問題"
+      },
+      "period": {
+        "day": "日",
+        "week": "週",
+        "month": "月"
+      },
+      "search": {
+        "placeholder": "問題名で検索..."
+      }
+    },
+    "tabs": {
+      "chart": "チャート",
+      "table": "テーブル"
     },
     "progress": {
       "title": "学習進捗",
@@ -178,9 +221,9 @@
       "dateRange": {
         "today": "今日",
         "period": "期間",
-        "month": "月表示",
-        "week": "週表示",
-        "day": "日表示"
+        "day": "日",
+        "week": "週",
+        "month": "月"
       },
       "tabs": {
         "chart": "チャート",
@@ -194,7 +237,7 @@
         "scoreAxis": "スコア(%)"
       },
       "list": {
-        "filter": "フィルター...",
+        "filter": "問題名で検索...",
         "columns": "表示項目",
         "tableHeaders": {
           "date": "日付",
@@ -203,12 +246,24 @@
           "time": "時間"
         },
         "pagination": {
-          "showing": "件中",
-          "display": "件を表示",
+          "showing": "件の結果",
+          "display": "件表示",
           "pageSize": "表示件数",
-          "prev": "前のページ",
-          "next": "次のページ"
+          "prev": "前へ",
+          "next": "次へ"
         }
+      }
+    },
+    "results": {
+      "title": "結果一覧",
+      "noData": "データがありません",
+      "total": "件の結果",
+      "columns": "表示項目",
+      "table": {
+        "date": "日付",
+        "problem": "問題",
+        "score": "スコア",
+        "time": "時間"
       }
     }
   },

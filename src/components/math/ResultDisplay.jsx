@@ -1,26 +1,31 @@
-import { useTranslation } from 'react-i18next'
 import { Button } from "@/components/ui/button"
+import PropTypes from 'prop-types'
 
 function ResultDisplay({ score, time, totalQuestions, onRestart }) {
-  const { t } = useTranslation()
-
   return (
     <div className="text-center mt-4">
       <p className="text-lg font-semibold mb-2">
-        {t('math_table.result.score')}: {score} {t('math_table.result.total')} {totalQuestions}
+        スコア: {totalQuestions}問中{score}問正解
       </p>
       <p className="text-md mb-4">
-        {t('math_table.result.time_taken')}: {time} {t('math_table.result.seconds')}
+        所要時間: {time} 秒
       </p>
       <Button
         onClick={onRestart}
-        className="w-32 mx-auto block"
+        className="w-32 mx-auto block py-3"
         size="lg"
       >
-        {t('math_table.restart')}
+        もう一度
       </Button>
     </div>
   )
+}
+
+ResultDisplay.propTypes = {
+  score: PropTypes.number.isRequired,
+  time: PropTypes.number.isRequired,
+  totalQuestions: PropTypes.number.isRequired,
+  onRestart: PropTypes.func.isRequired,
 }
 
 export default ResultDisplay 

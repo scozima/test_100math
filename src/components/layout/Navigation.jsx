@@ -17,7 +17,6 @@ import {
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -38,50 +37,52 @@ export function Navigation() {
     <DialogContent className="sm:max-w-[425px]">
       <DialogHeader>
         <DialogTitle>{t('login.title')}</DialogTitle>
-        <DialogDescription className="space-y-4">
-          {/* アクセスしようとした機能の説明 */}
-          <p className="text-muted-foreground">
-            {feature === t('common.dashboard') ? (
-              t('login.features.dashboard')
-            ) : feature === t('common.settings') ? (
-              t('login.features.problem_management')
-            ) : (
-              t('login.subtitle')
-            )}
-          </p>
-
-          {/* ログインのメリット一覧 */}
-          <div className="mt-4 space-y-3">
-            <h4 className="font-medium">{t('login.benefits.title')}</h4>
-            <ul className="space-y-2">
-              <li className="flex items-start gap-2">
-                <div className="mt-1 p-1 rounded-full bg-primary/10">
-                  <LayoutDashboard className="w-3 h-3" />
-                </div>
-                <span className="text-sm">{t('login.benefits.progress_tracking')}</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <div className="mt-1 p-1 rounded-full bg-primary/10">
-                  <PenSquare className="w-3 h-3" />
-                </div>
-                <span className="text-sm">{t('login.benefits.custom_problems')}</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <div className="mt-1 p-1 rounded-full bg-primary/10">
-                  <LineChart className="w-3 h-3" />
-                </div>
-                <span className="text-sm">{t('login.benefits.analytics')}</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <div className="mt-1 p-1 rounded-full bg-primary/10">
-                  <Timer className="w-3 h-3" />
-                </div>
-                <span className="text-sm">{t('login.benefits.progress_save')}</span>
-              </li>
-            </ul>
-          </div>
-        </DialogDescription>
       </DialogHeader>
+      
+      <div className="space-y-4">
+        {/* アクセスしようとした機能の説明 */}
+        <div className="text-muted-foreground">
+          {feature === t('common.dashboard') ? (
+            t('login.features.dashboard')
+          ) : feature === t('common.settings') ? (
+            t('login.features.problem_management')
+          ) : (
+            t('login.subtitle')
+          )}
+        </div>
+
+        {/* ログインのメリット一覧 */}
+        <div className="mt-4 space-y-3">
+          <div className="font-medium">{t('login.benefits.title')}</div>
+          <ul className="space-y-2">
+            <li className="flex items-start gap-2">
+              <div className="mt-1 p-1 rounded-full bg-primary/10">
+                <LayoutDashboard className="w-3 h-3" />
+              </div>
+              <span className="text-sm">{t('login.benefits.progress_tracking')}</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <div className="mt-1 p-1 rounded-full bg-primary/10">
+                <PenSquare className="w-3 h-3" />
+              </div>
+              <span className="text-sm">{t('login.benefits.custom_problems')}</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <div className="mt-1 p-1 rounded-full bg-primary/10">
+                <LineChart className="w-3 h-3" />
+              </div>
+              <span className="text-sm">{t('login.benefits.analytics')}</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <div className="mt-1 p-1 rounded-full bg-primary/10">
+                <Timer className="w-3 h-3" />
+              </div>
+              <span className="text-sm">{t('login.benefits.progress_save')}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
       <div className="mt-6">
         <Button 
           onClick={() => signInWithGoogle()} 
@@ -191,14 +192,13 @@ export function Navigation() {
       {/* プレミアムアップグレードダイアログ */}
       {user && !subscription?.isActive && (
         <div className="p-6 border rounded-lg bg-muted/20">
-          <h2 className="text-xl font-bold mb-4">分析機能</h2>
-          <p className="text-muted-foreground mb-4">
+          <div className="text-xl font-bold mb-4">分析機能</div>
+          <div className="text-muted-foreground mb-4">
             分析機能はプレミアムプランでご利用いただけます。
-          </p>
+          </div>
           <PremiumUpgradeDialog 
             open={showUpgradeDialog} 
             onOpenChange={setShowUpgradeDialog}
-            feature="分析機能"
           />
         </div>
       )}
