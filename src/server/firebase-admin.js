@@ -3,6 +3,7 @@ import { getFirestore } from 'firebase-admin/firestore';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import dotenv from 'dotenv';
+import process from 'process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -35,12 +36,12 @@ if (!apps.length) {
 // Firestoreの初期化
 export const db = getFirestore();
 
-// Firestoreのドキュメント参照を取得する関数
-export function doc(db, collection, id) {
-  return db.collection(collection).doc(id);
+// Firestoreのドキュメント参照を取得する関数（Firebase Admin SDK用）
+export function doc(database, collection, id) {
+  return database.collection(collection).doc(id);
 }
 
-// ドキュメントを取得する関数
+// ドキュメントを取得する関数（Firebase Admin SDK用）
 export async function getDoc(docRef) {
   const doc = await docRef.get();
   return {

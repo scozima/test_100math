@@ -10,12 +10,14 @@ import AppLayout from "./pages/layout/AppLayout";
 import Problem from "./pages/Problem";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentCancel from "./pages/PaymentCancel";
 
 import { Toaster } from "sonner";
 
 function App() {
   const { user, loading } = useContext(AuthContext);
-  const basename = process.env.BASENAME || "/";
+  const basename = import.meta.env.BASENAME || "/";
 
   if (loading) {
     return <div>Loading...</div>;
@@ -42,6 +44,9 @@ function App() {
           path="/login"
           element={user ? <Navigate to="/dashboard" /> : <Login />}
         />
+        {/* Stripe決済関連のページ */}
+        <Route path="/success" element={<PaymentSuccess />} />
+        <Route path="/canceled" element={<PaymentCancel />} />
       </Routes>
     </Router>
   );

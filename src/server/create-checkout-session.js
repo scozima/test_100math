@@ -82,14 +82,20 @@ export async function createCheckoutSession(userId) {
         },
       ],
       mode: 'subscription',
-      success_url: `${process.env.APP_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.APP_URL}/canceled`,
+      success_url: `http://localhost:5173/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `http://localhost:5173/canceled`,
       metadata: {
         firebaseUID: userId
       }
     });
     
     console.log('Checkout session created successfully:', session.id);
+    console.log('Session details:', {
+      id: session.id,
+      success_url: session.success_url,
+      cancel_url: session.cancel_url,
+      url: session.url
+    });
     return session;
   } catch (error) {
     console.error('Error in createCheckoutSession:', error);

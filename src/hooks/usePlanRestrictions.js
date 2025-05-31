@@ -1,6 +1,7 @@
 import { useAuth } from '@/hooks/useAuth';
 import { useEffect, useState } from 'react';
-import { db } from '@/lib/firebase';
+import { db } from '@/firebase';
+import { doc, onSnapshot, collection, getDocs } from 'firebase/firestore';
 
 export function usePlanRestrictions() {
   const { user } = useAuth();
@@ -16,25 +17,27 @@ export function usePlanRestrictions() {
     }
 
     // ユーザーのプラン情報を取得
-    const unsubscribe = db.collection('users').doc(user.uid)
-      .onSnapshot((doc) => {
-        if (doc.exists) {
-          const userData = doc.data();
-          setUserPlan(userData.plan || 'standard');
-          
-          // カスタム問題の数を取得
-          db.collection('customProblems')
-            .where('createdBy', '==', user.uid)
-            .get()
-            .then((snapshot) => {
-              setCustomProblemCount(snapshot.size);
-              setLoading(false);
-            });
-        } else {
-          setUserPlan('standard');
-          setLoading(false);
+    const userRef = doc(db, 'users', user.uid);
+    const unsubscribe = onSnapshot(userRef, async (doc) => {
+      if (doc.exists()) {
+        const userData = doc.data();
+        setUserPlan(userData.plan || 'standard');
+        
+        // カスタム問題の数を取得（正しいコレクションパスを使用）
+        try {
+          const userQuestionsRef = collection(db, 'users', user.uid, 'questions');
+          const snapshot = await getDocs(userQuestionsRef);
+          setCustomProblemCount(snapshot.size);
+        } catch (error) {
+          console.error('Error fetching custom problems count:', error);
+          setCustomProblemCount(0);
         }
-      });
+        setLoading(false);
+      } else {
+        setUserPlan('standard');
+        setLoading(false);
+      }
+    });
 
     return () => unsubscribe();
   }, [user]);

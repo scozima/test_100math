@@ -53,7 +53,7 @@ import {
   DropdownMenuTrigger,
 } from "../components/ui/dropdown-menu"
 import { Input } from "../components/ui/input"
-import { ChevronDown, ChevronUp, ChevronsUpDown, ChevronLeft, ChevronRight } from "lucide-react"  // アイコン用
+import { ChevronDown, ChevronUp, ChevronsUpDown, ChevronLeft, ChevronRight } from "lucide-react"
 
 // プラグインを拡張
 dayjs.extend(weekOfYear)
@@ -105,6 +105,9 @@ const formatDate = (timestamp, locale) => {
   // 指定された言語に基づいてフォーマット
   return dayjs(date).locale(locale).format('MM/DD (ddd)');
 }
+
+// 平均値計算のヘルパー関数
+const average = (arr) => arr.length ? arr.reduce((sum, val) => sum + val, 0) / arr.length : 0
 
 const Dashboard = () => {
   const { t, i18n } = useTranslation()
@@ -199,139 +202,119 @@ const Dashboard = () => {
     return results.reduce((acc, result) => {
       const collection = result.problemCollection || 'basic_question_db'
       const problemKey = `${collection}/${result.problemId}`
-
-      // 問題が存在する場合のみ追加
-      if (result.problemName && result.problemId && validProblemIds.has(problemKey)) {
-        if (!acc[collection]) {
-          acc[collection] = new Set()
-        }
-
-        const problemData = JSON.stringify({
+      
+      if (validProblemIds.has(problemKey)) {
+        const problemString = JSON.stringify({
           id: result.problemId,
-          name: result.problemName
+          name: result.problemName,
+          collection,
+          exists: true
         })
-
-        acc[collection].add(problemData)
+        
+        if (!acc[collection].includes(problemString)) {
+          acc[collection].push(problemString)
+        }
       }
-
+      
       return acc
-    }, {
-      basic_question_db: new Set(),
-      users: new Set()
-    })
+    }, { basic_question_db: [], users: [] })
   }, [results, problemsData])
 
-  // 期間の移動処理
-  const handleDateNavigation = (direction) => {
-    const newDate = new Date(currentDate)
-
-    switch (dateRange) {
-      case 'month':
-        newDate.setMonth(currentDate.getMonth() + (direction === 'prev' ? -1 : 1))
-        break
-      case 'week':
-        newDate.setDate(currentDate.getDate() + (direction === 'prev' ? -7 : 7))
-        break
-      case 'day':
-        newDate.setDate(currentDate.getDate() + (direction === 'prev' ? -1 : 1))
-        break
-    }
-    setCurrentDate(newDate)
-  }
-
-  // 期間の表示文字列を生成
+  // 日付範囲ラベルを生成する関数
   const getDateRangeLabel = (currentDate, dateRange, locale) => {
+    const current = dayjs(currentDate).locale(locale)
+    
     switch (dateRange) {
-      case 'month':
-        if (locale === 'ja') {
-          return dayjs(currentDate).locale(locale).format('YYYY年MM月');
-        } else {
-          return dayjs(currentDate).locale(locale).format('MMMM YYYY');
-        }
-      case 'week': {
-        const startDate = dayjs(currentDate).startOf('week').locale(locale);
-        const endDate = dayjs(currentDate).endOf('week').locale(locale);
-        
-        if (locale === 'ja') {
-          return `${startDate.format('YYYY年MM月DD日')} 〜 ${endDate.format('YYYY年MM月DD日')}`;
-        } else {
-          return `${startDate.format('MMM DD, YYYY')} - ${endDate.format('MMM DD, YYYY')}`;
-        }
-      }
       case 'day':
-        return dayjs(currentDate).locale(locale).format(locale === 'ja' ? 'YYYY年MM月DD日' : 'MMM DD, YYYY');
+        return current.format('YYYY年M月D日')
+      case 'week': {
+        const weekStart = current.startOf('week')
+        const weekEnd = current.endOf('week')
+        return `${weekStart.format('M/D')} - ${weekEnd.format('M/D')}`
+      }
+      case 'month':
+        return current.format('YYYY年M月')
       default:
-        return '';
+        return ''
     }
   }
 
-  // フィルタリングされたデータを取得する処理も修正
-  const getFilteredData = () => {
-    // 有効な問題のIDを Set として保持
-    const validProblemIds = new Set([
-      ...problemsData.basic_question_db.map(p => `basic_question_db/${p.id}`),
-      ...problemsData.users.map(p => `users/${p.id}`)
-    ])
-
-    let startDate = new Date(currentDate)
-    let endDate = new Date(currentDate)
-
-    // 日付範囲の設定（既存のコード）
+  // 日付ナビゲーション関数
+  const handleDateNavigation = (direction) => {
+    const current = dayjs(currentDate)
+    let newDate
+    
     switch (dateRange) {
-      case 'month':
-        startDate.setDate(1)
-        endDate.setMonth(endDate.getMonth() + 1)
-        endDate.setDate(0)
+      case 'day':
+        newDate = direction === -1 ? current.subtract(1, 'day') : current.add(1, 'day')
         break
       case 'week':
-        startDate.setDate(currentDate.getDate() - currentDate.getDay())
-        endDate.setDate(startDate.getDate() + 6)
+        newDate = direction === -1 ? current.subtract(1, 'week') : current.add(1, 'week')
         break
-      case 'day':
-        endDate.setDate(endDate.getDate() + 1)
+      case 'month':
+        newDate = direction === -1 ? current.subtract(1, 'month') : current.add(1, 'month')
         break
+      default:
+        newDate = current
     }
+    
+    setCurrentDate(newDate.toDate())
+  }
 
-    startDate.setHours(0, 0, 0, 0)
-    endDate.setHours(23, 59, 59, 999)
-
+  // フィルタリングされた結果を計算
+  const filteredResults = useMemo(() => {
     return results.filter(result => {
-      const resultDate = new Date(result.createdAt.seconds * 1000)
-      const problemKey = `${result.problemCollection || 'basic_question_db'}/${result.problemId}`
+      if (!result.createdAt) return false
 
-      // 問題フィルタリングの修正
-      const problemMatch = selectedProblem === 'all' || selectedProblem === problemKey
+      let resultDate
+      if (typeof result.createdAt === 'object' && result.createdAt.seconds) {
+        resultDate = dayjs(result.createdAt.seconds * 1000)
+      } else if (typeof result.createdAt === 'number') {
+        resultDate = dayjs(result.createdAt)
+      } else {
+        return false
+      }
 
-      return resultDate >= startDate &&
-        resultDate <= endDate &&
-        problemMatch &&
-        validProblemIds.has(problemKey) // 有効な問題のみ表示
+      const current = dayjs(currentDate)
+
+      let isInRange = false
+      switch (dateRange) {
+        case 'day':
+          isInRange = resultDate.isSame(current, 'day')
+          break
+        case 'week':
+          isInRange = resultDate.isSame(current, 'week')
+          break
+        case 'month':
+          isInRange = resultDate.isSame(current, 'month')
+          break
+        default:
+          isInRange = true
+      }
+
+      if (!isInRange) return false
+
+      // 問題フィルター
+      if (selectedProblem !== 'all') {
+        const [collection, problemId] = selectedProblem.split('/')
+        return result.problemCollection === collection && result.problemId === problemId
+      }
+
+      return true
     })
-  }
+  }, [results, currentDate, dateRange, selectedProblem])
 
-  const filteredResults = getFilteredData()
+  // チャートデータの準備
+  const chartData = useMemo(() => {
+    return filteredResults.map(result => ({
+      date: result.createdAt?.seconds ? result.createdAt.seconds * 1000 : Date.now(),
+      score: result.score || 0,
+      time: result.time || 0,
+      problem: result.problemName || 'Unknown'
+    })).sort((a, b) => a.date - b.date)
+  }, [filteredResults])
 
-  // グラフデータの整形部分を修正
-  const chartData = filteredResults.map(result => {
-    const totalQuestions = result.totalQuestions || 0
-    const scorePercentage = totalQuestions > 0 ? (result.score / totalQuestions) * 100 : 0
-
-    return {
-      date: result.createdAt.seconds * 1000,  // Unix timestamp（ミリ秒）に変換
-      scorePercentage: Math.round(scorePercentage * 10) / 10,
-      time: result.time,
-      score: Math.round(scorePercentage * 10) / 10,  // スコアをパーセンテージに変更
-      problem: result.problemName
-    }
-  }).sort((a, b) => a.date - b.date)  // 日付順にソート
-
-  // average関数を追加
-  const average = (arr) => {
-    if (!arr.length) return 0
-    return arr.reduce((sum, val) => sum + val, 0) / arr.length
-  }
-
-  // 統計計算の関数を追加
+  // 詳細統計を計算する関数
   const calculateDetailedStats = () => {
     if (!results.length) return {
       totalTime: 0,
@@ -609,7 +592,7 @@ const Dashboard = () => {
                   <Button
                     variant="outline"
                     size="icon"
-                    onClick={() => handleDateNavigation('prev')}
+                    onClick={() => handleDateNavigation(-1)}
                   >
                     <ChevronLeft className="h-4 w-4" />
                   </Button>
@@ -617,7 +600,7 @@ const Dashboard = () => {
                   <Button
                     variant="outline"
                     size="icon"
-                    onClick={() => handleDateNavigation('next')}
+                    onClick={() => handleDateNavigation(1)}
                   >
                     <ChevronRight className="h-4 w-4" />
                   </Button>
@@ -799,15 +782,15 @@ const Dashboard = () => {
                               key={column.id}
                               className="capitalize"
                               checked={visibleColumns.includes(column.id)}
-                              onCheckedChange={(checked) => {
-                                if (checked) {
-                                  setVisibleColumns([...visibleColumns, column.id])
-                                } else {
-                                  setVisibleColumns(visibleColumns.filter((id) => id !== column.id))
-                                }
+                              onCheckedChange={() => {
+                                setVisibleColumns(prev => 
+                                  prev.includes(column.id) 
+                                    ? prev.filter(c => c !== column.id)
+                                    : [...prev, column.id]
+                                )
                               }}
                             >
-                              {t(`dashboard.progress.list.tableHeaders.${column.id}`)}
+                              {column.name}
                             </DropdownMenuCheckboxItem>
                           )
                         ))}
@@ -822,52 +805,62 @@ const Dashboard = () => {
                           {columns.map((column) => (
                             visibleColumns.includes(column.id) && (
                               <TableHead key={column.id} className="h-10">
-                                <Button
-                                  variant="ghost"
-                                  onClick={() => handleSort(column.id)}
-                                  className="h-8 px-2 font-medium"
-                                  disabled={!column.sortable}
-                                >
-                                  {t(`dashboard.progress.list.tableHeaders.${column.id}`)}
-                                  {sortConfig.key === column.id ? (
-                                    sortConfig.direction === 'asc' ? (
-                                      <ChevronUp className="ml-2 h-4 w-4" />
+                                {column.sortable ? (
+                                  <Button
+                                    variant="ghost"
+                                    onClick={() => handleSort(column.id)}
+                                    className="h-8 px-2 font-medium"
+                                    disabled={!column.sortable}
+                                  >
+                                    {t(`dashboard.progress.list.tableHeaders.${column.id}`)}
+                                    {sortConfig.key === column.id ? (
+                                      sortConfig.direction === 'asc' ? (
+                                        <ChevronUp className="ml-2 h-4 w-4" />
+                                      ) : (
+                                        <ChevronDown className="ml-2 h-4 w-4" />
+                                      )
                                     ) : (
-                                      <ChevronDown className="ml-2 h-4 w-4" />
-                                    )
-                                  ) : (
-                                    <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
-                                  )}
-                                </Button>
+                                      <ChevronsUpDown className="ml-2 h-4 w-4" />
+                                    )}
+                                  </Button>
+                                ) : (
+                                  t(`dashboard.progress.list.tableHeaders.${column.id}`)
+                                )}
                               </TableHead>
                             )
                           ))}
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {paginatedData.map((result) => (
-                          <TableRow key={result.id} className="h-12">
-                            {visibleColumns.includes('date') && (
-                              <TableCell>{formatDate(result.createdAt, locale)}</TableCell>
-                            )}
-                            {visibleColumns.includes('problem') && (
-                              <TableCell>{result.problemName}</TableCell>
-                            )}
-                            {visibleColumns.includes('score') && (
-                              <TableCell>
-                                <span className="font-medium">{result.score}</span>
-                                <span className="text-muted-foreground">/{result.totalQuestions || 0}</span>
-                              </TableCell>
-                            )}
-                            {visibleColumns.includes('time') && (
-                              <TableCell>{result.time}{t('dashboard.stats.totalTime.seconds')}</TableCell>
-                            )}
+                        {paginatedData.length === 0 ? (
+                          <TableRow>
+                            <TableCell colSpan={visibleColumns.length} className="h-24 text-center">
+                              {t('dashboard.progress.chart.noData')}
+                            </TableCell>
                           </TableRow>
-                        ))}
+                        ) : (
+                          paginatedData.map((result) => (
+                            <TableRow key={result.id}>
+                              {visibleColumns.includes('date') && (
+                                <TableCell>{formatDate(result.createdAt, locale)}</TableCell>
+                              )}
+                              {visibleColumns.includes('problem') && (
+                                <TableCell>{result.problemName || 'Unknown'}</TableCell>
+                              )}
+                              {visibleColumns.includes('score') && (
+                                <TableCell>{result.score}%</TableCell>
+                              )}
+                              {visibleColumns.includes('time') && (
+                                <TableCell>{result.time}{t('dashboard.stats.totalTime.seconds')}</TableCell>
+                              )}
+                            </TableRow>
+                          ))
+                        )}
                       </TableBody>
                     </Table>
                   </div>
 
+                  {/* ページネーション */}
                   <div className="flex items-center justify-between px-2">
                     <div className="flex-1 text-sm text-muted-foreground">
                       {filteredData.length}{t('dashboard.progress.list.pagination.showing')} {paginatedData.length}{t('dashboard.progress.list.pagination.display')}
@@ -894,7 +887,6 @@ const Dashboard = () => {
                           </SelectContent>
                         </Select>
                       </div>
-
                       <div className="flex items-center space-x-2">
                         <Button
                           variant="outline"
